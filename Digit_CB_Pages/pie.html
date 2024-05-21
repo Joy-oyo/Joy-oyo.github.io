@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Major Distribution for OPT Authorization in 2023</title>
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="majorChart" width="400" height="400"></canvas>
+
+  <script>
+    // Data for the pie chart
+    var data = {
+      labels: ['Computer Science', 'Engineering', 'Business', 'Other Majors'],
+      datasets: [{
+        data: [27, 19, 17, 37], // Percentages for each category
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)', // Red for Computer Science
+          'rgba(54, 162, 235, 0.6)', // Blue for Engineering
+          'rgba(255, 206, 86, 0.6)', // Yellow for Business
+          'rgba(75, 192, 192, 0.6)' // Green for Other Majors
+        ]
+      }]
+    };
+
+    // Options for the pie chart
+    var options = {
+      title: {
+        display: true,
+        text: 'Major Distribution for OPT Authorization in 2023'
+      },
+      plugins: {
+        datalabels: {
+          formatter: (value, ctx) => {
+            let sum = 0;
+            let dataArr = ctx.chart.data.datasets[0].data;
+            dataArr.map(data => {
+              sum += data;
+            });
+            let percentage = (value * 100 / sum).toFixed(0) + "%";
+            return percentage;
+          },
+          color: '#fff',
+          anchor: 'end',
+          align: 'start',
+          offset: -10,
+          borderWidth: 2,
+          borderColor: '#fff',
+          borderRadius: 4,
+          backgroundColor: (context) => {
+            return context.dataset.backgroundColor;
+          }
+        }
+      }
+    };
+
+    // Get the canvas element
+    var ctx = document.getElementById('majorChart').getContext('2d');
+
+    // Create the pie chart
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: data,
+      options: options
+    });
+  </script>
+</body>
+</html>

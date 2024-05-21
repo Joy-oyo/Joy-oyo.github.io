@@ -1,0 +1,64 @@
+body {
+    background-color: #FFFFFF;
+    color: black;
+}
+
+table{
+    border: 5px solid black;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: medium;
+    letter-spacing: 1px; 
+    margin: 20px auto;
+    background-color: #FFFFFF;
+    color: #800000;
+}
+
+li:not(.navbar-nav li):not(.e):not(.e li)::first-letter {
+    font-size: x-large;
+    font-weight: bold;
+  }
+
+
+.a{list-style-type: lower-roman;}
+
+.c{list-style-type: square;}
+
+.b{list-style-type: lower-alpha;}
+
+.d{list-style-type: "$";}
+
+a.nav {text-decoration: none;}
+a#not-nav:link{color: hotpink;}
+a#not-nav:visited{color: greenyellow;}
+a#not-nav:hover{color: blue}
+
+.btn-outline-success {
+    color: #800000;
+    border-color: #800000;
+}
+  
+.btn-outline-success:hover {
+    background-color: #800000;
+    color: white;
+}
+  
+h1 {
+    color: #800000;
+}
+  
+h4 {
+    color: grey;
+}
+  
+.dropdown-menu {
+    background-color: #f0f8ff;
+}
+  
+.dropdown-item {
+    color: black;
+}
+
+.form-control {
+    background-color: white;
+    color: black;
+}

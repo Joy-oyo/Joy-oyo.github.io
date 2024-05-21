@@ -1,0 +1,23 @@
+body{
+    background-color: aliceblue;
+    color:black;
+    text-align: center;
+}
+
+h1{
+    color: #800000;
+    text-align: center;
+}
+
+h4{
+    color: grey;
+    text-align: center;
+}
+
+p{
+    text-align:center;
+}
+
+.separator{
+    text-align:center;
+}

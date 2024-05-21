@@ -1,0 +1,86 @@
+$uchicago-maroon: #800000;
+$uchicago-dark-grey: #767676;
+$uchicago-light-grey: #D6D6CE;
+$white: #FFFFFF;
+$black: #000000;
+$font-stack: Helvetica, sans-serif;
+$std-margin-left: 15px;
+
+h1 {
+    margin-left: $std-margin-left;
+    color: $uchicago-maroon;
+}
+
+h3 {
+    margin-left: $std-margin-left;
+    color: $uchicago-dark-grey;
+}
+
+body{
+    background-color: $uchicago-light-grey;
+    color: $uchicago-maroon;
+}
+
+.header{
+    background-color: $uchicago-light-grey;
+    color: $uchicago-maroon;
+}
+
+.footer{
+    background-color: $uchicago-dark-grey;
+    color: $uchicago-light-grey;
+}
+
+@mixin flex-container{
+    display: flex;
+    align-items: center;
+    padding:1.2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar{
+    @include flex-container;
+    background-color: $uchicago-maroon;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+
+    ul{
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        li {
+            margin-right: 1.2rem;
+            a{
+                text-decoration: none;
+                color: $uchicago-light-grey;
+                font-family: $font-stack;
+                &:hover{
+                    color: $uchicago-dark-grey;
+                }
+                &.active, &.bold {
+                    color: $white;
+                    font-weight: bold;
+                    font-size: 18px
+                }
+            }
+        }
+    }
+}
+
+@mixin button($bgColor, $textColor){
+    display: flex;
+    background-color: $bgColor;
+    color: $textColor;
+}
+
+.footer{
+    color:$uchicago-maroon
+}
+.black-button {
+    @include button(#000000, #FFFFFF)
+}
+
