@@ -106,4 +106,6 @@ function displayAlbumDetails(albumId) {
         });
 }
 
-document.getElementById('searchButton').addEventListener('click', searchArtist);
+$(document).ready(function(){
+    $('#searchButton').click(searchArtist);
+});
