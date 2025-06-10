@@ -18,14 +18,13 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
         
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="css/flashcard-style.css"/>
+        <link rel="stylesheet" href="css/main.css"/>
         
         <!--Jquery-->
         <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 
         <!--Icon-->
         <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    </head>
 
     <body>
         <header>
@@ -33,46 +32,86 @@
         </header>
 
         <main>
-            <!-- Hero Welcome Section -->
-            <section class="welcome-section position-relative overflow-hidden">
-                <div class="hero-background"></div>
-                <div class="floating-elements">
-                    <div class="floating-shape shape-1"></div>
-                    <div class="floating-shape shape-2"></div>
-                    <div class="floating-shape shape-3"></div>
-                    <div class="floating-shape shape-4"></div>
-                </div>
-                <div class="container position-relative">
-                    <div class="welcome-content text-center py-5">
-                        <div class="hero-badge mb-3">
-                            <span class="badge-text">Creative Professional</span>
-                        </div>
-                        <h1 class="welcome-title display-3 fw-bold mb-3">
-                            <span class="gradient-text">Joy Chen</span>
-                        </h1>
-                        <p class="welcome-subtitle lead mb-4">
-                            Where Innovation Meets Creativity
-                        </p>
-                        <div class="welcome-description mb-4">
-                            <p class="fs-5 text-white-75">
-                                Crafting digital experiences through business strategy, 
-                                interactive games, visual storytelling, and cutting-edge technology.
-                            </p>
-                        </div>
-                        <div class="hero-cta">
-                            <button class="btn btn-explore" onclick="document.querySelector('.flashcard-section').scrollIntoView({behavior: 'smooth'})">
-                                <span>Explore My Work</span>
-                                <i class="fas fa-arrow-down ms-2"></i>
-                            </button>
-                        </div>
+            <!-- Interactive Roadmap Section -->
+            <section class="roadmap-section">
+                <div class="roadmap-particles" id="roadmapParticles"></div>
+                
+                <div class="container">
+                    <div class="roadmap-title">
+                        <h2>Portfolio Journey</h2>
+                        <p>Navigate through my creative and professional endeavors</p>
                     </div>
                 </div>
-                <div class="scroll-indicator">
-                    <div class="scroll-arrow"></div>
+
+                <div class="roadmap-container">
+                    <svg class="roadmap-svg" viewBox="0 0 1400 600">
+                        <!-- Road paths connecting modules -->
+                        <path class="road-path path-business-games" d="M 190 110 Q 245 155, 300 260" data-modules="business,games"/>
+                        <path class="road-path path-games-photography" d="M 340 320 Q 285 350, 240 410" data-modules="games,photography"/>
+                        <path class="road-path path-business-technical" d="M 280 110 Q 440 130, 600 210" data-modules="business,technical"/>
+                        <path class="road-path path-technical-creative" d="M 690 210 Q 745 255, 800 360" data-modules="technical,creative"/>
+                        <path class="road-path path-technical-future" d="M 690 150 Q 845 100, 1000 110" data-modules="technical,future"/>
+                        <path class="road-path path-creative-future" d="M 890 300 Q 945 205, 1000 150" data-modules="creative,future"/>
+                        
+                        <!-- Central hub connections -->
+                        <path class="road-path hub-business" d="M 700 300 Q 450 200, 280 150" data-modules="hub,business"/>
+                        <path class="road-path hub-games" d="M 700 300 Q 500 310, 390 320" data-modules="hub,games"/>
+                        <path class="road-path hub-photography" d="M 700 300 Q 470 355, 330 410" data-modules="hub,photography"/>
+                        <path class="road-path hub-technical" d="M 700 300 Q 650 255, 690 210" data-modules="hub,technical"/>
+                        <path class="road-path hub-creative" d="M 700 300 Q 750 330, 890 360" data-modules="hub,creative"/>
+                        <path class="road-path hub-future" d="M 700 300 Q 850 180, 1090 150" data-modules="hub,future"/>
+                    </svg>
+
+                    <div class="central-hub">
+                        JC
+                    </div>
+
+                    <a href="https://chenj219.wixsite.com/portfolio-joy" class="portfolio-module module-business" data-module="business" target="_blank">
+                        <div class="module-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="module-title">Business Portfolio</div>
+                    </a>
+
+                    <a href="https://joy-oyo.itch.io/find-the-gate" class="portfolio-module module-games" data-module="games" target="_blank">
+                        <div class="module-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="module-title">Interactive Games</div>
+                    </a>
+
+                    <a href="https://chenj219.wixsite.com/portfolio-joy/art" class="portfolio-module module-photography" data-module="photography" target="_blank">
+                        <div class="module-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="module-title">Photography</div>
+                    </a>
+
+                    <a href="/Technical_Pre_Pages/console.html" class="portfolio-module module-technical" data-module="technical">
+                        <div class="module-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="module-title">Technical Projects</div>
+                    </a>
+
+                    <!-- Empty modules for future content -->
+                    <div class="portfolio-module module-creative module-empty" data-module="creative">
+                        <div class="module-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="module-title">Creative Hub</div>
+                    </div>
+
+                    <div class="portfolio-module module-future module-empty" data-module="future">
+                        <div class="module-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="module-title">Future Projects</div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Enhanced Quick Access Section -->
+            <!-- Enhanced Quick Access Section (kept as backup navigation) -->
             <section class="quick-access py-4 bg-gradient">
                 <div class="container">
                     <div class="row justify-content-center">
@@ -135,215 +174,15 @@
                 </div>
             </section>
 
-            <!-- Enhanced Flashcard Navigation -->
-            <section class="flashcard-section">
-                <div class="container">
-                    <div class="section-header text-center mb-5">
-                        <h2 class="section-title">Featured Projects</h2>
-                        <p class="section-subtitle">Navigate through my portfolio highlights</p>
-                    </div>
-                    
-                    <div class="flashcard-container">
-                        <div class="progress-indicator">
-                            <div class="progress-bar">
-                                <div class="progress-fill"></div>
-                            </div>
-                            <span class="progress-text">1 of 4</span>
-                        </div>
-
-                        <div class="flashcard-wrapper">
-                            <!-- Card 1: Business Portfolio -->
-                            <div class="flashcard active" data-card="1">
-                                <div class="card-background-pattern"></div>
-                                <div class="card-content">
-                                    <div class="card-header">
-                                        <div class="card-icon">
-                                            <i class="fas fa-briefcase"></i>
-                                        </div>
-                                        <div class="card-number">01</div>
-                                    </div>
-                                    <h2 class="card-title">Business Portfolio</h2>
-                                    <p class="card-description">
-                                        Explore my strategic business projects and professional ventures that showcase 
-                                        innovative thinking and real-world problem-solving skills across diverse industries.
-                                    </p>
-                                    <div class="card-features">
-                                        <span class="feature-tag">
-                                            <i class="fas fa-chart-line"></i>
-                                            Strategy
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-lightbulb"></i>
-                                            Innovation
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-users"></i>
-                                            Leadership
-                                        </span>
-                                    </div>
-                                    <div class="card-actions">
-                                        <a href="https://chenj219.wixsite.com/portfolio-joy" class="card-button primary" target="_blank">
-                                            <span>View Portfolio</span>
-                                            <i class="fas fa-external-link-alt"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Games -->
-                            <div class="flashcard" data-card="2">
-                                <div class="card-background-pattern"></div>
-                                <div class="card-content">
-                                    <div class="card-header">
-                                        <div class="card-icon">
-                                            <i class="fas fa-gamepad"></i>
-                                        </div>
-                                        <div class="card-number">02</div>
-                                    </div>
-                                    <h2 class="card-title">Interactive Games</h2>
-                                    <p class="card-description">
-                                        Dive into my game development world where creativity meets technology. 
-                                        Experience immersive gameplay, innovative mechanics, and captivating storytelling.
-                                    </p>
-                                    <div class="card-features">
-                                        <span class="feature-tag">
-                                            <i class="fab fa-unity"></i>
-                                            Unity
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-puzzle-piece"></i>
-                                            Game Design
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-mouse-pointer"></i>
-                                            Interactive
-                                        </span>
-                                    </div>
-                                    <div class="card-actions">
-                                        <a href="https://joy-oyo.itch.io/find-the-gate" class="card-button primary" target="_blank">
-                                            <span>Play Game</span>
-                                            <i class="fas fa-play"></i>
-                                        </a>
-                                    </div>
-                                    <div class="password-info">
-                                        <div class="password-badge">
-                                            <i class="fas fa-key"></i>
-                                            <span>Password: <strong>qwer56</strong></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Photography -->
-                            <div class="flashcard" data-card="3">
-                                <div class="card-background-pattern"></div>
-                                <div class="card-content">
-                                    <div class="card-header">
-                                        <div class="card-icon">
-                                            <i class="fas fa-camera"></i>
-                                        </div>
-                                        <div class="card-number">03</div>
-                                    </div>
-                                    <h2 class="card-title">Photography</h2>
-                                    <p class="card-description">
-                                        Journey through my visual storytelling collection. Each photograph captures 
-                                        unique moments, emotions, and perspectives through my creative lens and artistic vision.
-                                    </p>
-                                    <div class="card-features">
-                                        <span class="feature-tag">
-                                            <i class="fas fa-palette"></i>
-                                            Visual Arts
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-book-open"></i>
-                                            Storytelling
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-magic"></i>
-                                            Creative
-                                        </span>
-                                    </div>
-                                    <div class="card-actions">
-                                        <a href="https://chenj219.wixsite.com/portfolio-joy/art" class="card-button primary" target="_blank">
-                                            <span>View Gallery</span>
-                                            <i class="fas fa-images"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 4: Technical Projects -->
-                            <div class="flashcard" data-card="4">
-                                <div class="card-background-pattern"></div>
-                                <div class="card-content">
-                                    <div class="card-header">
-                                        <div class="card-icon">
-                                            <i class="fas fa-code"></i>
-                                        </div>
-                                        <div class="card-number">04</div>
-                                    </div>
-                                    <h2 class="card-title">Technical Projects</h2>
-                                    <p class="card-description">
-                                        Discover my technical expertise through data visualization, web development, 
-                                        and digital tools that solve complex problems with elegant, efficient solutions.
-                                    </p>
-                                    <div class="card-features">
-                                        <span class="feature-tag">
-                                            <i class="fas fa-laptop-code"></i>
-                                            Web Dev
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-chart-bar"></i>
-                                            Data Viz
-                                        </span>
-                                        <span class="feature-tag">
-                                            <i class="fas fa-paint-brush"></i>
-                                            Frontend
-                                        </span>
-                                    </div>
-                                    <div class="card-actions">
-                                        <a href="/Technical_Pre_Pages/console.html" class="card-button primary">
-                                            <span>Start Exploring</span>
-                                            <i class="fas fa-terminal"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Enhanced Navigation Controls -->
-                        <div class="nav-controls">
-                            <button class="nav-btn prev-btn" id="prevBtn">
-                                <i class="fas fa-chevron-left"></i>
-                                <span>Previous</span>
-                            </button>
-                            <div class="card-indicators">
-                                <span class="indicator active" data-card="1" title="Business Portfolio"></span>
-                                <span class="indicator" data-card="2" title="Interactive Games"></span>
-                                <span class="indicator" data-card="3" title="Photography"></span>
-                                <span class="indicator" data-card="4" title="Technical Projects"></span>
-                            </div>
-                            <button class="nav-btn next-btn" id="nextBtn">
-                                <span>Next</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <!-- Call to Action Section -->
             <section class="cta-section">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-8 text-center">
                             <div class="cta-content">
-                                <h2 class="cta-title">Let's Create Something Amazing</h2>
-                                <p class="cta-description">
-                                    Ready to bring your vision to life? Let's collaborate and turn ideas into reality.
-                                </p>
+
                                 <div class="cta-buttons">
-                                    <a href="mailto:contact@joychen.com" class="btn btn-light btn-lg me-3">
+                                    <a href="mailto:joychen0709@gmail.com" class="btn btn-light btn-lg me-3">
                                         <i class="fas fa-envelope me-2"></i>
                                         Get In Touch
                                     </a>
@@ -365,11 +204,11 @@
 
         <!-- Bootstrap JavaScript Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 
         <!-- Custom JavaScript -->
         <script src="js/nav.js"></script>
         <script src="js/footer.js"></script>
-        <script src="js/flashcard.js"></script>
+        <script src="js/roadmap.js"></script>
     </body>
 </html>
