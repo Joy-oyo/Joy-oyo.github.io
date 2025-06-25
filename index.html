@@ -111,85 +111,44 @@
                 </div>
             </section>
 
-            <!-- Enhanced Quick Access Section (kept as backup navigation) -->
-            <section class="quick-access py-4 bg-gradient">
+            <!-- Questionnaire Section -->
+            <section class="questionnaire-section">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-lg-10">
-                            <div class="quick-access-grid">
-                                <a href="https://chenj219.wixsite.com/portfolio-joy" class="quick-access-card" target="_blank">
-                                    <div class="card-icon-wrapper">
-                                        <i class="fas fa-briefcase"></i>
-                                    </div>
-                                    <div class="card-content">
-                                        <h3>Business</h3>
-                                        <p>Strategic ventures</p>
-                                    </div>
-                                    <div class="card-arrow">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                </a>
+                        <div class="col-lg-6">
+                            <div class="questionnaire-card">
+                                <h3 class="questionnaire-title">Stay Connected</h3>
+                                <p class="questionnaire-subtitle">Enter your email to receive updates and exclusive content</p>
                                 
-                                <a href="https://joy-oyo.itch.io/find-the-gate" class="quick-access-card" target="_blank">
-                                    <div class="card-icon-wrapper">
-                                        <i class="fas fa-gamepad"></i>
+                                <form id="emailForm" class="questionnaire-form">
+                                    <div class="form-group mb-3">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
                                     </div>
-                                    <div class="card-content">
-                                        <h3>Games</h3>
-                                        <p>Interactive experiences</p>
+                                    
+                                    <div class="form-group mb-3" id="verificationGroup" style="display: none;">
+                                        <label for="verificationCode" class="form-label">Verification Code</label>
+                                        <input type="text" class="form-control" id="verificationCode" name="verificationCode" maxlength="6">
+                                        <small class="form-text">Enter the 6-digit code sent to your email</small>
                                     </div>
-                                    <div class="card-arrow">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                </a>
+                                    
+                                    <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                        <span id="submitText">Send Verification Code</span>
+                                        <span id="submitLoading" style="display: none;">
+                                            <i class="fas fa-spinner fa-spin me-2"></i>
+                                            Sending...
+                                        </span>
+                                    </button>
+                                </form>
                                 
-                                <a href="https://chenj219.wixsite.com/portfolio-joy/art" class="quick-access-card" target="_blank">
-                                    <div class="card-icon-wrapper">
-                                        <i class="fas fa-camera"></i>
-                                    </div>
-                                    <div class="card-content">
-                                        <h3>Photography</h3>
-                                        <p>Visual storytelling</p>
-                                    </div>
-                                    <div class="card-arrow">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                </a>
+                                <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Email verified successfully! You'll receive updates soon.
+                                </div>
                                 
-                                <a href="/Technical_Pre_Pages/console.html" class="quick-access-card">
-                                    <div class="card-icon-wrapper">
-                                        <i class="fas fa-code"></i>
-                                    </div>
-                                    <div class="card-content">
-                                        <h3>Technical</h3>
-                                        <p>Digital solutions</p>
-                                    </div>
-                                    <div class="card-arrow">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Call to Action Section -->
-            <section class="cta-section">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-8 text-center">
-                            <div class="cta-content">
-
-                                <div class="cta-buttons">
-                                    <a href="mailto:joychen0709@gmail.com" class="btn btn-light btn-lg me-3">
-                                        <i class="fas fa-envelope me-2"></i>
-                                        Get In Touch
-                                    </a>
-                                    <a href="/Technical_Pre_Pages/console.html" class="btn btn-outline-light btn-lg">
-                                        <i class="fas fa-rocket me-2"></i>
-                                        Explore More
-                                    </a>
+                                <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <span id="errorText"></span>
                                 </div>
                             </div>
                         </div>
@@ -210,5 +169,6 @@
         <script src="js/nav.js"></script>
         <script src="js/footer.js"></script>
         <script src="js/roadmap.js"></script>
+        <script src="js/questionnaire.js"></script>
     </body>
 </html>
