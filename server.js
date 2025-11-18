@@ -15,7 +15,7 @@ app.use(express.static('.')); // Serve static files from current directory
 const verificationCodes = new Map();
 
 // Create transporter for sending emails
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
     service: 'gmail', // or 'outlook', 'yahoo', etc.
     auth: {
         user: process.env.EMAIL_USER,
@@ -166,4 +166,4 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Visit http://localhost:${PORT} to view your portfolio`);
-}); 
+});
