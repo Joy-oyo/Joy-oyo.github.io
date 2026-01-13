@@ -4,9 +4,27 @@ class EmailQuestionnaire {
         this.userEmail = null;
         this.init();
     }
-    
+
     init() {
         this.bindEvents();
+        this.setupAnimations();
+    }
+
+    setupAnimations() {
+        // Animate card on page load or when scrolling into view
+        const card = document.querySelector('.questionnaire-card');
+        if (card) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        card.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            observer.observe(card);
+        }
     }
     
     bindEvents() {
@@ -59,6 +77,10 @@ class EmailQuestionnaire {
                 // Success
                 this.userEmail = email;
                 verificationGroup.style.display = 'block';
+                // Trigger slide-in animation
+                setTimeout(() => {
+                    verificationGroup.classList.add('slide-in');
+                }, 10);
                 submitText.textContent = 'Verify Code';
                 submitText.style.display = 'inline';
                 submitLoading.style.display = 'none';
@@ -101,8 +123,17 @@ class EmailQuestionnaire {
             
             if (response.ok) {
                 // Success
+                const card = document.querySelector('.questionnaire-card');
+                if (card) {
+                    card.classList.add('success-pulse');
+                    setTimeout(() => {
+                        card.classList.remove('success-pulse');
+                    }, 1500);
+                }
                 this.showMessage('Email verified successfully! You\'ll receive updates soon.', 'success');
-                this.resetForm();
+                setTimeout(() => {
+                    this.resetForm();
+                }, 3000);
             } else {
                 // Error
                 this.showMessage(data.error || 'Invalid verification code.', 'error');
@@ -125,14 +156,24 @@ class EmailQuestionnaire {
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
-        
+
         if (type === 'success') {
             successMessage.style.display = 'block';
             errorMessage.style.display = 'none';
+            // Add bounce-in animation
+            successMessage.classList.remove('bounce-in');
+            setTimeout(() => {
+                successMessage.classList.add('bounce-in');
+            }, 10);
         } else {
             errorText.textContent = message;
             errorMessage.style.display = 'block';
             successMessage.style.display = 'none';
+            // Add shake animation for errors
+            errorMessage.classList.remove('shake');
+            setTimeout(() => {
+                errorMessage.classList.add('shake');
+            }, 10);
         }
     }
     
@@ -150,14 +191,15 @@ class EmailQuestionnaire {
         const submitBtn = document.getElementById('submitBtn');
         const submitText = document.getElementById('submitText');
         const submitLoading = document.getElementById('submitLoading');
-        
+
         form.reset();
+        verificationGroup.classList.remove('slide-in');
         verificationGroup.style.display = 'none';
         submitText.textContent = 'Send Verification Code';
         submitText.style.display = 'inline';
         submitLoading.style.display = 'none';
         submitBtn.disabled = false;
-        
+
         this.userEmail = null;
     }
 }
