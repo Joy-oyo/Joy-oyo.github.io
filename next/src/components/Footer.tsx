@@ -1,44 +1,52 @@
-import { footer, site } from "@/content/portfolio";
-import { Github, Mail, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { site } from "@/content/portfolio";
 
 export default function Footer() {
-  const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-black/5 bg-ink py-10 text-white/70">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 md:flex-row">
-        <p className="text-sm">
-          © <span>{year}</span> · {site.name} · {footer.copyright}
-        </p>
-        <ul className="flex flex-wrap items-center gap-1 text-sm">
-          {footer.links.map((l) => (
-            <li key={l.label}>
-              <a
-                href={l.href}
-                className="rounded-full px-3 py-1.5 transition-colors hover:bg-white/5 hover:text-white"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-          <li className="ml-2 flex items-center gap-1">
-            <a
-              aria-label="GitHub"
-              href="https://github.com/joy-oyo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5 hover:text-white"
-            >
-              <Github className="h-4 w-4" />
-            </a>
-            <a
-              aria-label="Email"
-              href="#newsletter"
-              className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5 hover:text-white"
-            >
-              <Mail className="h-4 w-4" />
-            </a>
-          </li>
-        </ul>
+    <footer className="relative border-t border-ink-50/10 mt-32">
+      <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-3 gap-12">
+        <div>
+          <div className="display text-3xl">{site.name}</div>
+          <p className="mt-3 text-sm text-ink-50/60 max-w-xs">
+            {site.tagline}
+          </p>
+        </div>
+
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-3">
+            Elsewhere
+          </div>
+          <ul className="space-y-2 text-sm">
+            {site.socials.map((s) => (
+              <li key={s.href}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-ink-50/70 hover:text-ink-50"
+                >
+                  {s.label} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-3">
+            Get in touch
+          </div>
+          <Link
+            href="/contact"
+            className="text-sm text-ink-50/70 hover:text-ink-50"
+          >
+            {site.email}
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-ink-50/5 py-6 text-center text-xs text-ink-50/40">
+        © {new Date().getFullYear()} {site.name}. All rights reserved.
       </div>
     </footer>
   );

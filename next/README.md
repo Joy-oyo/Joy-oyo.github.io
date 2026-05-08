@@ -1,73 +1,93 @@
-# Joy Chen — Portfolio (Next.js Rebuild)
+# Joy Chen — Interactive Portfolio (Next.js)
 
-Modern rebuild of the personal portfolio with a web-driven stack.
+A 3D-immersive, stacked-album-style portfolio built with Next.js 14, Three.js (R3F), GSAP, and Framer Motion.
 
-## Stack
+## Highlights
 
-- **Next.js 14** (App Router, RSC)
-- **TypeScript** (strict)
-- **Tailwind CSS** — design tokens for Klein Blue + Gold theme
-- **Framer Motion** — declarative animations (replaces GSAP)
-- **lucide-react** — icon system (replaces Font Awesome)
-- **next/font** — self-hosted Inter + Playfair Display
+- **Immersive 3D background** — particle star field with mouse parallax (Three.js + React Three Fiber).
+- **Album stack interaction** — click / drag / keyboard ← → / scroll to flip through 5 themed "albums" (About, Photography, Projects, Writing, Contact).
+- **Dedicated pages** for each album with editorial layouts.
+- **Email subscription** — code-verified signup, migrated from the old `server.js` into Next.js API routes.
+- **Deployable to Vercel** out of the box.
 
-## Architecture
-
-```
-src/
-├─ app/
-│  ├─ layout.tsx         # root layout + fonts + metadata
-│  ├─ page.tsx           # home — composes sections from content
-│  └─ globals.css        # Tailwind base + tokens
-├─ components/           # presentation only, no data
-│  ├─ Nav.tsx            # sticky glass nav with mobile drawer
-│  ├─ Hero.tsx           # animated hero w/ scroll cue
-│  ├─ Stats.tsx          # CountUp animated stats band
-│  ├─ Marquee.tsx        # CSS-only skills marquee
-│  ├─ Orbit.tsx          # orbital portfolio map (replaces SVG roadmap)
-│  ├─ ProjectSection.tsx # alternating split sections
-│  ├─ Newsletter.tsx     # validated email form
-│  └─ Footer.tsx
-└─ content/
-   └─ portfolio.ts       # ⭐ single source of truth — edit this to update site
-```
-
-## Develop
+## Getting started
 
 ```bash
 cd next
 npm install
-npm run dev    # http://localhost:3001
+cp .env.example .env.local   # fill in Gmail app password if you want contact form
+npm run dev                  # http://localhost:3001
 ```
 
-## Build
+## Project structure
 
-```bash
-npm run build
-npm start
+```
+next/
+├─ public/images/          # static assets (tree1–4.jpg, favicon)
+├─ src/
+│  ├─ app/
+│  │  ├─ layout.tsx        # root layout, fonts, Nav, grain overlay
+│  │  ├─ page.tsx          # Home: 3D scene + Hero + AlbumStack
+│  │  ├─ about/            # About / Resume
+│  │  ├─ photography/      # Gallery
+│  │  ├─ projects/         # Project grid
+│  │  ├─ writing/          # Blog list + [slug]
+│  │  ├─ contact/          # Contact form
+│  │  ├─ api/
+│  │  │  ├─ send-verification/route.ts
+│  │  │  └─ verify-code/route.ts
+│  │  └─ globals.css
+│  ├─ components/
+│  │  ├─ Scene3D.tsx       # Three.js star field / nebula
+│  │  ├─ SceneBackground.tsx   # client-only dynamic wrapper
+│  │  ├─ Hero.tsx
+│  │  ├─ AlbumStack.tsx    # ★ core interaction
+│  │  ├─ PageHeader.tsx
+│  │  ├─ ContactForm.tsx
+│  │  ├─ Nav.tsx
+│  │  └─ Footer.tsx
+│  ├─ content/portfolio.ts # ALL editable content lives here
+│  └─ lib/
+│     ├─ cn.ts             # class-name helper
+│     └─ verificationStore.ts # in-memory code store (swap for Redis in prod)
+├─ tailwind.config.ts
+├─ next.config.mjs
+└─ package.json
 ```
 
 ## Editing content
 
-All copy, project links, stats, and skills live in **`src/content/portfolio.ts`**.
-Change a value there and it updates everywhere — no markup edits needed.
+Open `src/content/portfolio.ts` and edit:
 
-## Deploy
+- `site` — name, tagline, bio, email, social links
+- `albums` — the 5 cards on the homepage
+- `experiences` / `skills` — About page
+- `projects` — Projects page
+- `photos` — Photography page
+- `writings` — Writing index (add `.md` / MDX files later if you want real posts)
 
-- **Vercel** (recommended): `vercel` from this folder, or import the repo and set root dir to `next`.
-- **Static export**: add `output: "export"` to `next.config.mjs` and `next build`.
+## Deployment (Vercel)
 
-## What changed vs. the original site
+1. Push to GitHub.
+2. Import the `next/` folder as the project root in Vercel.
+3. Add env vars `EMAIL_USER` and `EMAIL_PASS` if you're using the contact form.
+4. Ship.
 
-| Original | New |
-|---|---|
-| Plain HTML + jQuery | Next.js + React Server Components |
-| Bootstrap 5 | Tailwind CSS w/ custom tokens |
-| GSAP + ScrollTrigger | Framer Motion `whileInView` |
-| Font Awesome via CDN | lucide-react (tree-shaken) |
-| `nav.html` + `footer.html` partials loaded by jQuery | Reusable React components |
-| Inline content in markup | Typed content module |
-| Custom SVG roadmap | Orbit layout (responsive, mobile fallback) |
-| jQuery email form | React form w/ validation states |
+## Tech stack
 
-The original site at `../index.html` is untouched.
+| Layer        | Choice                                   |
+| ------------ | ---------------------------------------- |
+| Framework    | Next.js 14 App Router, React 18, TS      |
+| Styling      | Tailwind CSS v3 + custom CSS utilities   |
+| 3D           | Three.js + @react-three/fiber + drei     |
+| Animation    | Framer Motion + GSAP (optional)          |
+| Icons        | lucide-react                             |
+| Email        | nodemailer (Gmail SMTP)                  |
+| Fonts        | Instrument Serif (display) + Geist (UI)  |
+
+## Design tokens
+
+- **Background**: `#050508` (near-black, space)
+- **Foreground**: `#f5f5f0` (warm white)
+- **Accent**: Klein Blue `#002FA7`
+- **Grain overlay**: animated SVG noise at 8% opacity

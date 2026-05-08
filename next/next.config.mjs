@@ -4,9 +4,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "assets2.lottiefiles.com" },
+      { protocol: "https", hostname: "chenj219.wixsite.com" },
     ],
   },
+  transpilePackages: ["three"],
 };
 
 export default nextConfig;

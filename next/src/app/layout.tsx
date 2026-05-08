@@ -1,10 +1,31 @@
 import type { Metadata } from "next";
-import { site } from "@/content/portfolio";
+import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Nav from "@/components/Nav";
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: site.title,
-  description: site.description,
+  title: "Joy Chen — Portfolio",
+  description:
+    "Joy Chen's interactive portfolio — product, creative coding, photography, games.",
   icons: { icon: "/favicon.ico" },
 };
 
@@ -14,24 +35,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        {/* Self-hosted-style: load via CSS fallback if network is offline */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-sans">{children}</body>
+    <html lang="en" className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="grain">
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }

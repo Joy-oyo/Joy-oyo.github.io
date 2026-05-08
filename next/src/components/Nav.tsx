@@ -1,85 +1,68 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { nav, site } from "@/content/portfolio";
-import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/cn";
+import { site } from "@/content/portfolio";
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Photography", href: "/photography" },
+  { label: "Projects", href: "/projects" },
+  { label: "Writing", href: "/writing" },
+  { label: "Contact", href: "/contact" },
+];
 
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const pathname = usePathname();
 
   return (
-    <header
-      className={clsx(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-white/80 backdrop-blur-lg border-b border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.04)]"
-          : "bg-transparent"
-      )}
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="fixed top-0 inset-x-0 z-50"
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-klein text-white font-display font-bold text-sm transition-transform group-hover:scale-105">
-            {site.initials}
-          </span>
-          <span className="font-display text-lg font-semibold tracking-tight">
+      <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="display text-2xl text-ink-50">{site.initials}</span>
+          <span className="hidden md:inline text-sm text-ink-50/60">
             {site.name}
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-full px-4 py-2 text-sm font-medium text-ink/70 transition-colors hover:text-ink hover:bg-black/5"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link
-            href="#newsletter"
-            className="ml-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-klein hover:-translate-y-0.5"
-          >
-            Say hi
-          </Link>
+        <nav className="hidden md:flex items-center gap-1 glass rounded-full px-2 py-1.5">
+          {links.map((l) => {
+            const active =
+              l.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={cn(
+                  "px-4 py-1.5 text-xs tracking-wide uppercase rounded-full transition-colors",
+                  active
+                    ? "bg-ink-50 text-ink-950"
+                    : "text-ink-50/70 hover:text-ink-50"
+                )}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <button
-          aria-label="Toggle menu"
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden p-2 -mr-2 text-ink"
+        <Link
+          href="/contact"
+          className="text-xs uppercase tracking-widest text-ink-50/70 hover:text-ink-50"
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+          Say hi →
+        </Link>
       </div>
-
-      {/* Mobile drawer */}
-      {open && (
-        <div className="md:hidden border-t border-black/5 bg-white/95 backdrop-blur-lg">
-          <nav className="mx-auto flex max-w-6xl flex-col px-5 py-3">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-base font-medium text-ink/80 hover:bg-black/5"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
-    </header>
+    </motion.header>
   );
 }

@@ -1,35 +1,49 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./src/**/*.{ts,tsx,mdx}"],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
-        klein: {
-          DEFAULT: "#002FA7",
-          dark: "#001D6B",
-          light: "#1B4FE0",
+        ink: {
+          50: "#f5f5f0",
+          100: "#e9e9e2",
+          900: "#0a0a12",
+          950: "#050508",
         },
-        gold: "#FFD700",
-        ink: "#0B0B10",
-        cream: "#FAF8F4",
+        klein: "#002FA7",
+        beige: "#e8e1d0",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Playfair Display", "Georgia", "serif"],
+        serif: ["var(--font-instrument-serif)", "ui-serif", "Georgia", "serif"],
+        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
       animation: {
-        marquee: "marquee 30s linear infinite",
-        "fade-up": "fade-up 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both",
+        "float-slow": "float 8s ease-in-out infinite",
+        "shimmer": "shimmer 3s linear infinite",
+        "grain": "grain 8s steps(10) infinite",
       },
       keyframes: {
-        marquee: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
         },
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(18px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        grain: {
+          "0%,100%": { transform: "translate(0,0)" },
+          "10%": { transform: "translate(-5%,-10%)" },
+          "20%": { transform: "translate(-15%,5%)" },
+          "30%": { transform: "translate(7%,-25%)" },
+          "40%": { transform: "translate(-5%,25%)" },
+          "50%": { transform: "translate(-15%,10%)" },
+          "60%": { transform: "translate(15%,0%)" },
+          "70%": { transform: "translate(0%,15%)" },
+          "80%": { transform: "translate(3%,35%)" },
+          "90%": { transform: "translate(-10%,10%)" },
         },
       },
     },
