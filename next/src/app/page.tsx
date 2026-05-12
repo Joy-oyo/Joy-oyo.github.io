@@ -1,6 +1,6 @@
 import SceneBackground from "@/components/SceneBackground";
-import Hero from "@/components/Hero";
-import AlbumStack from "@/components/AlbumStack";
+import Landing from "@/components/Landing";
+import TimelineSection from "@/components/TimelineSection";
 import Footer from "@/components/Footer";
 
 export default function HomePage() {
@@ -8,8 +8,8 @@ export default function HomePage() {
     <>
       <SceneBackground />
       <main className="relative">
-        <Hero />
-        <AlbumStack />
+        <Landing />
+        <TimelineSection />
       </main>
       <Footer />
     </>

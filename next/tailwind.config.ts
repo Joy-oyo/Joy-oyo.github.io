@@ -15,7 +15,7 @@ const config: Config = {
         beige: "#e8e1d0",
       },
       fontFamily: {
-        serif: ["var(--font-instrument-serif)", "ui-serif", "Georgia", "serif"],
+        serif: ["var(--font-display)", "ui-serif", "Georgia", "serif"],
         sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },

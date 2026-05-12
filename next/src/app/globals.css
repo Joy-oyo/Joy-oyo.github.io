@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-instrument-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-geist-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-geist-mono: "Geist Mono", ui-monospace, monospace;
   --bg: #050508;
@@ -48,10 +48,52 @@ a { color: inherit; text-decoration: none; }
   mix-blend-mode: overlay;
   z-index: 100;
   animation: grain 8s steps(10) infinite;
+  will-change: transform;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%      { transform: translate(-5%, -5%); }
+  20%      { transform: translate(-10%, 5%); }
+  30%      { transform: translate(5%, -10%); }
+  40%      { transform: translate(-5%, 15%); }
+  50%      { transform: translate(-10%, 5%); }
+  60%      { transform: translate(15%, 0%); }
+  70%      { transform: translate(0%, 10%); }
+  80%      { transform: translate(-15%, 0%); }
+  90%      { transform: translate(10%, 5%); }
+}
+
+/* Focus ring — Klein blue, visible on dark bg */
+:focus-visible {
+  outline: 2px solid var(--klein);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .grain::before { animation: none !important; }
 }
 
 /* Utility: serif display */
-.display { font-family: var(--font-instrument-serif); font-weight: 400; letter-spacing: -0.02em; }
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  /* Optical size axis — bigger value = display-grade letterforms */
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  /* Ensure descenders (y, g, p, j) never get clipped by gradient/clip-path */
+  padding-bottom: 0.08em;
+}
 
 /* Glassmorphism */
 .glass {

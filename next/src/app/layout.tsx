@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 
-const instrumentSerif = Instrument_Serif({
+// Fraunces is a variable font — omit `weight` to load the full wght range,
+// which is required when declaring extra `axes` (opsz / SOFT).
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-instrument-serif",
+  axes: ["SOFT"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -23,10 +25,39 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Joy Chen — Portfolio",
+  metadataBase: new URL("https://joy-oyo.github.io"),
+  title: {
+    default: "Joy Chen — Portfolio",
+    template: "%s · Joy Chen",
+  },
   description:
-    "Joy Chen's interactive portfolio — product, creative coding, photography, games.",
+    "Joy Chen — product, creative coding, and photography. A small interactive universe of work.",
+  keywords: [
+    "Joy Chen",
+    "portfolio",
+    "product design",
+    "creative coding",
+    "photography",
+    "Next.js",
+    "Three.js",
+  ],
+  authors: [{ name: "Joy Chen" }],
+  creator: "Joy Chen",
   icons: { icon: "/favicon.ico" },
+  openGraph: {
+    type: "website",
+    title: "Joy Chen — Portfolio",
+    description:
+      "Product · Creative Coding · Photography. An interactive portfolio by Joy Chen.",
+    siteName: "Joy Chen",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Joy Chen — Portfolio",
+    description: "Product · Creative Coding · Photography.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -35,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="grain">
         <Nav />
         {children}

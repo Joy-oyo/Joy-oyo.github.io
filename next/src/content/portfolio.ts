@@ -6,12 +6,105 @@ export const site = {
   bio:
     "I design playful, thoughtful experiences at the edge of product, code, and image. A small universe of work, all in one place.",
   email: "joychen0709@gmail.com",
+  location: "Palo Alto",
+  currently:
+    "Working on AI-powered products at Tencent and Veeup. Interested in how language, media, and tools shape the way we work.",
   socials: [
     { label: "GitHub", href: "https://github.com/Joy-oyo" },
     { label: "Itch.io", href: "https://joy-oyo.itch.io" },
     { label: "Wix Portfolio", href: "https://chenj219.wixsite.com/portfolio-joy" },
   ],
 };
+
+export const workExperience = [
+  {
+    org: "Tencent",
+    role: "Cloud Media Solution Architect",
+    period: "2024 — Now",
+    location: "Palo Alto",
+    note: "",
+    current: true,
+  },
+  {
+    org: "Veeup",
+    role: "Co-founder",
+    period: "2022 — 2024",
+    location: "Palo Alto",
+    note: "Resume automation application platform",
+    current: false,
+  },
+];
+
+// Unified timeline — work + education, most recent first.
+// kind: "work" | "edu" lets us style differently if needed.
+export type TimelineItem = {
+  kind: "work" | "edu";
+  period: string;
+  role: string;
+  org: string;
+  location?: string;
+  note?: string;
+  /** Short bullet points — achievements, scope, themes. */
+  highlights?: string[];
+  /** Optional external link (company, school, project). */
+  href?: string;
+  /** Mark the current / most recent item for emphasis. */
+  current?: boolean;
+};
+
+export const timeline: TimelineItem[] = [
+  {
+    kind: "work",
+    period: "2024 — Now",
+    role: "Cloud Media Solution Architect",
+    org: "Tencent",
+    location: "Palo Alto, CA",
+    note: "AI & media infrastructure for North America clients",
+    current: true,
+    highlights: [
+      "Architect end-to-end cloud media solutions across streaming, transcoding, and real-time AI inference for enterprise clients.",
+      "Translate product needs into technical proposals — bridging engineering, sales, and creative teams.",
+      "Prototype with LLM + media pipelines: caption generation, semantic search over video, and creative tooling.",
+    ],
+  },
+  {
+    kind: "work",
+    period: "2022 — 2024",
+    role: "Co-founder",
+    org: "Veeup",
+    location: "Remote",
+    note: "Resume automation & job-application platform",
+    highlights: [
+      "Co-founded an early-stage platform that automates resume tailoring and job applications using LLMs.",
+      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
+      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
+    ],
+  },
+  {
+    kind: "edu",
+    period: "2023 — 2024",
+    role: "M.A. in Digital Studies",
+    org: "University of Chicago",
+    location: "Chicago, IL",
+    note: "Concentration: Artificial Intelligence & Language",
+    highlights: [
+      "Research at the intersection of computational linguistics, generative AI, and media theory.",
+      "Coursework spanning NLP, critical theory, and computational creativity.",
+    ],
+  },
+  {
+    kind: "edu",
+    period: "2019 — 2023",
+    role: "B.S. in Business Management",
+    org: "Wake Forest University",
+    location: "Winston-Salem, NC",
+    note: "Double major in Media Studies & Communication",
+    highlights: [
+      "Cross-disciplinary training across business strategy, media studies, and design thinking.",
+      "Independent projects in photography, editorial design, and student-led media.",
+    ],
+  },
+];
 
 export type AlbumId = "about" | "photography" | "projects" | "writing" | "contact";
 
@@ -118,6 +211,22 @@ export const skills = [
   "GSAP",
   "Storytelling",
   "UX Research",
+];
+
+// Grouped toolkit — used on the About page for a more editorial layout.
+export const toolkit: { group: string; items: string[] }[] = [
+  {
+    group: "Design",
+    items: ["Product Design", "Figma", "Design Systems", "UX Research", "Brand & Identity"],
+  },
+  {
+    group: "Code",
+    items: ["TypeScript", "React / Next.js", "Three.js / R3F", "GSAP", "Tailwind", "Python"],
+  },
+  {
+    group: "Media",
+    items: ["Photography", "Editorial Layout", "Storytelling", "Generative AI", "Video & Cloud Media"],
+  },
 ];
 
 export const projects = [
