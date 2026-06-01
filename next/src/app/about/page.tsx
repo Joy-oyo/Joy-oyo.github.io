@@ -1,6 +1,15 @@
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import { site, timeline, toolkit, type TimelineItem } from "@/content/portfolio";
+import {
+  site,
+  timeline,
+  toolkit,
+  selectedWork,
+  talks,
+  type TimelineItem,
+  type SelectedWorkItem,
+  type TalkItem,
+} from "@/content/portfolio";
 
 export const metadata = { title: "About — Joy Chen" };
 
@@ -63,6 +72,92 @@ function TimelineList({ items }: { items: TimelineItem[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+/**
+ * SelectedWorkCard — a single project / paper / product card.
+ * Featured items take both columns and run larger; non-featured share a row.
+ */
+function SelectedWorkCard({ item }: { item: SelectedWorkItem }) {
+  const Tag = item.href ? "a" : "div";
+  const isExternal = item.href?.startsWith("http");
+  return (
+    <Tag
+      {...(item.href
+        ? {
+            href: item.href,
+            target: isExternal ? "_blank" : undefined,
+            rel: isExternal ? "noreferrer" : undefined,
+          }
+        : {})}
+      className={`group glass rounded-2xl p-6 md:p-7 flex flex-col gap-3 transition-colors ${
+        item.href ? "hover:bg-ink-50/8" : ""
+      } ${item.featured ? "md:col-span-2" : ""}`}
+    >
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-ink-50/45">
+        <span>{item.tag}</span>
+        <span className="text-ink-50/30">{item.context}</span>
+      </div>
+
+      <h3
+        className={`display text-ink-50 leading-tight ${
+          item.featured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"
+        }`}
+      >
+        {item.title}
+      </h3>
+
+      <p className="text-sm text-ink-50/65 leading-relaxed">{item.body}</p>
+
+      {item.href && (
+        <div className="mt-2 text-xs uppercase tracking-[0.25em] text-ink-50/55 group-hover:text-ink-50">
+          {isExternal ? "Visit" : "Read more"} →
+        </div>
+      )}
+    </Tag>
+  );
+}
+
+function TalkRow({ talk }: { talk: TalkItem }) {
+  const Tag = talk.href ? "a" : "div";
+  return (
+    <Tag
+      {...(talk.href
+        ? { href: talk.href, target: "_blank", rel: "noreferrer" }
+        : {})}
+      className={`group block py-6 border-b border-ink-50/8 ${
+        talk.href ? "hover:bg-ink-50/[0.02]" : ""
+      } transition-colors`}
+    >
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 tabular-nums">
+          {talk.year}
+        </span>
+        {talk.location && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
+            · {talk.location}
+          </span>
+        )}
+      </div>
+
+      <h3 className="display text-xl md:text-2xl text-ink-50 leading-tight mt-1.5">
+        {talk.title}
+      </h3>
+      <p className="mt-1 text-sm text-ink-50/65">{talk.venue}</p>
+
+      {talk.body && (
+        <p className="mt-2 max-w-2xl text-sm text-ink-50/55 leading-relaxed">
+          {talk.body}
+        </p>
+      )}
+
+      {talk.href && (
+        <div className="mt-3 text-[11px] uppercase tracking-[0.3em] text-ink-50/55 group-hover:text-ink-50">
+          Watch / read →
+        </div>
+      )}
+    </Tag>
   );
 }
 
@@ -138,8 +233,60 @@ export default function AboutPage() {
           </p>
         </section>
 
+        {/* Selected Work — projects & papers, ordered by importance, NOT a timeline */}
+        <section
+          id="selected-work"
+          className="mx-auto max-w-6xl px-6 mt-28 scroll-mt-32"
+        >
+          <div className="mb-10 flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-ink-50/45">
+                What I&apos;ve built
+              </span>
+              <h2 className="display text-3xl md:text-4xl mt-2 text-ink-50/90">
+                Selected work
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm text-ink-50/55 leading-relaxed">
+              Projects, papers, and shipped products — ordered by what mattered,
+              not when it happened.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {selectedWork.map((item) => (
+              <SelectedWorkCard key={item.id} item={item} />
+            ))}
+          </div>
+        </section>
+
+        {/* Speaking & Talks */}
+        {talks.length > 0 && (
+          <section className="mx-auto max-w-3xl px-6 mt-28">
+            <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-ink-50/45">
+                  In public
+                </span>
+                <h2 className="display text-3xl md:text-4xl mt-2 text-ink-50/90">
+                  Speaking & talks
+                </h2>
+              </div>
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
+                {talks.length} talk{talks.length === 1 ? "" : "s"}
+              </span>
+            </div>
+
+            <div className="border-t border-ink-50/8">
+              {talks.map((talk) => (
+                <TalkRow key={talk.id} talk={talk} />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Experience */}
-        <section className="mx-auto max-w-3xl px-6 mt-24">
+        <section className="mx-auto max-w-3xl px-6 mt-28">
           <div className="mb-10 flex items-baseline justify-between">
             <h2 className="display text-3xl text-ink-50/85">Experience</h2>
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
@@ -202,7 +349,7 @@ export default function AboutPage() {
                 <span aria-hidden>→</span>
               </a>
               <a
-                href="/projects"
+                href="#selected-work"
                 className="text-ink-50/70 border-b border-ink-50/20 pb-0.5 hover:text-ink-50 hover:border-ink-50/80 transition-colors"
               >
                 See selected work

@@ -23,7 +23,7 @@ export default function WritingDetail({
             href="/writing"
             className="text-xs uppercase tracking-[0.3em] text-ink-50/50 hover:text-ink-50"
           >
-            ← All writing
+            ← All posts
           </Link>
           <div className="mt-8 text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
             {new Date(post.date).toLocaleDateString("en-US", {

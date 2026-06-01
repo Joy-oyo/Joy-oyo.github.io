@@ -106,6 +106,182 @@ export const timeline: TimelineItem[] = [
   },
 ];
 
+// Two parallel tracks shown side-by-side on the home page.
+// Industry = product / engineering / company work.
+// Research = academic, lab, independent inquiry.
+export type TrackLink = {
+  label: string;
+  href: string;
+};
+
+export type TrackItem = {
+  /**
+   * Date range. Optional — only shown when we actually know a date.
+   * Prefer specific months (e.g. "Aug 2023 – Nov 2023") over bare years.
+   */
+  period?: string;
+  /**
+   * Primary headline for the entry — e.g. "HRI Lab, University of Chicago"
+   * or "Cloud Media Solution Architect". This is what's set big.
+   */
+  title: string;
+  /** Optional secondary line (role at a company, or project subtitle). */
+  subtitle?: string;
+  location?: string;
+  note?: string;
+  /** Detailed bullets — shown beneath the note. */
+  highlights?: string[];
+  /** External references: talks, papers, repos, etc. */
+  links?: TrackLink[];
+  current?: boolean;
+};
+
+export const industryTrack: TrackItem[] = [
+  {
+    title: "Tencent",
+    subtitle: "Cloud Media Solution Architect",
+    location: "Palo Alto, CA",
+    note: "AI & media infrastructure for North America clients.",
+    current: true,
+    highlights: [
+      "Architect end-to-end cloud media solutions across streaming, transcoding, and real-time AI inference for enterprise clients.",
+      "Translate product needs into technical proposals — bridging engineering, sales, and creative teams.",
+      "Prototype LLM + media pipelines: caption generation, semantic video search, and creative tooling.",
+    ],
+    links: [
+      {
+        label: "GDC 2026 · Boosting Game Retention with Voice, AI & Acceleration",
+        href: "https://gdcvault.com/play/1036040/Boosting-Game-Retention-with-Voice",
+      },
+      {
+        label: "GDC 2025 · Conversational AI Gaming Solution",
+        href: "https://gdcvault.com/play/1035448/Tencent-Games-Developer-Summit-Conversational",
+      },
+    ],
+  },
+  {
+    period: "Aug 2023 – Nov 2023",
+    title: "FinTech4Good",
+    subtitle: "Market Research Fellow",
+    location: "Chicago, IL",
+    note: "AI adoption across finance & healthcare — research and executive briefings.",
+    highlights: [
+      "Researched AI adoption across financial services and healthcare — LLM-powered decision intelligence, risk automation, regulatory compliance.",
+      "Analyzed industry trends, competitive landscapes, and investment opportunities; produced executive reports informing partnership and innovation initiatives.",
+      "Synthesized qualitative + quantitative findings into dashboards and presentations for senior stakeholders.",
+    ],
+  },
+  {
+    period: "Jun 2023 – Aug 2023",
+    title: "ByteDance",
+    subtitle: "AI Content Strategy & UX Analyst (Data Science)",
+    location: "Beijing, China",
+    note: "Recommendation-system performance, content quality, and large-scale UX analytics.",
+    highlights: [
+      "Evaluated AI model performance and content recommendation workflows — improved technical efficiency, data quality, and user outcomes.",
+      "Built performance metrics and analytical frameworks for data management and content discovery at large scale.",
+      "Created interactive dashboards translating insights into actionable cross-functional recommendations.",
+    ],
+  },
+  {
+    title: "Veeup",
+    subtitle: "Co-founder",
+    location: "Remote",
+    note: "Resume automation & job-application platform powered by LLMs.",
+    highlights: [
+      "Co-founded an early-stage platform that automates resume tailoring and job applications.",
+      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
+      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
+    ],
+  },
+  {
+    title: "UrBanests",
+    subtitle: "Marketing Analyst",
+    note: "Performance marketing & acquisition analytics — Google Ads, ROAS, channel ROI.",
+    highlights: [
+      "Designed and executed performance campaigns across acquisition channels — increased property exposure and lead conversion.",
+      "Applied auction-based bidding within Google Ads to optimize budget, keywords, and ROI.",
+      "Built reporting frameworks and dashboards tracking acquisition, engagement, and conversion metrics.",
+    ],
+  },
+];
+
+export const researchTrack: TrackItem[] = [
+  {
+    period: "Oct 2023 – Apr 2024",
+    title: "HRI Lab, University of Chicago",
+    location: "Chicago, IL",
+    note: "Rapport, social engagement, and robot-facilitated conversation studies.",
+    highlights: [
+      "Designed and ran HRI studies on rapport-building, social engagement, and perceptions of robot-facilitated conversations.",
+      "Performed experimental design reviews and bias analyses, improving study reliability and data integrity.",
+      "Built Python pipelines for data processing + visualization; applied p-value and one-way ANOVA across study conditions.",
+      "Analyzed participant attitudes and behaviors to generate insights for trust, engagement, and human-centered AI design.",
+    ],
+  },
+  {
+    period: "Oct 2023 – Apr 2024",
+    title: "Cannon Lab, University of Chicago",
+    location: "Chicago, IL",
+    note: "Evidence-based K–12 CS education with Scratch Encore.",
+    highlights: [
+      "Investigated evidence-based approaches for improving K–12 computer science education through weekly literature reviews.",
+      "Designed educational modules using Scratch Encore to assess learning outcomes and computational thinking development.",
+      "Evaluated student comprehension and analyzed learning performance to inform curriculum and instruction.",
+    ],
+  },
+  {
+    period: "Jan 2024 – May 2024",
+    title: "Web Phishing Machine Learning Detection, University of Chicago",
+    location: "Chicago, IL",
+    note: "End-to-end ML benchmark — MLP / ANN / CNN / LSTM over 10,000+ URLs.",
+    highlights: [
+      "Built an end-to-end ML pipeline for phishing detection: data cleaning, EDA, feature engineering, dimensionality reduction across 10,000+ URLs.",
+      "Trained and compared MLP, ANN, CNN, and LSTM architectures to identify the most effective classification approach.",
+      "Assessed accuracy, precision, recall, and generalization for real-world cybersecurity deployment.",
+    ],
+  },
+  {
+    period: "Jan 2023 – May 2023",
+    title: "Paid Search Marketing Analytics Simulation, Wake Forest University",
+    location: "Winston-Salem, NC",
+    note: "DSP-based paid search simulation — bidding, ROAS, A/B tests across regions.",
+    highlights: [
+      "Managed end-to-end paid search campaigns within a DSP — keyword research, bidding, budget allocation, performance optimization.",
+      "Monitored ROAS, CPC, CTR, and conversion rates to improve marketing effectiveness and cost efficiency.",
+      "Conducted A/B testing, SWOT analyses, and investment evaluations across regional markets.",
+    ],
+  },
+];
+
+// Education — separate horizontal section beneath the two tracks.
+// Most recent first.
+export type EducationItem = {
+  period: string;
+  degree: string;
+  school: string;
+  location?: string;
+  note?: string;
+  current?: boolean;
+};
+
+export const education: EducationItem[] = [
+  {
+    period: "2023 — 2024",
+    degree: "M.A. in Digital Studies",
+    school: "University of Chicago",
+    location: "Chicago, IL",
+    note: "Concentration: Artificial Intelligence & Language.",
+  },
+  {
+    period: "2019 — 2023",
+    degree: "B.S. in Business Management",
+    school: "Wake Forest University",
+    location: "Winston-Salem, NC",
+    note: "Double major in Media Studies & Communication.",
+  },
+];
+
 export type AlbumId = "about" | "photography" | "projects" | "writing" | "contact";
 
 export type Album = {
@@ -148,18 +324,18 @@ export const albums: Album[] = [
     id: "projects",
     index: "03",
     eyebrow: "Build",
-    title: "Projects",
-    subtitle: "Products, prototypes, and playful things.",
+    title: "Selected Work",
+    subtitle: "Products, prototypes, papers, and playful things.",
     description:
-      "Case studies across product design, creative coding, and interactive games on Itch.io.",
-    href: "/projects",
+      "Lives on the About page now — projects ranked by what mattered, plus conference talks.",
+    href: "/about#selected-work",
     accent: "from-[#2a1a3e] to-[#6a3ea3]",
   },
   {
     id: "writing",
     index: "04",
     eyebrow: "Think",
-    title: "Writing",
+    title: "Blog",
     subtitle: "Notes on design, code, and curious things.",
     description:
       "Short essays and field notes. Updated whenever something feels worth saying.",
@@ -256,6 +432,129 @@ export const projects = [
     body: "A short series on light filtering through leaves. Exploring mood, restraint, and green.",
     href: "/photography",
     cover: "/images/tree4.jpg",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Selected Work — shown on /about. Manually ordered by importance (not date).
+// Each item is a specific project, paper, product, or shipped artifact.
+// Featured items render larger; the rest fall into a tighter grid.
+// ---------------------------------------------------------------------------
+export type SelectedWorkItem = {
+  id: string;
+  title: string;
+  /** Short context line — e.g. "Tencent · 2024–Now" or "University of Chicago · 2024". */
+  context: string;
+  /** One-paragraph summary of what it is + why it matters. */
+  body: string;
+  /** What kind of artifact this is — Project, Paper, Product, Talk, etc. */
+  tag: string;
+  /** Optional external/internal href. Omit if there's nothing to link to. */
+  href?: string;
+  /** Featured items get the larger card treatment. */
+  featured?: boolean;
+};
+
+export const selectedWork: SelectedWorkItem[] = [
+  {
+    id: "tencent-cloud-media",
+    title: "Cloud Media & AI Solutions at Tencent",
+    context: "Tencent · 2024 — Now",
+    tag: "Product · Architecture",
+    body:
+      "End-to-end cloud media solutions for North America clients — streaming, transcoding, and real-time AI inference. Prototyping LLM + media pipelines for caption generation, semantic video search, and creative tooling.",
+    featured: true,
+  },
+  {
+    id: "veeup",
+    title: "Veeup — LLM-powered job application platform",
+    context: "Co-founder · 2022 — 2024",
+    tag: "Product · 0→1",
+    body:
+      "Co-founded an early-stage platform that automates resume tailoring and job applications. Led product design, prototype-to-MVP build, the first cohort of beta users, and the brand + marketing site end-to-end.",
+    featured: true,
+  },
+  {
+    id: "hri-rapport",
+    title: "Rapport, social engagement, and robot-facilitated conversation",
+    subtitle: "Research Assistant",
+    context: "HRI Lab, University of Chicago · 2023 – 2024",
+    tag: "Research",
+    body:
+      "Designed and ran human-robot interaction studies on rapport-building and perceptions of robot-facilitated conversation. Built Python pipelines for data processing and visualization; ran ANOVA across study conditions.",
+  },
+  {
+    id: "phishing-ml",
+    title: "Web Phishing Detection — MLP / ANN / CNN / LSTM benchmark",
+    context: "University of Chicago · Jan – May 2024",
+    tag: "ML · Coursework",
+    body:
+      "End-to-end ML pipeline for phishing URL classification over 10,000+ samples — data cleaning, EDA, feature engineering, dimensionality reduction. Trained and compared MLP, ANN, CNN, and LSTM to find the most effective architecture for real-world deployment.",
+  },
+  {
+    id: "cannon-k12-cs",
+    title: "K–12 CS education with Scratch Encore",
+    context: "Cannon Lab, University of Chicago · 2023 – 2024",
+    tag: "Research",
+    body:
+      "Investigated evidence-based approaches to K–12 computer science education. Designed Scratch Encore modules to assess learning outcomes and computational thinking, and evaluated student comprehension to inform curriculum design.",
+  },
+  {
+    id: "find-the-gate",
+    title: "Find the Gate",
+    context: "Interactive game · 2024",
+    tag: "Creative Code",
+    body:
+      "A small atmospheric game exploring place, memory, and the act of finding. Playable on Itch.io.",
+    href: "https://joy-oyo.itch.io/find-the-gate",
+  },
+  {
+    id: "business-portfolio",
+    title: "Business & Strategy Portfolio",
+    context: "Selected case studies · 2023",
+    tag: "Case Studies",
+    body:
+      "Selected strategy, product, and market work — including marketing analytics simulations, paid search optimization, and competitive analyses — presented with a clean editorial layout.",
+    href: "https://chenj219.wixsite.com/portfolio-joy",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Speaking & Talks — conference appearances, panels, public sessions.
+// Ordered most-recent first.
+// ---------------------------------------------------------------------------
+export type TalkItem = {
+  id: string;
+  title: string;
+  venue: string;
+  year: string;
+  /** Optional location for in-person talks. */
+  location?: string;
+  /** Short framing of what the talk was about. */
+  body?: string;
+  href?: string;
+};
+
+export const talks: TalkItem[] = [
+  {
+    id: "gdc-2026-voice-ai",
+    title: "Boosting Game Retention with Voice, AI & Acceleration",
+    venue: "Game Developers Conference (GDC) 2026",
+    year: "2026",
+    location: "San Francisco, CA",
+    body:
+      "How conversational voice + AI infrastructure can be deployed to lift retention and engagement in live games.",
+    href: "https://gdcvault.com/play/1036040/Boosting-Game-Retention-with-Voice",
+  },
+  {
+    id: "gdc-2025-conversational-ai",
+    title: "Tencent Games Developer Summit · Conversational AI Gaming Solution",
+    venue: "Game Developers Conference (GDC) 2025",
+    year: "2025",
+    location: "San Francisco, CA",
+    body:
+      "A walk-through of Tencent's conversational AI stack for games — architecture, latency budget, and developer integration.",
+    href: "https://gdcvault.com/play/1035448/Tencent-Games-Developer-Summit-Conversational",
   },
 ];
 

@@ -3,7 +3,7 @@ import { site } from "@/content/portfolio";
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-ink-50/10 mt-32">
+    <footer className="relative border-t border-ink-50/10 mt-12">
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-3 gap-12">
         <div>
           <div className="display text-3xl">{site.name}</div>

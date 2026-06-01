@@ -13,7 +13,7 @@ export default function Landing() {
   const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section className="relative px-6 pt-28 md:pt-32 pb-12 md:pb-20 max-w-6xl mx-auto">
+    <section className="relative px-6 pt-28 md:pt-32 pb-4 md:pb-6 max-w-6xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 items-center">
         {/* Left — Who I am */}
         <motion.div

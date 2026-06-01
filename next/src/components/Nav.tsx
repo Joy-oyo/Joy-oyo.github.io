@@ -7,13 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { site } from "@/content/portfolio";
 
+// Contact removed — the "Say hi →" CTA on the right of the bar already
+// covers that intent. Projects merged into About (case studies + talks live there now).
 const links = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Photography", href: "/photography" },
-  { label: "Projects", href: "/projects" },
-  { label: "Writing", href: "/writing" },
-  { label: "Contact", href: "/contact" },
+  { label: "Blog", href: "/writing" },
 ];
 
 export default function Nav() {
@@ -57,6 +57,9 @@ export default function Nav() {
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  // Hide nav inside the immersive cyber world
+  if (pathname?.startsWith("/cyber")) return null;
 
   return (
     <>

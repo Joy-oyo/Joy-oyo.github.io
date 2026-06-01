@@ -3,14 +3,14 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { writings } from "@/content/portfolio";
 
-export const metadata = { title: "Writing — Joy Chen" };
+export const metadata = { title: "Blog — Joy Chen" };
 
 export default function WritingPage() {
   return (
     <>
       <main className="relative pt-32 pb-24">
         <PageHeader
-          eyebrow="04 · Writing"
+          eyebrow="04 · Blog"
           title="Notes, thoughts, field reports"
           lede="Short essays on design, code, and curious things."
         />
