@@ -443,6 +443,8 @@ export const projects = [
 export type SelectedWorkItem = {
   id: string;
   title: string;
+  /** Optional secondary line — e.g. role or subtitle that sits between title and context. */
+  subtitle?: string;
   /** Short context line — e.g. "Tencent · 2024–Now" or "University of Chicago · 2024". */
   context: string;
   /** One-paragraph summary of what it is + why it matters. */
