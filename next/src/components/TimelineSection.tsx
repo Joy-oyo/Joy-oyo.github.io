@@ -125,14 +125,16 @@ export default function TimelineSection() {
 
         <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
           {education.map((e) => (
-            <li key={`${e.school}-${e.period}`} className="relative pl-5">
+            <li key={`${e.school}-${e.period ?? ""}`} className="relative pl-5">
               <span
                 aria-hidden
                 className="absolute left-0 top-[7px] w-1.5 h-1.5 rounded-full bg-ink-50/30"
               />
-              <span className="text-[11px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
-                {e.period}
-              </span>
+              {e.period && (
+                <span className="text-[11px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
+                  {e.period}
+                </span>
+              )}
               <h4 className="display mt-1.5 text-xl md:text-2xl text-ink-50 leading-tight">
                 {e.school}
               </h4>

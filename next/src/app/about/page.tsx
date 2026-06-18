@@ -28,9 +28,11 @@ function TimelineList({ items }: { items: TimelineItem[] }) {
           />
 
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-              {item.period}
-            </span>
+            {item.period && (
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+                {item.period}
+              </span>
+            )}
             {item.current && (
               <span className="rounded-full bg-klein/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.25em] text-klein">
                 Now

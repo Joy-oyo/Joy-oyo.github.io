@@ -39,7 +39,7 @@ export const workExperience = [
 // kind: "work" | "edu" lets us style differently if needed.
 export type TimelineItem = {
   kind: "work" | "edu";
-  period: string;
+  period?: string;
   role: string;
   org: string;
   location?: string;
@@ -82,7 +82,6 @@ export const timeline: TimelineItem[] = [
   },
   {
     kind: "edu",
-    period: "2023 — 2024",
     role: "M.A. in Digital Studies",
     org: "University of Chicago",
     location: "Chicago, IL",
@@ -94,7 +93,6 @@ export const timeline: TimelineItem[] = [
   },
   {
     kind: "edu",
-    period: "2019 — 2023",
     role: "B.S. in Business Management",
     org: "Wake Forest University",
     location: "Winston-Salem, NC",
@@ -160,7 +158,17 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    period: "Aug 2023 – Nov 2023",
+    title: "Veeup",
+    subtitle: "Co-founder",
+    location: "Remote",
+    note: "Resume automation & job-application platform powered by LLMs.",
+    highlights: [
+      "Co-founded an early-stage platform that automates resume tailoring and job applications.",
+      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
+      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
+    ],
+  },
+  {
     title: "FinTech4Good",
     subtitle: "Market Research Fellow",
     location: "Chicago, IL",
@@ -172,7 +180,6 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    period: "Jun 2023 – Aug 2023",
     title: "ByteDance",
     subtitle: "AI Content Strategy & UX Analyst (Data Science)",
     location: "Beijing, China",
@@ -181,17 +188,6 @@ export const industryTrack: TrackItem[] = [
       "Evaluated AI model performance and content recommendation workflows — improved technical efficiency, data quality, and user outcomes.",
       "Built performance metrics and analytical frameworks for data management and content discovery at large scale.",
       "Created interactive dashboards translating insights into actionable cross-functional recommendations.",
-    ],
-  },
-  {
-    title: "Veeup",
-    subtitle: "Co-founder",
-    location: "Remote",
-    note: "Resume automation & job-application platform powered by LLMs.",
-    highlights: [
-      "Co-founded an early-stage platform that automates resume tailoring and job applications.",
-      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
-      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
     ],
   },
   {
@@ -208,7 +204,6 @@ export const industryTrack: TrackItem[] = [
 
 export const researchTrack: TrackItem[] = [
   {
-    period: "Oct 2023 – Apr 2024",
     title: "HRI Lab, University of Chicago",
     location: "Chicago, IL",
     note: "Rapport, social engagement, and robot-facilitated conversation studies.",
@@ -220,7 +215,6 @@ export const researchTrack: TrackItem[] = [
     ],
   },
   {
-    period: "Oct 2023 – Apr 2024",
     title: "Cannon Lab, University of Chicago",
     location: "Chicago, IL",
     note: "Evidence-based K–12 CS education with Scratch Encore.",
@@ -231,7 +225,6 @@ export const researchTrack: TrackItem[] = [
     ],
   },
   {
-    period: "Jan 2024 – May 2024",
     title: "Web Phishing Machine Learning Detection, University of Chicago",
     location: "Chicago, IL",
     note: "End-to-end ML benchmark — MLP / ANN / CNN / LSTM over 10,000+ URLs.",
@@ -242,7 +235,6 @@ export const researchTrack: TrackItem[] = [
     ],
   },
   {
-    period: "Jan 2023 – May 2023",
     title: "Paid Search Marketing Analytics Simulation, Wake Forest University",
     location: "Winston-Salem, NC",
     note: "DSP-based paid search simulation — bidding, ROAS, A/B tests across regions.",
@@ -257,7 +249,7 @@ export const researchTrack: TrackItem[] = [
 // Education — separate horizontal section beneath the two tracks.
 // Most recent first.
 export type EducationItem = {
-  period: string;
+  period?: string;
   degree: string;
   school: string;
   location?: string;
@@ -267,14 +259,12 @@ export type EducationItem = {
 
 export const education: EducationItem[] = [
   {
-    period: "2023 — 2024",
     degree: "M.A. in Digital Studies",
     school: "University of Chicago",
     location: "Chicago, IL",
     note: "Concentration: Artificial Intelligence & Language.",
   },
   {
-    period: "2019 — 2023",
     degree: "B.S. in Business Management",
     school: "Wake Forest University",
     location: "Winston-Salem, NC",
