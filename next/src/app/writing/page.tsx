@@ -5,6 +5,9 @@ import { writings } from "@/content/portfolio";
 
 export const metadata = { title: "Blog — Joy Chen" };
 
+// Newest first.
+const sorted = [...writings].sort((a, b) => (a.date < b.date ? 1 : -1));
+
 export default function WritingPage() {
   return (
     <>
@@ -12,33 +15,43 @@ export default function WritingPage() {
         <PageHeader
           eyebrow="04 · Blog"
           title="Notes, thoughts, field reports"
-          lede="Short essays on design, code, and curious things."
+          lede="Short essays on design, code, and the occasional thing that doesn't fit anywhere else."
         />
 
         <section className="mx-auto max-w-3xl px-6 mt-20">
           <ul className="divide-y divide-ink-50/10">
-            {writings.map((w) => (
+            {sorted.map((w) => (
               <li key={w.slug} className="group">
                 <Link
                   href={`/writing/${w.slug}`}
-                  className="block py-8 flex items-start justify-between gap-8 hover:bg-ink-50/5 transition-colors -mx-4 px-4 rounded-2xl"
+                  className="-mx-4 flex items-start justify-between gap-8 rounded-2xl px-4 py-8 transition-colors hover:bg-ink-50/5"
                 >
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                      {new Date(w.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+                      <span>
+                        {new Date(w.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                      {w.tags?.map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-full border border-ink-50/15 px-2 py-0.5 tracking-[0.25em] text-ink-50/55"
+                        >
+                          {t}
+                        </span>
+                      ))}
                     </div>
-                    <h3 className="display text-2xl md:text-3xl mt-2 text-ink-50 group-hover:text-gradient">
+                    <h3 className="display mt-2 text-2xl text-ink-50 group-hover:text-gradient md:text-3xl">
                       {w.title}
                     </h3>
-                    <p className="mt-3 text-sm text-ink-50/60 max-w-lg leading-relaxed">
+                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-ink-50/60">
                       {w.excerpt}
                     </p>
                   </div>
-                  <span className="hidden md:block text-ink-50/40 group-hover:text-ink-50 mt-3">
+                  <span className="mt-3 hidden text-ink-50/40 group-hover:text-ink-50 md:block">
                     →
                   </span>
                 </Link>

@@ -11,16 +11,31 @@ import {
   talks,
   type TrackItem,
 } from "@/content/portfolio";
+import YinYang from "@/components/YinYang";
 
 /**
  * TimelineSection — Home version.
- * Two parallel trajectories side-by-side: Industry (left) and Research (right).
+ *
+ * Two parallel trajectories, framed as a taiji (yin-yang).
+ *   • Industry  (left)  — yang / black panel — "doing"
+ *   • Research  (right) — yin  / white panel — "knowing"
+ * Both sit on a light-grey "stone" backdrop; a yin-yang glyph rotates
+ * slowly at the seam, making the unity-of-opposites motif explicit.
+ *
  * The complete unified timeline lives on /about.
  */
 export default function TimelineSection() {
+  // Clicking the yin-yang glyph at the seam swaps which column is black
+  // (yang) and which is white (yin) — Industry and Research literally
+  // trade colors, the taiji metaphor made interactive.
+  const [flipped, setFlipped] = useState(false);
+  const toggleFlipped = () => setFlipped((f) => !f);
+  const industryVariant: Variant = flipped ? "yin" : "yang";
+  const researchVariant: Variant = flipped ? "yang" : "yin";
+
   return (
     <section className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
-      {/* Section label */}
+      {/* Section label — sits on the dark page background. */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -29,7 +44,7 @@ export default function TimelineSection() {
         className="flex items-baseline justify-between"
       >
         <span className="text-[10px] uppercase tracking-[0.4em] text-ink-50/50">
-          Trajectory
+          Trajectory · 太极
         </span>
         <Link
           href="/about"
@@ -39,73 +54,68 @@ export default function TimelineSection() {
         </Link>
       </motion.div>
 
-      {/* Two-track grid */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 relative">
-        {/* Vertical divider (md+) */}
-        <div
-          aria-hidden
-          className="hidden md:block absolute top-2 bottom-2 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-transparent via-ink-50/15 to-transparent"
-        />
+      {/* ─── Taiji shell ──────────────────────────────────────────────
+          A light-grey "stone" card that hosts both halves. The two
+          inner panels (yang/yin) sit flush against one another and
+          are visually stitched by the central yin-yang glyph. */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.9 }}
+        className="taiji-surface mt-6 rounded-3xl overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] ring-1 ring-black/10 relative"
+      >
+        {/* Two-track grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 relative">
+          {/* ─── Industry (left) — color follows industryVariant ─── */}
+          <div className={industryVariant === "yang" ? "taiji-yang p-8 md:p-10" : "taiji-yin p-8 md:p-10"}>
+            <Track
+              label="Industry"
+              eyebrow={industryVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
+              items={industryTrack}
+              variant={industryVariant}
+              delay={0.05}
+              firstItemExtra={<TalksExtra variant={industryVariant} />}
+            />
+          </div>
 
-        <Track
-          label="Industry"
-          items={industryTrack}
-          accent="emerald"
-          delay={0.05}
-          firstItemExtra={
-            // Talks belong to the Tencent chapter — render them as a
-            // subsection nested inside the Tencent entry itself.
-            <div className="mt-1 pt-3 border-t border-dashed border-ink-50/10">
-              <ol className="space-y-3">
-                {talks.map((t) => (
-                  <li key={t.id} className="relative pl-3.5">
-                    <span
-                      aria-hidden
-                      className="absolute left-0 top-[7px] w-1 h-1 rounded-full bg-ink-50/30"
-                    />
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
-                      {t.year}
-                      {t.location && (
-                        <span className="text-ink-50/30"> · {t.location}</span>
-                      )}
-                    </span>
-                    <p className="display mt-0.5 text-sm md:text-[15px] text-ink-50 leading-snug">
-                      {t.href ? (
-                        <a
-                          href={t.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="hover:text-white transition-colors underline decoration-dotted underline-offset-4 decoration-ink-50/30 hover:decoration-ink-50/70"
-                        >
-                          {t.title}
-                        </a>
-                      ) : (
-                        t.title
-                      )}
-                    </p>
-                    <p className="mt-0.5 text-[12px] text-ink-50/65">
-                      {t.venue}
-                    </p>
-                    {t.body && (
-                      <p className="mt-1 text-[11px] md:text-xs text-ink-50/45 leading-relaxed">
-                        {t.body}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ol>
+          {/* ─── Research (right) — color follows researchVariant ─── */}
+          <div className={researchVariant === "yang" ? "taiji-yang p-8 md:p-10" : "taiji-yin p-8 md:p-10"}>
+            <Track
+              label="Research"
+              eyebrow={researchVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
+              items={researchTrack}
+              variant={researchVariant}
+              delay={0.15}
+            />
+          </div>
+
+          {/* Faint S-curve seam between the two halves (md+). */}
+          <div
+            aria-hidden
+            className="taiji-divider hidden md:block absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-px pointer-events-none"
+          />
+
+          {/* The yin-yang glyph straddling the boundary — desktop.
+              Clickable: flips the glyph AND swaps the two panels' colors —
+              a purely local, decorative toggle that doesn't touch the
+              site-wide theme. */}
+          <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div className="rounded-full bg-[var(--stone-soft)] p-2 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] ring-1 ring-black/10">
+              <YinYang size={64} interactive flipped={flipped} onToggle={toggleFlipped} />
             </div>
-          }
-        />
-        <Track
-          label="Research"
-          items={researchTrack}
-          accent="klein"
-          delay={0.15}
-        />
-      </div>
+          </div>
 
-      {/* Education — beneath both tracks */}
+          {/* Mobile: render the glyph between the two stacked panels. */}
+          <div className="md:hidden flex justify-center -my-6 relative z-10">
+            <div className="rounded-full bg-[var(--stone-soft)] p-2 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] ring-1 ring-black/10">
+              <YinYang size={52} interactive flipped={flipped} onToggle={toggleFlipped} />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Education — beneath both tracks, on the dark page bg */}
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -198,42 +208,155 @@ export default function TimelineSection() {
 
 /* ---------- Track column ---------- */
 
-type Accent = "emerald" | "klein";
+type Variant = "yang" | "yin";
 
-const accentTokens: Record<
-  Accent,
-  { dot: string; glow: string; tag: string; link: string }
+/**
+ * Variant tokens — the only place that knows about "dark text on white"
+ * vs "light text on black". Everything below pulls from this map so the
+ * two columns stay perfectly symmetric in structure (Tao-style).
+ */
+const variantTokens: Record<
+  Variant,
+  {
+    dot: string;
+    glow: string;
+    tag: string;
+    link: string;
+    title: string;
+    subtle: string;
+    faint: string;
+    guide: string;
+    detailText: string;
+    detailBullet: string;
+    button: string;
+  }
 > = {
-  emerald: {
-    dot: "bg-emerald-400/80 shadow-[0_0_10px_rgba(52,211,153,0.7)]",
-    glow: "bg-emerald-400/15",
-    tag: "text-emerald-300/80 border-emerald-300/30",
-    link: "text-emerald-300/85 hover:text-emerald-200",
+  // Industry — black panel, light type
+  yang: {
+    dot: "bg-white/80 shadow-[0_0_10px_rgba(255,255,255,0.5)]",
+    glow: "bg-white/10",
+    tag: "text-white/80 border-white/30",
+    link: "text-white/85 hover:text-white",
+    title: "text-white",
+    subtle: "text-white/65",
+    faint: "text-white/45",
+    guide: "bg-white/10",
+    detailText: "text-white/65",
+    detailBullet: "bg-white/30",
+    button: "text-white/55 hover:text-white",
   },
-  klein: {
-    dot: "bg-klein/90 shadow-[0_0_10px_rgba(0,47,167,0.8)]",
-    glow: "bg-klein/25",
-    tag: "text-klein-200 border-klein/40",
-    link: "text-klein-200 hover:text-white",
+  // Research — white panel, dark type
+  yin: {
+    dot: "bg-black/85 shadow-[0_0_10px_rgba(0,0,0,0.25)]",
+    glow: "bg-black/5",
+    tag: "text-black/70 border-black/25",
+    link: "text-black/80 hover:text-black",
+    title: "text-black",
+    subtle: "text-black/65",
+    faint: "text-black/45",
+    guide: "bg-black/10",
+    detailText: "text-black/65",
+    detailBullet: "bg-black/30",
+    button: "text-black/55 hover:text-black",
   },
 };
+
+/**
+ * TalksExtra — the References & Speaking sub-list nested under the first
+ * Industry entry. Styled via `talkTokens` so it stays legible whichever
+ * color the Industry panel currently is (black or white, per `variant`).
+ */
+const talkTokens: Record<
+  Variant,
+  {
+    border: string;
+    dot: string;
+    meta: string;
+    metaFaint: string;
+    title: string;
+    titleHover: string;
+    underline: string;
+    venue: string;
+    body: string;
+  }
+> = {
+  yang: {
+    border: "border-white/10",
+    dot: "bg-white/30",
+    meta: "text-white/45",
+    metaFaint: "text-white/30",
+    title: "text-white",
+    titleHover: "hover:text-white",
+    underline: "decoration-white/30 hover:decoration-white/70",
+    venue: "text-white/65",
+    body: "text-white/45",
+  },
+  yin: {
+    border: "border-black/10",
+    dot: "bg-black/30",
+    meta: "text-black/45",
+    metaFaint: "text-black/30",
+    title: "text-black",
+    titleHover: "hover:text-black",
+    underline: "decoration-black/30 hover:decoration-black/70",
+    venue: "text-black/65",
+    body: "text-black/45",
+  },
+};
+
+function TalksExtra({ variant }: { variant: Variant }) {
+  const tt = talkTokens[variant];
+  return (
+    <div className={`mt-1 pt-3 border-t border-dashed ${tt.border}`}>
+      <ol className="space-y-3">
+        {talks.map((t) => (
+          <li key={t.id} className="relative pl-3.5">
+            <span aria-hidden className={`absolute left-0 top-[7px] w-1 h-1 rounded-full ${tt.dot}`} />
+            <span className={`text-[10px] uppercase tracking-[0.25em] tabular-nums ${tt.meta}`}>
+              {t.year}
+              {t.location && <span className={tt.metaFaint}> · {t.location}</span>}
+            </span>
+            <p className={`display mt-0.5 text-sm md:text-[15px] leading-snug ${tt.title}`}>
+              {t.href ? (
+                <a
+                  href={t.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`transition-colors underline decoration-dotted underline-offset-4 ${tt.titleHover} ${tt.underline}`}
+                >
+                  {t.title}
+                </a>
+              ) : (
+                t.title
+              )}
+            </p>
+            <p className={`mt-0.5 text-[12px] ${tt.venue}`}>{t.venue}</p>
+            {t.body && (
+              <p className={`mt-1 text-[11px] md:text-xs leading-relaxed ${tt.body}`}>{t.body}</p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
 
 function Track({
   label,
   eyebrow,
   items,
-  accent,
+  variant,
   delay,
   firstItemExtra,
 }: {
   label: string;
   eyebrow?: string;
   items: TrackItem[];
-  accent: Accent;
+  variant: Variant;
   delay: number;
   firstItemExtra?: React.ReactNode;
 }) {
-  const tokens = accentTokens[accent];
+  const tokens = variantTokens[variant];
 
   return (
     <motion.div
@@ -247,10 +370,10 @@ function Track({
       <div className="flex items-baseline justify-between mb-5">
         <div className="flex items-center gap-2.5">
           <span className={`inline-block w-1.5 h-1.5 rounded-full ${tokens.dot}`} />
-          <h3 className="display text-xl md:text-2xl text-ink-50">{label}</h3>
+          <h3 className={`display text-xl md:text-2xl ${tokens.title}`}>{label}</h3>
         </div>
         {eyebrow && (
-          <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
+          <span className={`text-[10px] uppercase tracking-[0.3em] ${tokens.faint}`}>
             {eyebrow}
           </span>
         )}
@@ -261,7 +384,7 @@ function Track({
         {/* Subtle vertical guide inside the column */}
         <div
           aria-hidden
-          className="absolute left-0 top-2 bottom-2 w-px bg-ink-50/8"
+          className={`absolute left-0 top-2 bottom-2 w-px ${tokens.guide}`}
         />
 
         {items.map((t, i) => (
@@ -287,7 +410,7 @@ function TrackEntry({
   extra,
 }: {
   item: TrackItem;
-  tokens: (typeof accentTokens)[Accent];
+  tokens: (typeof variantTokens)[Variant];
   spotlightGlow: boolean;
   extra?: React.ReactNode;
 }) {
@@ -300,7 +423,7 @@ function TrackEntry({
       <span
         aria-hidden
         className={`absolute left-[-3px] top-[7px] w-1.5 h-1.5 rounded-full ${
-          t.current ? tokens.dot : "bg-ink-50/30"
+          t.current ? tokens.dot : tokens.guide
         }`}
       />
 
@@ -313,11 +436,11 @@ function TrackEntry({
         )}
 
         <div className="relative">
-          {/* Top meta row — period (if any) + Now tag. Hidden entirely when nothing to show. */}
+          {/* Top meta row — period (if any) + Now tag. */}
           {(t.period || t.current) && (
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               {t.period && (
-                <span className="text-[11px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
+                <span className={`text-[11px] uppercase tracking-[0.25em] tabular-nums ${tokens.faint}`}>
                   {t.period}
                 </span>
               )}
@@ -333,7 +456,7 @@ function TrackEntry({
 
           {/* Primary title — bigger, display font */}
           <h4
-            className={`display text-lg md:text-xl text-ink-50 leading-tight ${
+            className={`display text-lg md:text-xl leading-tight ${tokens.title} ${
               t.period || t.current ? "mt-1.5" : ""
             }`}
           >
@@ -341,18 +464,18 @@ function TrackEntry({
           </h4>
           {/* Subtitle + location */}
           {(t.subtitle || t.location) && (
-            <p className="mt-0.5 text-sm text-ink-50/65">
+            <p className={`mt-0.5 text-sm ${tokens.subtle}`}>
               {t.subtitle}
               {t.subtitle && t.location && (
-                <span className="text-ink-50/35"> · {t.location}</span>
+                <span className={tokens.faint}> · {t.location}</span>
               )}
               {!t.subtitle && t.location && (
-                <span className="text-ink-50/35">{t.location}</span>
+                <span className={tokens.faint}>{t.location}</span>
               )}
             </p>
           )}
           {t.note && (
-            <p className="mt-1.5 text-xs md:text-[13px] text-ink-50/45 leading-relaxed">
+            <p className={`mt-1.5 text-xs md:text-[13px] leading-relaxed ${tokens.faint}`}>
               {t.note}
             </p>
           )}
@@ -364,7 +487,7 @@ function TrackEntry({
                 type="button"
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
-                className="mt-2.5 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.3em] text-ink-50/45 hover:text-ink-50 transition-colors"
+                className={`mt-2.5 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.3em] transition-colors ${tokens.button}`}
               >
                 <span>{open ? "Less" : "More"}</span>
                 <span
@@ -391,11 +514,11 @@ function TrackEntry({
                           {t.highlights.map((h, hi) => (
                             <li
                               key={hi}
-                              className="relative pl-3 text-[13px] text-ink-50/65 leading-relaxed"
+                              className={`relative pl-3 text-[13px] leading-relaxed ${tokens.detailText}`}
                             >
                               <span
                                 aria-hidden
-                                className="absolute left-0 top-[9px] w-1 h-px bg-ink-50/30"
+                                className={`absolute left-0 top-[9px] w-1 h-px ${tokens.detailBullet}`}
                               />
                               {h}
                             </li>

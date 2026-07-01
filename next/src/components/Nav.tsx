@@ -6,12 +6,14 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { site } from "@/content/portfolio";
+import YinYang from "@/components/YinYang";
 
 // Contact removed — the "Say hi →" CTA on the right of the bar already
 // covers that intent. Projects merged into About (case studies + talks live there now).
 const links = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Work", href: "/work" },
   { label: "Photography", href: "/photography" },
   { label: "Blog", href: "/writing" },
 ];
@@ -73,15 +75,29 @@ export default function Nav() {
         )}
       >
         <div className="mx-auto max-w-7xl px-6 py-4 md:py-5 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-4 focus-visible:ring-offset-ink-950 rounded-md"
-          >
-            <span className="display text-2xl text-ink-50">{site.initials}</span>
-            <span className="hidden md:inline text-sm text-ink-50/60">
-              {site.name}
-            </span>
-          </Link>
+          <div className="flex items-center gap-2.5">
+            {/* Quiet yin-yang glyph — the visual seal that this site is
+                organised around the unity of opposites (industry/research,
+                making/knowing, code/photo). Purely decorative here; the
+                clickable version lives at the seam in the Trajectory
+                section below. */}
+            <YinYang
+              size={22}
+              yangColor="#0a0a12"
+              yinColor="#f5f5f0"
+              stroke="rgba(245,245,240,0.35)"
+              duration={40}
+            />
+            <Link
+              href="/"
+              className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-4 focus-visible:ring-offset-ink-950 rounded-md"
+            >
+              <span className="display text-2xl text-ink-50">{site.initials}</span>
+              <span className="hidden md:inline text-sm text-ink-50/60">
+                {site.name}
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1 glass rounded-full px-2 py-1.5">

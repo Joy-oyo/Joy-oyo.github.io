@@ -1,165 +1,95 @@
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import {
-  site,
-  timeline,
-  toolkit,
-  selectedWork,
-  talks,
-  type TimelineItem,
-  type SelectedWorkItem,
-  type TalkItem,
-} from "@/content/portfolio";
+import { site, toolkit } from "@/content/portfolio";
 
 export const metadata = { title: "About — Joy Chen" };
 
-const work = timeline.filter((t) => t.kind === "work");
-const education = timeline.filter((t) => t.kind === "edu");
+/* ------------------------------------------------------------------ *
+ *  Content lives at the top of the file so it's easy to edit.
+ *  Everything below is just layout.
+ * ------------------------------------------------------------------ */
 
-function TimelineList({ items }: { items: TimelineItem[] }) {
+const story = [
+  // 1 — opening / where you are now
+  `I work at the seam between product, code, and image. By day I build AI-powered media tools at Tencent; by night I run Veeup with a small team, and shoot stills on the side. The home page is the shortlist — this page is the longer answer to "so, what do you actually do?"`,
+
+  // 2 — how the mix happened
+  `The mix wasn't planned. I started in Media Studies because I liked stories, picked up CS because I liked making things, then spent a Master's at UChicago getting comfortable with the parts of AI that aren't a demo. Somewhere along the way I noticed the most interesting questions for me sit between disciplines — what a model can render, what a person actually wants to make, and what a screen can carry.`,
+
+  // 3 — what you optimize for
+  `I'm drawn to tools that disappear into the work. The ones that let you forget they're there until the moment you need them. That's true whether it's a cloud media pipeline, a job-hunt copilot, or a camera. I care less about whether something is "AI" and more about whether it earns its place in someone's day.`,
+
+  // 4 — humble / inviting closer
+  `If we end up talking, I'd rather hear about what you're trying to make than what you're building with. The stack is downstream of the idea.`,
+];
+
+const principles: { title: string; body: string }[] = [
+  {
+    title: "Ship the smallest interesting thing first.",
+    body:
+      "A demo that exists beats a roadmap that doesn't. The roadmap can come from what people do with the demo.",
+  },
+  {
+    title: "If a tool needs a tutorial, it isn't done.",
+    body:
+      "The best interfaces explain themselves through use. I treat onboarding friction as a bug, not a deliverable.",
+  },
+  {
+    title: "Take the photo even when you're tired.",
+    body:
+      "Showing up is most of the work, in photography and everywhere else. Taste is what's left after a few thousand mediocre attempts.",
+  },
+  {
+    title: "Optimize for the next maker, not the current viewer.",
+    body:
+      "Code, write, and document like someone has to pick it up after you — including future-you, three months from now, with no context.",
+  },
+  {
+    title: "Be skeptical of cleverness.",
+    body:
+      "Most clever solutions are someone else's tech debt. Boring choices age better; reach for clever only when the boring version genuinely can't do the job.",
+  },
+];
+
+const currentlyThinking: { title: string; body: string }[] = [
+  {
+    title: "Where do AI agents stop being demos and start being craft tools?",
+    body:
+      "Most agent products feel like party tricks. I'm interested in the boundary where they become reliable enough to live inside a working creative pipeline — and what that does to authorship along the way.",
+  },
+  {
+    title: "Media tools as instruments, not appliances.",
+    body:
+      "Cameras, DAWs, and even text editors reward mastery. A lot of AI-creative software currently rewards prompting tricks instead. I want to make tools that are deep enough to grow into.",
+  },
+  {
+    title: "The continuum from toy to tool.",
+    body:
+      "Some of the best products start as toys. I keep a running list of things that feel playful but suspiciously useful — and I try to figure out which side they end up on.",
+  },
+];
+
+const elsewhere: { label: string; value: string }[] = [
+  { label: "Reading", value: "Bits of cognitive science, anything Robin Sloan writes." },
+  { label: "Listening", value: "A lot of ambient, occasional 90s shoegaze relapses." },
+  { label: "Shooting", value: "35mm film when I have the patience, iPhone when I don't." },
+  { label: "If not building", value: "Probably walking, probably overthinking a coffee order." },
+];
+
+/* ------------------------------------------------------------------ *
+ *  Layout
+ * ------------------------------------------------------------------ */
+
+function SectionLabel({ kicker, title }: { kicker: string; title: string }) {
   return (
-    <ol className="relative border-l border-ink-50/10 space-y-14 pl-8">
-      {items.map((item, i) => (
-        <li key={`${item.org}-${i}`} className="relative">
-          <span
-            className={`absolute -left-[37px] top-1.5 h-3 w-3 rounded-full ring-4 ring-ink-950 ${
-              item.current ? "bg-klein" : "bg-ink-50/30"
-            }`}
-          />
-
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            {item.period && (
-              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                {item.period}
-              </span>
-            )}
-            {item.current && (
-              <span className="rounded-full bg-klein/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.25em] text-klein">
-                Now
-              </span>
-            )}
-            {item.location && (
-              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
-                · {item.location}
-              </span>
-            )}
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-baseline gap-x-3">
-            <h3 className="display text-2xl md:text-3xl text-ink-50 leading-tight">
-              {item.role}
-            </h3>
-            <span className="text-ink-50/45">·</span>
-            <span className="text-base md:text-lg text-ink-50/70">
-              {item.org}
-            </span>
-          </div>
-
-          {item.note && (
-            <p className="mt-2 max-w-xl text-sm text-ink-50/55 leading-relaxed">
-              {item.note}
-            </p>
-          )}
-
-          {item.highlights && item.highlights.length > 0 && (
-            <ul className="mt-4 max-w-2xl space-y-2 text-sm text-ink-50/70 leading-relaxed">
-              {item.highlights.map((h, j) => (
-                <li key={j} className="flex gap-3">
-                  <span aria-hidden className="mt-2 h-[3px] w-3 flex-none bg-ink-50/25" />
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/**
- * SelectedWorkCard — a single project / paper / product card.
- * Featured items take both columns and run larger; non-featured share a row.
- */
-function SelectedWorkCard({ item }: { item: SelectedWorkItem }) {
-  const Tag = item.href ? "a" : "div";
-  const isExternal = item.href?.startsWith("http");
-  return (
-    <Tag
-      {...(item.href
-        ? {
-            href: item.href,
-            target: isExternal ? "_blank" : undefined,
-            rel: isExternal ? "noreferrer" : undefined,
-          }
-        : {})}
-      className={`group glass rounded-2xl p-6 md:p-7 flex flex-col gap-3 transition-colors ${
-        item.href ? "hover:bg-ink-50/8" : ""
-      } ${item.featured ? "md:col-span-2" : ""}`}
-    >
-      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-ink-50/45">
-        <span>{item.tag}</span>
-        <span className="text-ink-50/30">{item.context}</span>
-      </div>
-
-      <h3
-        className={`display text-ink-50 leading-tight ${
-          item.featured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"
-        }`}
-      >
-        {item.title}
-      </h3>
-
-      <p className="text-sm text-ink-50/65 leading-relaxed">{item.body}</p>
-
-      {item.href && (
-        <div className="mt-2 text-xs uppercase tracking-[0.25em] text-ink-50/55 group-hover:text-ink-50">
-          {isExternal ? "Visit" : "Read more"} →
-        </div>
-      )}
-    </Tag>
-  );
-}
-
-function TalkRow({ talk }: { talk: TalkItem }) {
-  const Tag = talk.href ? "a" : "div";
-  return (
-    <Tag
-      {...(talk.href
-        ? { href: talk.href, target: "_blank", rel: "noreferrer" }
-        : {})}
-      className={`group block py-6 border-b border-ink-50/8 ${
-        talk.href ? "hover:bg-ink-50/[0.02]" : ""
-      } transition-colors`}
-    >
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 tabular-nums">
-          {talk.year}
-        </span>
-        {talk.location && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
-            · {talk.location}
-          </span>
-        )}
-      </div>
-
-      <h3 className="display text-xl md:text-2xl text-ink-50 leading-tight mt-1.5">
-        {talk.title}
-      </h3>
-      <p className="mt-1 text-sm text-ink-50/65">{talk.venue}</p>
-
-      {talk.body && (
-        <p className="mt-2 max-w-2xl text-sm text-ink-50/55 leading-relaxed">
-          {talk.body}
-        </p>
-      )}
-
-      {talk.href && (
-        <div className="mt-3 text-[11px] uppercase tracking-[0.3em] text-ink-50/55 group-hover:text-ink-50">
-          Watch / read →
-        </div>
-      )}
-    </Tag>
+    <div className="mb-10">
+      <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-ink-50/45">
+        {kicker}
+      </span>
+      <h2 className="display text-3xl md:text-4xl mt-2 text-ink-50/90">
+        {title}
+      </h2>
+    </div>
   );
 }
 
@@ -169,149 +99,79 @@ export default function AboutPage() {
       <main className="relative pt-32 pb-24">
         <PageHeader
           eyebrow="01 · About"
-          title="A little about me"
-          lede={site.bio}
+          title="A longer answer"
+          lede="The home page is the shortlist of what I do. This page is who's behind it, how I work, and what I'm currently thinking about."
         />
 
-        {/* Quick facts strip */}
-        <section className="mx-auto max-w-3xl px-6 mt-14">
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-4 border-t border-ink-50/10 pt-8">
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                Based in
-              </dt>
-              <dd className="mt-2 text-sm text-ink-50/85">{site.location}</dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                Currently
-              </dt>
-              <dd className="mt-2 text-sm text-ink-50/85">
-                Tencent · Veeup
-              </dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                Working on
-              </dt>
-              <dd className="mt-2 text-sm text-ink-50/85">
-                AI · Media · Tools
-              </dd>
-            </div>
-            <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-                Reach me
-              </dt>
-              <dd className="mt-2 text-sm">
-                <a
-                  href={`mailto:${site.email}`}
-                  className="border-b border-ink-50/20 text-ink-50/85 hover:border-ink-50/80 hover:text-ink-50 transition-colors"
-                >
-                  {site.email}
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        {/* Long-form intro */}
-        <section className="mx-auto max-w-3xl px-6 mt-20 space-y-5 text-ink-50/75 leading-relaxed">
-          <p>
-            I work at the seam between <em className="not-italic text-ink-50">product, code, and image</em>
-            {" "}— shipping AI-powered media tools by day, and making small interactive
-            experiments by night. I like things that feel intentional but a little playful.
-          </p>
-          <p>
-            Most recently I&apos;ve been building cloud media and AI solutions at
-            Tencent, and co-leading <strong className="font-medium text-ink-50/90">Veeup</strong>,
-            a platform that automates the tedious parts of job hunting so people
-            can spend more time on the parts that actually matter.
-          </p>
-          <p>
-            Before that — a Master&apos;s at the University of Chicago focused on
-            AI and language, and a B.S. at Wake Forest with a double major in
-            Media Studies. I think the mix shows up in how I work: equal parts
-            systems and stories.
-          </p>
-        </section>
-
-        {/* Selected Work — projects & papers, ordered by importance, NOT a timeline */}
-        <section
-          id="selected-work"
-          className="mx-auto max-w-6xl px-6 mt-28 scroll-mt-32"
-        >
-          <div className="mb-10 flex flex-wrap items-baseline justify-between gap-3">
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-ink-50/45">
-                What I&apos;ve built
-              </span>
-              <h2 className="display text-3xl md:text-4xl mt-2 text-ink-50/90">
-                Selected work
-              </h2>
-            </div>
-            <p className="max-w-sm text-sm text-ink-50/55 leading-relaxed">
-              Projects, papers, and shipped products — ordered by what mattered,
-              not when it happened.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {selectedWork.map((item) => (
-              <SelectedWorkCard key={item.id} item={item} />
+        {/* 1 — Story */}
+        <section className="mx-auto max-w-3xl px-6 mt-20">
+          <SectionLabel kicker="Story" title="How I got here" />
+          <div className="space-y-5 text-ink-50/75 leading-[1.75] text-[15px] md:text-base">
+            {story.map((p, i) => (
+              <p key={i}>{p}</p>
             ))}
           </div>
         </section>
 
-        {/* Speaking & Talks */}
-        {talks.length > 0 && (
-          <section className="mx-auto max-w-3xl px-6 mt-28">
-            <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-ink-50/45">
-                  In public
-                </span>
-                <h2 className="display text-3xl md:text-4xl mt-2 text-ink-50/90">
-                  Speaking & talks
-                </h2>
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
-                {talks.length} talk{talks.length === 1 ? "" : "s"}
-              </span>
-            </div>
-
-            <div className="border-t border-ink-50/8">
-              {talks.map((talk) => (
-                <TalkRow key={talk.id} talk={talk} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Experience */}
+        {/* 2 — How I work */}
         <section className="mx-auto max-w-3xl px-6 mt-28">
-          <div className="mb-10 flex items-baseline justify-between">
-            <h2 className="display text-3xl text-ink-50/85">Experience</h2>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
-              {work.length} role{work.length === 1 ? "" : "s"}
-            </span>
-          </div>
-          <TimelineList items={work} />
+          <SectionLabel kicker="Principles" title="How I work" />
+          <ul className="space-y-7">
+            {principles.map((p, i) => (
+              <li key={i} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 tabular-nums pt-1.5">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="display text-lg md:text-xl text-ink-50 leading-snug">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm md:text-[15px] text-ink-50/65 leading-relaxed">
+                    {p.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </section>
 
-        {/* Education */}
-        <section className="mx-auto max-w-3xl px-6 mt-24">
-          <div className="mb-10 flex items-baseline justify-between">
-            <h2 className="display text-3xl text-ink-50/85">Education</h2>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
-              {education.length} program{education.length === 1 ? "" : "s"}
-            </span>
+        {/* 3 — What I'm thinking about */}
+        <section className="mx-auto max-w-3xl px-6 mt-28">
+          <SectionLabel kicker="Currently" title="What I'm thinking about" />
+          <div className="space-y-10">
+            {currentlyThinking.map((c, i) => (
+              <div key={i}>
+                <h3 className="display text-xl md:text-2xl text-ink-50 leading-snug">
+                  {c.title}
+                </h3>
+                <p className="mt-3 text-sm md:text-[15px] text-ink-50/65 leading-relaxed">
+                  {c.body}
+                </p>
+              </div>
+            ))}
           </div>
-          <TimelineList items={education} />
         </section>
 
-        {/* Toolkit */}
-        <section className="mx-auto max-w-3xl px-6 mt-24">
-          <h2 className="display text-3xl mb-10 text-ink-50/85">Toolkit</h2>
+        {/* 4 — Elsewhere (humanize) */}
+        <section className="mx-auto max-w-3xl px-6 mt-28">
+          <SectionLabel kicker="Elsewhere" title="Off the clock" />
+          <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7 border-t border-ink-50/10 pt-8">
+            {elsewhere.map((e) => (
+              <div key={e.label}>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+                  {e.label}
+                </dt>
+                <dd className="mt-2 text-sm md:text-[15px] text-ink-50/80 leading-relaxed">
+                  {e.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* 5 — Toolkit */}
+        <section className="mx-auto max-w-3xl px-6 mt-28">
+          <SectionLabel kicker="Toolkit" title="What I reach for" />
           <div className="space-y-8">
             {toolkit.map((group) => (
               <div key={group.group}>
@@ -333,13 +193,50 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* CTA */}
+        {/* 6 — Colophon */}
+        <section className="mx-auto max-w-3xl px-6 mt-28">
+          <SectionLabel kicker="Colophon" title="About this site" />
+          <p className="text-sm md:text-[15px] text-ink-50/65 leading-relaxed max-w-2xl">
+            Built with{" "}
+            <span className="text-ink-50/85">Next.js</span>,{" "}
+            <span className="text-ink-50/85">Three.js</span>, and{" "}
+            <span className="text-ink-50/85">Framer Motion</span>. Type set in
+            Inter and a display serif. Hosted on Vercel. The 3D cyber room is a
+            small experiment in making a portfolio feel like a place, not a
+            document.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.25em] text-ink-50/55">
+            <a
+              href="https://github.com/Joy-oyo/Joy-oyo.github.io"
+              target="_blank"
+              rel="noreferrer"
+              className="border-b border-ink-50/20 pb-0.5 hover:text-ink-50 hover:border-ink-50/80 transition-colors"
+            >
+              Source on GitHub →
+            </a>
+            <a
+              href="/cyber"
+              className="border-b border-ink-50/20 pb-0.5 hover:text-ink-50 hover:border-ink-50/80 transition-colors"
+            >
+              Enter the cyber room →
+            </a>
+          </div>
+        </section>
+
+        {/* 7 — CTA */}
         <section className="mx-auto max-w-3xl px-6 mt-24">
           <div className="glass rounded-2xl px-6 py-8 md:px-10 md:py-10 flex flex-wrap items-center justify-between gap-6">
             <div>
-              <h3 className="display text-2xl text-ink-50">Want to work together?</h3>
+              <h3 className="display text-2xl text-ink-50">Want to talk?</h3>
               <p className="mt-1 text-sm text-ink-50/60">
-                I&apos;m always open to thoughtful projects and conversations.
+                Reach me at{" "}
+                <a
+                  href={`mailto:${site.email}`}
+                  className="border-b border-ink-50/20 text-ink-50/85 hover:border-ink-50/80 hover:text-ink-50 transition-colors"
+                >
+                  {site.email}
+                </a>
+                , or use the form.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
@@ -351,7 +248,7 @@ export default function AboutPage() {
                 <span aria-hidden>→</span>
               </a>
               <a
-                href="#selected-work"
+                href="/work"
                 className="text-ink-50/70 border-b border-ink-50/20 pb-0.5 hover:text-ink-50 hover:border-ink-50/80 transition-colors"
               >
                 See selected work
