@@ -9,6 +9,10 @@ import {
   researchTrack,
   education,
   talks,
+  story,
+  currentlyThinking,
+  elsewhere,
+  toolkit,
   type TrackItem,
 } from "@/content/portfolio";
 import YinYang from "@/components/YinYang";
@@ -22,7 +26,8 @@ import YinYang from "@/components/YinYang";
  * Both sit on a light-grey "stone" backdrop; a yin-yang glyph rotates
  * slowly at the seam, making the unity-of-opposites motif explicit.
  *
- * The complete unified timeline lives on /about.
+ * The About block (story, currently-thinking, off-the-clock, toolkit)
+ * lives further down this same section — no separate /about page.
  */
 export default function TimelineSection() {
   // Clicking the yin-yang glyph at the seam swaps which column is black
@@ -34,7 +39,7 @@ export default function TimelineSection() {
   const researchVariant: Variant = flipped ? "yang" : "yin";
 
   return (
-    <section className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
+    <section id="trajectory" className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
       {/* Section label — sits on the dark page background. */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
@@ -47,10 +52,10 @@ export default function TimelineSection() {
           Trajectory · 太极
         </span>
         <Link
-          href="/about"
+          href="#about"
           className="text-[10px] uppercase tracking-[0.3em] text-ink-50/50 hover:text-ink-50 transition-colors"
         >
-          Full timeline →
+          More about me ↓
         </Link>
       </motion.div>
 
@@ -82,7 +87,7 @@ export default function TimelineSection() {
           {/* ─── Research (right) — color follows researchVariant ─── */}
           <div className={researchVariant === "yang" ? "taiji-yang p-8 md:p-10" : "taiji-yin p-8 md:p-10"}>
             <Track
-              label="Research"
+              label="Research & Projects"
               eyebrow={researchVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
               items={researchTrack}
               variant={researchVariant}
@@ -162,6 +167,105 @@ export default function TimelineSection() {
             </li>
           ))}
         </ol>
+      </motion.div>
+
+      {/* About — the longer story, what I'm thinking about, off the clock, toolkit */}
+      <motion.div
+        id="about"
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.8, delay: 0.05 }}
+        className="mt-16 md:mt-20 pt-10 border-t border-ink-50/10"
+      >
+        <div className="flex items-baseline justify-between mb-8">
+          <div className="flex items-center gap-2.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-sky-300/80 shadow-[0_0_10px_rgba(125,211,252,0.6)]" />
+            <h3 className="display text-xl md:text-2xl text-ink-50">About</h3>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
+            04 / Who
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+          {/* How I got here */}
+          <div className="md:col-span-2 max-w-3xl">
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+              How I got here
+            </h4>
+            <div className="space-y-4 text-sm md:text-[15px] text-ink-50/70 leading-relaxed">
+              {story.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          </div>
+
+          {/* What I'm thinking about */}
+          <div>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+              What I&rsquo;m thinking about
+            </h4>
+            <div className="space-y-6">
+              {currentlyThinking.map((c, i) => (
+                <div key={i}>
+                  <h5 className="display text-base md:text-lg text-ink-50 leading-snug">
+                    {c.title}
+                  </h5>
+                  <p className="mt-2 text-sm text-ink-50/60 leading-relaxed">
+                    {c.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Off the clock + toolkit */}
+          <div className="space-y-10">
+            <div>
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+                Off the clock
+              </h4>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {elsewhere.map((e) => (
+                  <div key={e.label}>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
+                      {e.label}
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink-50/70 leading-relaxed">
+                      {e.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div>
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+                What I reach for
+              </h4>
+              <div className="space-y-4">
+                {toolkit.map((group) => (
+                  <div key={group.group}>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
+                      {group.group}
+                    </span>
+                    <ul className="mt-2 flex flex-wrap gap-2">
+                      {group.items.map((s) => (
+                        <li
+                          key={s}
+                          className="glass rounded-full px-3 py-1 text-[11px] tracking-wide text-ink-50/80"
+                        >
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       {/* Get in touch */}

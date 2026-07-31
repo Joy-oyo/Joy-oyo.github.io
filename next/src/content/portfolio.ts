@@ -2,35 +2,33 @@ export const site = {
   name: "Joy Chen",
   initials: "JC",
   title: "Joy Chen — Portfolio",
-  tagline: "Product · Creative Coding · Photography",
+  tagline: "AI Solution Architect · Media Products",
   bio:
     "I design playful, thoughtful experiences at the edge of product, code, and image. A small universe of work, all in one place.",
   email: "joychen0709@gmail.com",
   location: "Palo Alto",
   currently:
-    "Working on AI-powered products at Tencent and Veeup. Interested in how language, media, and tools shape the way we work.",
+    "AI Solution Architect building media products at Tencent. Interested in how language, media, and tools shape the way we work.",
   socials: [
     { label: "GitHub", href: "https://github.com/Joy-oyo" },
-    { label: "Itch.io", href: "https://joy-oyo.itch.io" },
-    { label: "Wix Portfolio", href: "https://chenj219.wixsite.com/portfolio-joy" },
   ],
 };
 
 export const workExperience = [
   {
     org: "Tencent",
-    role: "Cloud Media Solution Architect",
+    role: "AI Solution Architect",
     period: "2024 — Now",
     location: "Palo Alto",
     note: "",
     current: true,
   },
   {
-    org: "Veeup",
+    org: "Consulting Practice",
     role: "Co-founder",
     period: "2022 — 2024",
     location: "Palo Alto",
-    note: "Resume automation application platform",
+    note: "Professional consulting for the general public",
     current: false,
   },
 ];
@@ -56,10 +54,10 @@ export const timeline: TimelineItem[] = [
   {
     kind: "work",
     period: "2024 — Now",
-    role: "Cloud Media Solution Architect",
+    role: "AI Solution Architect",
     org: "Tencent",
     location: "Palo Alto, CA",
-    note: "AI & media infrastructure for North America clients",
+    note: "AI-powered media products for North America clients",
     current: true,
     highlights: [
       "Architect end-to-end cloud media solutions across streaming, transcoding, and real-time AI inference for enterprise clients.",
@@ -71,13 +69,13 @@ export const timeline: TimelineItem[] = [
     kind: "work",
     period: "2022 — 2024",
     role: "Co-founder",
-    org: "Veeup",
+    org: "Consulting Practice",
     location: "Remote",
-    note: "Resume automation & job-application platform",
+    note: "Professional consulting — making expert knowledge accessible to the general public",
     highlights: [
-      "Co-founded an early-stage platform that automates resume tailoring and job applications using LLMs.",
-      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
-      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
+      "Co-founded a consulting practice that translates professional expertise into actionable guidance for everyday clients.",
+      "Led service design, client onboarding, and end-to-end delivery across multiple engagement types.",
+      "Designed the brand, marketing presence, and core client experience from the ground up.",
     ],
   },
   {
@@ -137,9 +135,9 @@ export type TrackItem = {
 export const industryTrack: TrackItem[] = [
   {
     title: "Tencent",
-    subtitle: "Cloud Media Solution Architect",
+    subtitle: "AI Solution Architect",
     location: "Palo Alto, CA",
-    note: "AI & media infrastructure for North America clients.",
+    note: "AI-powered media products for North America clients.",
     current: true,
     highlights: [
       "Architect end-to-end cloud media solutions across streaming, transcoding, and real-time AI inference for enterprise clients.",
@@ -158,14 +156,14 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    title: "Veeup",
+    title: "Consulting Practice",
     subtitle: "Co-founder",
     location: "Remote",
-    note: "Resume automation & job-application platform powered by LLMs.",
+    note: "Professional consulting — making expert knowledge accessible to the general public.",
     highlights: [
-      "Co-founded an early-stage platform that automates resume tailoring and job applications.",
-      "Led product design, prototype-to-MVP build, and the first cohort of beta users.",
-      "Designed the brand, marketing site, and core onboarding flow end-to-end.",
+      "Co-founded a consulting practice that translates professional expertise into actionable guidance for everyday clients.",
+      "Led service design, client onboarding, and end-to-end delivery across multiple engagement types.",
+      "Designed the brand, marketing presence, and core client experience from the ground up.",
     ],
   },
   {
@@ -244,6 +242,15 @@ export const researchTrack: TrackItem[] = [
       "Conducted A/B testing, SWOT analyses, and investment evaluations across regional markets.",
     ],
   },
+  {
+    title: "Find the Gate",
+    subtitle: "Independent — interactive game",
+    note: "A small atmospheric game exploring place, memory, and the act of finding.",
+    links: [
+      { label: "Play on Itch.io", href: "https://joy-oyo.itch.io/find-the-gate" },
+      { label: "DM me for code", href: `mailto:${site.email}` },
+    ],
+  },
 ];
 
 // Education — separate horizontal section beneath the two tracks.
@@ -294,8 +301,8 @@ export const albums: Album[] = [
     title: "About / Resume",
     subtitle: "Background, experience, the stuff that shaped me.",
     description:
-      "A timeline of work and study, tools I reach for, and the little principles that guide my craft.",
-    href: "/about",
+      "Lives further down this page — the longer story, what I'm thinking about, and the tools I reach for.",
+    href: "/#about",
     accent: "from-[#1a1a2e] to-[#002FA7]",
   },
   {
@@ -317,8 +324,8 @@ export const albums: Album[] = [
     title: "Selected Work",
     subtitle: "Products, prototypes, papers, and playful things.",
     description:
-      "Lives on the About page now — projects ranked by what mattered, plus conference talks.",
-    href: "/about#selected-work",
+      "Lives in the Trajectory section below — Industry and Research, ranked by what mattered.",
+    href: "/#trajectory",
     accent: "from-[#2a1a3e] to-[#6a3ea3]",
   },
   {
@@ -379,7 +386,46 @@ export const skills = [
   "UX Research",
 ];
 
-// Grouped toolkit — used on the About page for a more editorial layout.
+// ---------------------------------------------------------------------------
+// About — shown on the home page, beneath the trajectory + education.
+// ---------------------------------------------------------------------------
+
+// The longer story — a few short paragraphs, most-recent-first framing.
+export const story: string[] = [
+  `I work at the seam between product, code, and image. By day I architect AI-powered media solutions at Tencent; by night I run a small consulting practice, and shoot stills on the side.`,
+  `The mix wasn't planned. I started in Media Studies because I liked stories, picked up CS because I liked making things, then spent a Master's at UChicago getting comfortable with the parts of AI that aren't a demo. Somewhere along the way I noticed the most interesting questions for me sit between disciplines — what a model can render, what a person actually wants to make, and what a screen can carry.`,
+  `I'm drawn to tools that disappear into the work. The ones that let you forget they're there until the moment you need them. That's true whether it's a cloud media pipeline, a job-hunt copilot, or a camera. I care less about whether something is "AI" and more about whether it earns its place in someone's day.`,
+  `If we end up talking, I'd rather hear about what you're trying to make than what you're building with. The stack is downstream of the idea.`,
+];
+
+// What I'm currently thinking about — open questions, not answers.
+export const currentlyThinking: { title: string; body: string }[] = [
+  {
+    title: "Where do AI agents stop being demos and start being craft tools?",
+    body:
+      "Most agent products feel like party tricks. I'm interested in the boundary where they become reliable enough to live inside a working creative pipeline — and what that does to authorship along the way.",
+  },
+  {
+    title: "Media tools as instruments, not appliances.",
+    body:
+      "Cameras, DAWs, and even text editors reward mastery. A lot of AI-creative software currently rewards prompting tricks instead. I want to make tools that are deep enough to grow into.",
+  },
+  {
+    title: "The continuum from toy to tool.",
+    body:
+      "Some of the best products start as toys. I keep a running list of things that feel playful but suspiciously useful — and I try to figure out which side they end up on.",
+  },
+];
+
+// Off the clock — a few humanizing facts.
+export const elsewhere: { label: string; value: string }[] = [
+  { label: "Reading", value: "Bits of cognitive science, anything Robin Sloan writes." },
+  { label: "Listening", value: "A lot of ambient, occasional 90s shoegaze relapses." },
+  { label: "Shooting", value: "35mm film when I have the patience, iPhone when I don't." },
+  { label: "If not building", value: "Probably walking, probably overthinking a coffee order." },
+];
+
+// Grouped toolkit — shown alongside the rest of the About content on the home page.
 export const toolkit: { group: string; items: string[] }[] = [
   {
     group: "Design",
@@ -392,6 +438,76 @@ export const toolkit: { group: string; items: string[] }[] = [
   {
     group: "Media",
     items: ["Photography", "Editorial Layout", "Storytelling", "Generative AI", "Video & Cloud Media"],
+  },
+];
+
+export type DemoProject = {
+  id: string;
+  title: string;
+  tag: string;
+  body: string;
+  status: "Planned" | "In progress" | "Available";
+  href?: string;
+  cover?: string;
+  stack?: string[];
+};
+
+export const demoProjects: DemoProject[] = [
+  {
+    id: "agent-operations-center",
+    title: "Agent Operations Center",
+    tag: "AI / Enterprise",
+    status: "Planned",
+    body: "Enterprise agents, tool calling, MCP, approvals, and observability.",
+  },
+  {
+    id: "world-model-playground",
+    title: "World Model Playground",
+    tag: "AI / Vision",
+    status: "Planned",
+    body: "Analyze videos, predict what happens next, and identify physical risks.",
+  },
+  {
+    id: "adaptive-social-agent",
+    title: "Adaptive Social Agent",
+    tag: "AI / HCI",
+    status: "Planned",
+    body: "An AI character that adjusts to the user's emotion, knowledge, and communication style.",
+  },
+  {
+    id: "ai-architecture-sandbox",
+    title: "AI Architecture Sandbox",
+    tag: "AI / Infrastructure",
+    status: "Planned",
+    body: "Visually design AI systems and estimate latency, cost, scaling, and bottlenecks.",
+  },
+  {
+    id: "ai-interview-simulator",
+    title: "AI Interview Simulator",
+    tag: "AI / Simulation",
+    status: "Planned",
+    body: "Realistic hiring managers, customers, or CTOs with scoring and feedback.",
+  },
+  {
+    id: "language-to-robot-planner",
+    title: "Language-to-Robot Planner",
+    tag: "AI / Robotics",
+    status: "Planned",
+    body: "Instruct a simulated robot in Unity to complete tasks and replan around obstacles.",
+  },
+  {
+    id: "multimodal-product-tester",
+    title: "Multimodal Product Tester",
+    tag: "AI / UX",
+    status: "Planned",
+    body: "AI reviews websites, screen recordings, or apps for UX and usability issues.",
+  },
+  {
+    id: "ai-game-director",
+    title: "AI Game Director",
+    tag: "AI / Gaming",
+    status: "Planned",
+    body: "Dynamically changes difficulty, story, and NPC behavior based on the player.",
   },
 ];
 
@@ -422,92 +538,6 @@ export const projects = [
     body: "A short series on light filtering through leaves. Exploring mood, restraint, and green.",
     href: "/photography",
     cover: "/images/tree4.jpg",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Selected Work — shown on /about. Manually ordered by importance (not date).
-// Each item is a specific project, paper, product, or shipped artifact.
-// Featured items render larger; the rest fall into a tighter grid.
-// ---------------------------------------------------------------------------
-export type SelectedWorkItem = {
-  id: string;
-  title: string;
-  /** Optional secondary line — e.g. role or subtitle that sits between title and context. */
-  subtitle?: string;
-  /** Short context line — e.g. "Tencent · 2024–Now" or "University of Chicago · 2024". */
-  context: string;
-  /** One-paragraph summary of what it is + why it matters. */
-  body: string;
-  /** What kind of artifact this is — Project, Paper, Product, Talk, etc. */
-  tag: string;
-  /** Optional external/internal href. Omit if there's nothing to link to. */
-  href?: string;
-  /** Featured items get the larger card treatment. */
-  featured?: boolean;
-};
-
-export const selectedWork: SelectedWorkItem[] = [
-  {
-    id: "tencent-cloud-media",
-    title: "Cloud Media & AI Solutions at Tencent",
-    context: "Tencent · 2024 — Now",
-    tag: "Product · Architecture",
-    body:
-      "End-to-end cloud media solutions for North America clients — streaming, transcoding, and real-time AI inference. Prototyping LLM + media pipelines for caption generation, semantic video search, and creative tooling.",
-    featured: true,
-  },
-  {
-    id: "veeup",
-    title: "Veeup — LLM-powered job application platform",
-    context: "Co-founder · 2022 — 2024",
-    tag: "Product · 0→1",
-    body:
-      "Co-founded an early-stage platform that automates resume tailoring and job applications. Led product design, prototype-to-MVP build, the first cohort of beta users, and the brand + marketing site end-to-end.",
-    featured: true,
-  },
-  {
-    id: "hri-rapport",
-    title: "Rapport, social engagement, and robot-facilitated conversation",
-    subtitle: "Research Assistant",
-    context: "HRI Lab, University of Chicago · 2023 – 2024",
-    tag: "Research",
-    body:
-      "Designed and ran human-robot interaction studies on rapport-building and perceptions of robot-facilitated conversation. Built Python pipelines for data processing and visualization; ran ANOVA across study conditions.",
-  },
-  {
-    id: "phishing-ml",
-    title: "Web Phishing Detection — MLP / ANN / CNN / LSTM benchmark",
-    context: "University of Chicago · Jan – May 2024",
-    tag: "ML · Coursework",
-    body:
-      "End-to-end ML pipeline for phishing URL classification over 10,000+ samples — data cleaning, EDA, feature engineering, dimensionality reduction. Trained and compared MLP, ANN, CNN, and LSTM to find the most effective architecture for real-world deployment.",
-  },
-  {
-    id: "cannon-k12-cs",
-    title: "K–12 CS education with Scratch Encore",
-    context: "Cannon Lab, University of Chicago · 2023 – 2024",
-    tag: "Research",
-    body:
-      "Investigated evidence-based approaches to K–12 computer science education. Designed Scratch Encore modules to assess learning outcomes and computational thinking, and evaluated student comprehension to inform curriculum design.",
-  },
-  {
-    id: "find-the-gate",
-    title: "Find the Gate",
-    context: "Interactive game · 2024",
-    tag: "Creative Code",
-    body:
-      "A small atmospheric game exploring place, memory, and the act of finding. Playable on Itch.io.",
-    href: "https://joy-oyo.itch.io/find-the-gate",
-  },
-  {
-    id: "business-portfolio",
-    title: "Business & Strategy Portfolio",
-    context: "Selected case studies · 2023",
-    tag: "Case Studies",
-    body:
-      "Selected strategy, product, and market work — including marketing analytics simulations, paid search optimization, and competitive analyses — presented with a clean editorial layout.",
-    href: "https://chenj219.wixsite.com/portfolio-joy",
   },
 ];
 

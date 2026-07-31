@@ -9,11 +9,11 @@ import { site } from "@/content/portfolio";
 import YinYang from "@/components/YinYang";
 
 // Contact removed — the "Say hi →" CTA on the right of the bar already
-// covers that intent. Projects merged into About (case studies + talks live there now).
+// covers that intent. Work and About merged into the Home page (Trajectory
+// section + About section) — no separate Work or About pages anymore.
 const links = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Work", href: "/work" },
+  { label: "Demos", href: "/demos" },
   { label: "Photography", href: "/photography" },
   { label: "Blog", href: "/writing" },
 ];
