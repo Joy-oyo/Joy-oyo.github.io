@@ -447,6 +447,8 @@ export type DemoProject = {
   tag: string;
   body: string;
   status: "Planned" | "In progress" | "Available";
+  format: "Interactive demo" | "Video showcase";
+  formatNote: string;
   href?: string;
   cover?: string;
   stack?: string[];
@@ -458,6 +460,8 @@ export const demoProjects: DemoProject[] = [
     title: "Agent Operations Center",
     tag: "AI / Enterprise",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "A browser-based operations console with simulated agents, approvals, and traces.",
     body: "Enterprise agents, tool calling, MCP, approvals, and observability.",
   },
   {
@@ -465,6 +469,8 @@ export const demoProjects: DemoProject[] = [
     title: "World Model Playground",
     tag: "AI / Vision",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "Upload a short clip and explore predictions from an online vision model.",
     body: "Analyze videos, predict what happens next, and identify physical risks.",
   },
   {
@@ -472,6 +478,8 @@ export const demoProjects: DemoProject[] = [
     title: "Adaptive Social Agent",
     tag: "AI / HCI",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "A live text or voice conversation with visible adaptation controls.",
     body: "An AI character that adjusts to the user's emotion, knowledge, and communication style.",
   },
   {
@@ -479,6 +487,8 @@ export const demoProjects: DemoProject[] = [
     title: "AI Architecture Sandbox",
     tag: "AI / Infrastructure",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "Build a system diagram in the browser and compare estimated tradeoffs.",
     body: "Visually design AI systems and estimate latency, cost, scaling, and bottlenecks.",
   },
   {
@@ -486,6 +496,8 @@ export const demoProjects: DemoProject[] = [
     title: "AI Interview Simulator",
     tag: "AI / Simulation",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "Run a short interview session and receive an immediate structured scorecard.",
     body: "Realistic hiring managers, customers, or CTOs with scoring and feedback.",
   },
   {
@@ -493,6 +505,8 @@ export const demoProjects: DemoProject[] = [
     title: "Language-to-Robot Planner",
     tag: "AI / Robotics",
     status: "Planned",
+    format: "Video showcase",
+    formatNote: "A recorded Unity simulation will show planning, execution, and obstacle recovery.",
     body: "Instruct a simulated robot in Unity to complete tasks and replan around obstacles.",
   },
   {
@@ -500,6 +514,8 @@ export const demoProjects: DemoProject[] = [
     title: "Multimodal Product Tester",
     tag: "AI / UX",
     status: "Planned",
+    format: "Interactive demo",
+    formatNote: "Upload screenshots or a screen recording and receive a prioritized UX review.",
     body: "AI reviews websites, screen recordings, or apps for UX and usability issues.",
   },
   {
@@ -507,6 +523,8 @@ export const demoProjects: DemoProject[] = [
     title: "AI Game Director",
     tag: "AI / Gaming",
     status: "Planned",
+    format: "Video showcase",
+    formatNote: "A gameplay video will compare dynamic director decisions across play styles.",
     body: "Dynamically changes difficulty, story, and NPC behavior based on the player.",
   },
 ];

@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <>
       <SceneBackground />
-      <main className="relative">
+      <main id="main" className="relative">
         <Landing />
         <TimelineSection />
       </main>

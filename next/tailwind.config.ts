@@ -19,15 +19,33 @@ const config: Config = {
         sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
+      backdropBlur: {
+        glass: "20px",
+        "glass-strong": "28px",
+      },
+      boxShadow: {
+        glass:
+          "-8px -8px 18px rgba(255,255,255,0.055), 12px 16px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05)",
+        "glass-lifted":
+          "-10px -10px 22px rgba(255,255,255,0.055), 16px 22px 44px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)",
+      },
+      transitionTimingFunction: {
+        "out-soft": "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       animation: {
         "float-slow": "float 8s ease-in-out infinite",
         "shimmer": "shimmer 3s linear infinite",
         "grain": "grain 8s steps(10) infinite",
+        "rise": "rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
+        },
+        rise: {
+          "0%": { opacity: "0", transform: "translateY(14px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },

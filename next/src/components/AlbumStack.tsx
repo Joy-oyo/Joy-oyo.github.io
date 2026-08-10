@@ -277,6 +277,8 @@ function AlbumCard({
             fill
             sizes="600px"
             className="object-cover"
+            // The top card sits above the fold and is the hero's LCP element.
+            priority={isTop}
           />
         </div>
       )}

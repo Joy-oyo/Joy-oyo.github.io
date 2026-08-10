@@ -6,42 +6,68 @@ import { site } from "@/content/portfolio";
 export const metadata = { title: "Contact — Joy Chen" };
 
 export default function ContactPage() {
+  const focusRing =
+    "outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
+
   return (
     <>
-      <main className="relative pt-32 pb-24">
+      <main id="main" className="relative pb-24 pt-32">
         <PageHeader
           eyebrow="05 · Contact"
           title="Say hi"
           lede="Drop a note, subscribe for the occasional update, or find me elsewhere."
         />
 
-        <section className="mx-auto max-w-xl px-6 mt-20">
+        <section aria-label="Subscribe" className="mx-auto mt-20 max-w-xl px-6">
           <ContactForm />
+        </section>
 
-          <div className="mt-16 text-center text-sm text-ink-50/60">
-            Or reach me directly at{" "}
-            <a
-              href={`mailto:${site.email}`}
-              className="text-ink-50 border-b border-ink-50/40 hover:border-ink-50"
-            >
+        <section
+          aria-label="Other ways to reach me"
+          className="mx-auto mt-6 grid max-w-xl gap-3 px-6 sm:grid-cols-2"
+        >
+          <a
+            href={`mailto:${site.email}`}
+            className={`glass glass-sheen glass-lift group block rounded-2xl px-5 py-5 ${focusRing}`}
+          >
+            <span className="text-[10px] uppercase tracking-[0.28em] text-ink-50/40">
+              Email direct
+            </span>
+            <span className="mt-2 block break-all text-sm text-ink-50/85 transition-colors group-hover:text-ink-50">
               {site.email}
-            </a>
-          </div>
+            </span>
+          </a>
 
-          <div className="mt-10 flex items-center justify-center gap-6 text-xs uppercase tracking-[0.3em]">
-            {site.socials.map((s) => (
-              <a
-                key={s.href}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-ink-50/60 hover:text-ink-50"
-              >
-                {s.label}
-              </a>
-            ))}
+          <div className="glass glass-sheen rounded-2xl px-5 py-5">
+            <span className="text-[10px] uppercase tracking-[0.28em] text-ink-50/40">
+              Elsewhere
+            </span>
+            <ul className="mt-2 space-y-1.5">
+              {site.socials.map((s) => (
+                <li key={s.href}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`group inline-flex items-center gap-2 text-sm text-ink-50/70 transition-colors hover:text-ink-50 ${focusRing}`}
+                  >
+                    {s.label}
+                    <span
+                      aria-hidden
+                      className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    >
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
+
+        <p className="mx-auto mt-8 max-w-xl px-6 text-center text-xs text-ink-50/35">
+          Based in {site.location} · usually replies within a few days.
+        </p>
       </main>
       <Footer />
     </>

@@ -27,10 +27,10 @@ export default function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-ink-50/50"
+            className="glass-chip glass-sheen inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[10px] uppercase tracking-[0.34em] text-ink-50/60"
           >
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400/80 shadow-[0_0_12px_rgba(52,211,153,0.7)]" />
-            Available · Palo Alto
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400/90 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+            Available · {site.location}
           </motion.div>
 
           {/* H1 — name */}
@@ -38,7 +38,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.0, delay: 0.1, ease }}
-            className="display text-gradient mt-5 text-5xl md:text-6xl lg:text-7xl leading-[1.15] pb-2"
+            className="display text-gradient mt-6 text-5xl md:text-6xl lg:text-7xl leading-[1.15] pb-2"
           >
             {site.name}
           </motion.h1>
@@ -54,35 +54,37 @@ export default function Landing() {
           </motion.p>
 
           {/* Currently */}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.35, ease }}
-            className="mt-4 text-sm md:text-[15px] text-ink-50/60 leading-[1.6] max-w-md"
+            className="glass glass-sheen mt-6 max-w-md rounded-2xl px-5 py-4"
           >
-            <span className="text-ink-50/40 uppercase tracking-[0.25em] text-[10px] mr-2">
-              Now ·
+            <span className="block text-[10px] uppercase tracking-[0.28em] text-ink-50/40">
+              Now
             </span>
-            {site.currently}
-          </motion.p>
+            <p className="mt-2 text-sm leading-[1.65] text-ink-50/70 md:text-[15px]">
+              {site.currently}
+            </p>
+          </motion.div>
 
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5, ease }}
-            className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm"
+            className="mt-8 flex flex-wrap items-center gap-3 text-sm"
           >
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-950 px-5 py-2.5 font-medium hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 outline-none"
+              className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-950 px-5 py-3 font-medium hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 outline-none"
             >
               Say hi
               <span aria-hidden>→</span>
             </a>
             <a
               href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2 text-ink-50/70 hover:text-ink-50 border-b border-ink-50/20 hover:border-ink-50/80 pb-0.5 transition-colors"
+              className="glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-5 py-3 text-ink-50/75 transition-colors hover:text-ink-50 focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 outline-none"
             >
               {site.email}
             </a>
@@ -108,7 +110,7 @@ export default function Landing() {
                   )
                 }
                 aria-label="Previous album"
-                className="rounded border border-ink-50/15 px-1.5 py-0.5 font-mono text-[10px] text-ink-50/60 hover:text-ink-50 hover:border-ink-50/40 transition-colors"
+                className="glass-chip flex h-8 w-8 items-center justify-center rounded-full font-mono text-[11px] text-ink-50/65 transition-colors hover:text-ink-50 focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 outline-none"
               >
                 ←
               </button>
@@ -120,7 +122,7 @@ export default function Landing() {
                   )
                 }
                 aria-label="Next album"
-                className="rounded border border-ink-50/15 px-1.5 py-0.5 font-mono text-[10px] text-ink-50/60 hover:text-ink-50 hover:border-ink-50/40 transition-colors"
+                className="glass-chip flex h-8 w-8 items-center justify-center rounded-full font-mono text-[11px] text-ink-50/65 transition-colors hover:text-ink-50 focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 outline-none"
               >
                 →
               </button>

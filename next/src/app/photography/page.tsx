@@ -8,18 +8,21 @@ export const metadata = { title: "Photography — Joy Chen" };
 export default function PhotographyPage() {
   return (
     <>
-      <main className="relative pt-32 pb-24">
+      <main id="main" className="relative pb-24 pt-32">
         <PageHeader
           eyebrow="02 · Photography"
           title="Light, texture, quiet"
-          lede="A small collection of tree studies. Click any frame for a closer look."
+          lede="A small collection of tree studies — the same subject followed across a single day, from morning through dusk."
         />
 
-        <section className="mx-auto max-w-6xl px-6 mt-20 columns-1 md:columns-2 gap-6 [column-fill:_balance]">
+        <section
+          aria-label="Photographs"
+          className="mx-auto mt-20 max-w-6xl columns-1 gap-6 px-6 [column-fill:_balance] md:columns-2"
+        >
           {photos.map((p, i) => (
             <figure
               key={p.src}
-              className="mb-6 break-inside-avoid overflow-hidden rounded-2xl glass group relative"
+              className="glass-card glass-sheen glass-lift group relative isolate mb-6 break-inside-avoid overflow-hidden rounded-[1.75rem]"
             >
               <div className="relative aspect-[4/5]">
                 <Image
@@ -27,12 +30,26 @@ export default function PhotographyPage() {
                   alt={p.alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-transform duration-[900ms] ease-out-soft group-hover:scale-[1.04]"
                   priority={i < 2}
                 />
+                {/* Gradient scrim keeps the glass caption legible over any frame. */}
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink-950/85 via-ink-950/25 to-transparent"
+                />
               </div>
-              <figcaption className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-black/70 to-transparent text-xs uppercase tracking-[0.3em] text-ink-50/80 opacity-0 group-hover:opacity-100 transition-opacity">
-                {p.caption}
+
+              {/* Always visible — hover-only captions are invisible on touch. */}
+              <figcaption className="absolute inset-x-4 bottom-4">
+                <span className="glass-chip glass-sheen flex items-center justify-between gap-4 rounded-2xl px-4 py-3">
+                  <span className="text-[11px] uppercase tracking-[0.28em] text-ink-50/85">
+                    {p.caption}
+                  </span>
+                  <span className="font-mono text-[10px] text-ink-50/45">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </span>
               </figcaption>
             </figure>
           ))}

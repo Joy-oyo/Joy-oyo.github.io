@@ -27,6 +27,12 @@ html, body {
   overflow-x: hidden;
 }
 
+html {
+  /* Anchor targets clear the fixed nav instead of hiding under it. */
+  scroll-padding-top: 6.5rem;
+  scroll-behavior: smooth;
+}
+
 a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--klein); color: #fff; }
@@ -34,8 +40,30 @@ a { color: inherit; text-decoration: none; }
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(245,245,240,0.1); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(245,245,240,0.2); }
+::-webkit-scrollbar-thumb { background: rgba(245,245,240,0.16); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(245,245,240,0.28); }
+
+/* Keyboard-only skip link — first stop in the tab order. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.65rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: rgba(8, 8, 14, 0.92);
+  border: 1px solid rgba(245, 245, 240, 0.2);
+  transform: translateY(-160%);
+  transition: transform 0.25s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
 
 /* Film grain overlay */
 .grain::before {
@@ -81,7 +109,9 @@ a { color: inherit; text-decoration: none; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  html { scroll-behavior: auto !important; }
   .grain::before { animation: none !important; }
+  .glass-lift:hover { transform: none !important; }
 }
 
 /* Utility: serif display */
@@ -95,19 +125,171 @@ a { color: inherit; text-decoration: none; }
   padding-bottom: 0.08em;
 }
 
-/* Glassmorphism */
-.glass {
-  background: rgba(245, 245, 240, 0.04);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(245, 245, 240, 0.1);
+/* ───────────────────────────────────────────────────────────────
+   Claymorphism system — dark AI edition
+   Surfaces read as soft, matte, extruded clay pressed out of the
+   near-black backdrop rather than glass: opaque fills, no blur,
+   and a dual-tone shadow pair (a faint highlight lifting the edge
+   toward the viewer, a soft dark shadow grounding it) that reads as
+   a puffy, pressable pillow. Four tiers share the same shadow
+   language and inset rim: chip < glass < card < strong.
+   ─────────────────────────────────────────────────────────────── */
+
+:root {
+  --glass-tint: 245, 245, 240;
+  --glass-ink: 8, 8, 14;
+  --glass-border: rgba(245, 245, 240, 0.07);
+  --glass-border-hover: rgba(245, 245, 240, 0.16);
+  --clay-hi: rgba(255, 255, 255, 0.055);
+  --clay-lo: rgba(0, 0, 0, 0.55);
+  --clay-lo-soft: rgba(0, 0, 0, 0.4);
+  --clay-rim: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -10px 18px -14px rgba(0, 0, 0, 0.6);
+  --glass-shadow: -8px -8px 18px var(--clay-hi), 12px 16px 32px var(--clay-lo), var(--clay-rim);
+  --glass-shadow-lifted: -10px -10px 22px var(--clay-hi), 16px 22px 44px var(--clay-lo),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -10px 18px -14px rgba(0, 0, 0, 0.55);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.glass,
+.glass-chip,
+.glass-card,
 .glass-strong {
-  background: rgba(10, 10, 18, 0.6);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(245, 245, 240, 0.12);
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(var(--glass-tint), 0.055) 0%,
+    rgba(var(--glass-ink), 0.82) 60%,
+    rgba(var(--glass-ink), 0.94) 100%
+  );
+  border: 1px solid var(--glass-border);
+  box-shadow: -5px -5px 12px var(--clay-hi), 7px 10px 20px var(--clay-lo-soft), var(--clay-rim);
+}
+
+/* Small pills, badges, and inline meta — a lighter press, tighter shadow. */
+.glass-chip {
+  background: linear-gradient(
+    160deg,
+    rgba(var(--glass-tint), 0.07) 0%,
+    rgba(var(--glass-ink), 0.78) 100%
+  );
+  box-shadow: -3px -3px 8px var(--clay-hi), 5px 6px 12px var(--clay-lo-soft), var(--clay-rim);
+}
+
+/* Content cards — adds depth and a lift affordance. */
+.glass-card {
+  background: linear-gradient(
+    160deg,
+    rgba(var(--glass-tint), 0.06) 0%,
+    rgba(0, 20, 60, 0.12) 35%,
+    rgba(var(--glass-ink), 0.88) 70%,
+    rgba(var(--glass-ink), 0.96) 100%
+  );
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.55s var(--ease-out-soft), box-shadow 0.55s var(--ease-out-soft),
+    border-color 0.4s ease;
+}
+
+/* Heavier panels — forms, modals, anything holding input. */
+.glass-strong {
+  background: linear-gradient(
+    160deg,
+    rgba(var(--glass-tint), 0.06) 0%,
+    rgba(0, 20, 60, 0.14) 30%,
+    rgba(var(--glass-ink), 0.93) 65%,
+    rgba(var(--glass-ink), 0.99) 100%
+  );
+  box-shadow: var(--glass-shadow-lifted);
+}
+
+/* Soft top highlight — the detail that reads as a puffed, moulded rim
+   rather than a flat panel. */
+.glass-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.05) 22%,
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.glass-lift {
+  transition: transform 0.55s var(--ease-out-soft), box-shadow 0.55s var(--ease-out-soft),
+    border-color 0.4s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-lift:hover {
+    transform: translateY(-4px);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-lifted);
+  }
+
+  .glass-lift:hover.glass-sheen::before,
+  .glass-lift:hover .glass-sheen::before {
+    opacity: 1;
+  }
+}
+
+/* Pressed / active state — the clay dents inward instead of lifting.
+   Applied automatically to real buttons so controls feel tactile. */
+.glass:active,
+.glass-chip:active,
+.glass-card:active,
+.glass-strong:active,
+button.glass-lift:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: -3px -3px 8px var(--clay-hi), 4px 5px 10px var(--clay-lo-soft),
+    inset 2px 3px 8px rgba(0, 0, 0, 0.5), inset -2px -3px 6px rgba(255, 255, 255, 0.04);
+  transition: transform 0.12s var(--ease-out-soft), box-shadow 0.12s var(--ease-out-soft);
+}
+
+/* Klein-blue bloom that can sit behind any clay surface — the "AI"
+   ambient glow, brightening on hover like a lit circuit underneath. */
+.glass-bloom::after {
+  content: "";
+  position: absolute;
+  inset: -30% -10% auto -10%;
+  height: 70%;
+  border-radius: 9999px;
+  background: radial-gradient(ellipse at center, rgba(0, 47, 167, 0.32), transparent 70%);
+  filter: blur(52px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: -1;
+}
+
+.glass-lift:hover .glass-bloom::after,
+.glass-bloom:hover::after {
+  opacity: 1;
+}
+
+/* Users who ask for less transparency get a fully flat, opaque fill —
+   clay is already near-opaque, so this just drops the tint gradient. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-chip,
+  .glass-card,
+  .glass-strong {
+    background: rgba(var(--glass-ink), 0.97);
+  }
+
+  .glass-sheen::before,
+  .glass-bloom::after {
+    display: none;
+  }
 }
 
 /* Radial gradient util */
