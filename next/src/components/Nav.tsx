@@ -16,6 +16,7 @@ const links = [
   { label: "Demos", href: "/demos" },
   { label: "Photography", href: "/photography" },
   { label: "Blog", href: "/writing" },
+  { label: "Reading", href: "/reading" },
 ];
 
 export default function Nav() {
@@ -121,7 +122,9 @@ export default function Nav() {
                       href={l.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative block rounded-full px-4 py-2 text-xs uppercase tracking-wide transition-colors",
+                        // Tighter at md so five items plus the CTA still fit on
+                        // a tablet; full padding returns at lg.
+                        "relative block rounded-full px-3 py-2 text-xs uppercase tracking-wide transition-colors lg:px-4",
                         focusRing,
                         active ? "text-ink-950" : "text-ink-50/65 hover:text-ink-50"
                       )}

@@ -279,10 +279,7 @@ export default function TimelineSection() {
         <span className="text-[10px] uppercase tracking-[0.4em] text-ink-50/50">
           Get in touch
         </span>
-        <p className="display text-3xl md:text-5xl mt-5 text-gradient leading-tight max-w-2xl">
-          Let&rsquo;s <span className="italic text-ink-50/80">talk about trees.</span>
-        </p>
-        <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
+        <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
           <a
             href={`mailto:${site.email}`}
             className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-950 px-5 py-2.5 font-medium hover:bg-white transition-colors"

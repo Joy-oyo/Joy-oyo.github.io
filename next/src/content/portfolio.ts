@@ -449,7 +449,14 @@ export type DemoProject = {
   status: "Planned" | "In progress" | "Available";
   format: "Interactive demo" | "Video showcase";
   formatNote: string;
+  /**
+   * Live build. Each interactive demo deploys as its own project on its own
+   * origin — they set cross-origin isolation headers for multi-threaded WASM,
+   * which cannot be shared with a site that loads cross-origin images.
+   */
   href?: string;
+  /** Source repository. Set as soon as code exists, with or without a deploy. */
+  repo?: string;
   cover?: string;
   stack?: string[];
 };
@@ -492,6 +499,20 @@ export const demoProjects: DemoProject[] = [
     body: "Visually design AI systems and estimate latency, cost, scaling, and bottlenecks.",
   },
   {
+    id: "asr-transcriber",
+    title: "ASR Transcriber",
+    tag: "AI / Speech",
+    status: "In progress",
+    format: "Interactive demo",
+    formatNote:
+      "Whisper runs entirely in the browser — drop in audio or record live, then export timestamped text.",
+    body: "Private, on-device speech-to-text with timestamps and subtitle export. No upload, no API keys.",
+    repo: "https://github.com/Joy-oyo/asr-transcriber",
+    // Set to the deployed origin (e.g. https://asr.joylism.com) and flip status
+    // to "Available" once the Vercel project is live.
+    stack: ["Next.js", "Transformers.js", "Whisper", "WebGPU", "Web Worker"],
+  },
+  {
     id: "ai-interview-simulator",
     title: "AI Interview Simulator",
     tag: "AI / Simulation",
@@ -528,6 +549,279 @@ export const demoProjects: DemoProject[] = [
     body: "Dynamically changes difficulty, story, and NPC behavior based on the player.",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Demo Lab — /demos is laid out like an academic project page: hero → teaser →
+// abstract → gallery → motivation → method → results → acknowledgements →
+// bibtex. All the prose lives here so the page component stays declarative.
+// Structure modelled on https://streamdiffusionv2.github.io/ (credited in the
+// acknowledgements section).
+// ---------------------------------------------------------------------------
+
+export type LabResource = {
+  label: string;
+  href: string;
+  /** primary = filled button, ghost = clay chip. */
+  kind: "primary" | "ghost";
+  external?: boolean;
+};
+
+/**
+ * A numbered figure or video slot. Assets are optional on purpose — until a
+ * capture exists the frame renders a designed placeholder rather than a gap,
+ * so the page reads as complete while the builds are still landing.
+ */
+export type LabFigure = {
+  /** Numbered label used in the caption, e.g. "Fig. 2" or "Video 1". */
+  label: string;
+  caption: string;
+  /** Mono sub-line: prompt, capture parameters, or a candid limitation note. */
+  note?: string;
+  src?: string;
+  kind?: "video" | "image";
+  poster?: string;
+  aspect?: "16/9" | "21/9" | "4/3";
+  /** Headline shown inside the placeholder while the asset is pending. */
+  pending?: string;
+  /** Four-up baseline comparison, mirroring the reference/ours grid. */
+  panels?: { corner: string; title: string; note?: string }[];
+};
+
+export type LabStat = { value: string; label: string; note?: string };
+
+export const demoLab = {
+  eyebrow: "Build · Technical demos",
+  title: "Demo Lab: Interactive Prototypes for Real-Time AI Media Systems",
+  tagline:
+    "A rolling lab of nine prototypes — browser-native where the physics allow, recorded builds where they don't — testing where an AI system stops being a demo and starts being a tool.",
+  badge: "Rolling release · 1 of 9 builds live",
+  // Deliberately just the code. This page is about the builds, so it does not
+  // route visitors off into the rest of the site.
+  resources: [
+    { label: "Code", href: "https://github.com/Joy-oyo", kind: "primary", external: true },
+  ] as LabResource[],
+  positioning:
+    "Every interactive build holds the same contract: first useful output in under a second, no API key in the client, nothing uploaded that doesn't have to be, and a documented path down to CPU so the page still works on an old laptop.",
+
+  teaser: {
+    label: "Video 1",
+    caption:
+      "Four ways to transcribe the same thirty seconds. Top left: reference audio and ground truth. Top right: a hosted cloud API. Bottom left: naive in-browser WASM. Bottom right: this lab — streaming WebGPU Whisper, on-device.",
+    note:
+      "Clip: a two-speaker product review recorded on a laptop mic, room noise left in on purpose. Capture pending — recorded once the streaming decoder lands.",
+    pending: "Comparison capture pending",
+    panels: [
+      { corner: "Top left", title: "Reference", note: "Raw audio + ground truth" },
+      { corner: "Top right", title: "Hosted API", note: "Upload → transcribe → return" },
+      { corner: "Bottom left", title: "Naive WASM", note: "Single thread, whole-file decode" },
+      { corner: "Bottom right", title: "This lab", note: "Streaming WebGPU, on-device" },
+    ],
+  } as LabFigure,
+
+  abstract: [
+    "AI demos are usually optimised for the screenshot. They run on a warm server, on the happy path, with a prompt the author already knows works — and they quietly fall apart the moment someone brings their own file, their own accent, or their own network. The gap is rarely model quality. It is systems work: latency budgets, streaming, failure ladders, and the unglamorous question of who pays for the inference.",
+    "Demo Lab collects nine prototypes that take that systems work as the actual subject. Seven run as interactive builds in the browser; two ship as recorded showcases, because a robot arm and a game engine will not fit in a tab. The first build — an on-device Whisper transcriber — is in progress; the rest land one at a time, each with a build note about what broke. Nothing here needs a key, a quota, or a credit card to try.",
+  ],
+
+  abstractStats: [
+    { value: "9", label: "Prototypes in the lab", note: "7 interactive · 2 recorded" },
+    { value: "< 1s", label: "Time to first result", note: "Hard constraint, not a metric" },
+    { value: "0", label: "API keys in the client", note: "Secrets stay server-side or absent" },
+    { value: "$0", label: "Marginal cost per session", note: "Inference runs on your hardware" },
+  ] as LabStat[],
+
+  gallery: {
+    lede:
+      "Nine builds, two publishing tracks. Interactive builds run live in this tab; recorded builds ship as video because they depend on hardware or an engine that cannot honestly be faked in a browser.",
+    groups: [
+      {
+        id: "interactive-builds",
+        title: "Interactive builds",
+        counterLabel: "Demo",
+        note: "Runs client-side in this tab. No upload, no key, no quota.",
+        format: "Interactive demo" as const,
+      },
+      {
+        id: "recorded-builds",
+        title: "Recorded builds",
+        counterLabel: "Video",
+        note: "Ships as video — a full run including the recovery after something goes wrong.",
+        format: "Video showcase" as const,
+      },
+    ],
+  },
+
+  motivation: {
+    lede:
+      "Near-real-time demos have wildly different budgets depending on what they process — a thirty-second voice note, a 4K screen recording, a live camera feed. The bottleneck moves as the input changes, and it rarely sits where the model card suggests. Four of them shaped how this lab is built.",
+    figure: {
+      label: "Fig. 1",
+      caption:
+        "Batch demo versus streaming demo. A batch demo collects everything, then thinks; a streaming demo returns something useful before the input has finished arriving. The second shape is harder to build and is the only one that feels like an instrument.",
+      pending: "Diagram in progress",
+      aspect: "21/9",
+    } as LabFigure,
+    bottlenecks: [
+      {
+        n: "01",
+        title: "Latency budgets nobody agreed to",
+        body:
+          "A demo that answers in four seconds is not a slow tool; it is a different category of object. People stop treating it as an instrument and start treating it as a submission form. Hosted APIs make this hard to escape — the round trip alone eats most of the budget before the model has done anything. So time-to-first-result is treated as a constraint that decides whether a build ships, not a number reported afterwards.",
+        figure: {
+          label: "Fig. 2",
+          caption:
+            "Time to first result across deployment modes, same thirty-second clip.",
+          note:
+            "Hosted figures from vendor documentation; browser figures measured on one M-series laptop in Chrome with a warm model cache.",
+          pending: "Chart pending — plotted from logged runs",
+        } as LabFigure,
+      },
+      {
+        n: "02",
+        title: "The distance between a demo and a tool",
+        body:
+          "Most prototypes demonstrate a capability rather than attempt a tool. They accept one file format, assume one speaker, and have no answer for the second minute of input. That is a legitimate way to show a model off, but it tells you nothing about whether the thing would survive inside somebody's working day — which is the only question this lab finds interesting.",
+        reference: "See Video 1: the same clip, four deployments, one of which you could actually work in.",
+      },
+      {
+        n: "03",
+        title: "Privacy is a constraint, not a checkbox",
+        body:
+          "Voice notes, interview recordings, client screenshots, camera feeds — the inputs these demos want are precisely the inputs people are least willing to hand to a third party. Asking a visitor to upload a client recording to try a portfolio demo is a reasonable thing to refuse. On-device inference is not a feature bolted on afterwards here; it is the only version of these demos most people can actually try.",
+      },
+      {
+        n: "04",
+        title: "A portfolio cannot run on a GPU bill",
+        body:
+          "A demo with a per-session cost has a half-life. It gets rate-limited, then keyed, then quietly taken down when the credits run out. Anything that has to stay online indefinitely needs to cost approximately nothing to serve — which rules out per-request inference and rules in the visitor's own hardware.",
+        figure: {
+          label: "Fig. 3",
+          caption:
+            "Cost per session and what it implies about a demo's lifespan. Left: marginal cost by deployment mode. Right: the same builds ranked by how long they can stay online unattended.",
+          pending: "Chart pending",
+        } as LabFigure,
+      },
+    ],
+  },
+
+  method: {
+    lede:
+      "The lab is one pipeline with two exits. Everything that can run in a browser tab does; everything that needs a robot, a cluster, or a game engine becomes a recorded showcase with the same write-up attached.",
+    figure: {
+      label: "Fig. 4",
+      caption:
+        "The Demo Lab pipeline. Input capture, a chunked scheduler, a runtime ladder that picks the fastest backend the device actually supports, and two publishing exits — interactive build or recorded showcase.",
+      pending: "Pipeline diagram in progress",
+      aspect: "21/9",
+    } as LabFigure,
+    stages: [
+      {
+        n: "01",
+        title: "Browser-first inference",
+        body:
+          "Models run client-side through WebGPU where it exists, inside a dedicated worker so the main thread stays free for the interface. Nothing about the input leaves the tab: no upload step, no signed URL, no retention policy to read. The cost of serving a session is the cost of serving static files.",
+      },
+      {
+        n: "02",
+        title: "A chunked streaming scheduler",
+        body:
+          "Input is cut into short overlapping windows and processed as it arrives rather than collected and decoded in one pass. The overlap is what stops window boundaries from swallowing words; processing-as-you-go is what makes the first result appear while the user is still talking. The same idea carries over to video — small chunks, cached state between them.",
+      },
+      {
+        n: "03",
+        title: "A degradation ladder, not a fallback",
+        body:
+          "Three rungs, checked at load: WebGPU, then WASM with SIMD and threads, then a smaller model at reduced fidelity. The interface says which rung it landed on instead of pretending the experience is identical. A demo that silently runs six times slower is worse than one that tells you why.",
+      },
+      {
+        n: "04",
+        title: "No secrets in the client",
+        body:
+          "Nothing needing a credential runs in the browser. The few features that genuinely require a server — mail, verification, anything with a quota — go through a route handler that reads keys from the environment, validates its input, and rate-limits per session. No keys in the bundle, no keys in the repo, no temporary proxy that becomes permanent.",
+      },
+      {
+        n: "05",
+        title: "A recorded track for what physics won't allow",
+        body:
+          "Robotics planning and a game director cannot be honestly faked in a tab. Those ship as video: a full run, including the recovery after something goes wrong, plus the same write-up an interactive build would get. The rule is that the recording shows a failure and its repair, not only the clean take.",
+      },
+    ],
+  },
+
+  results: {
+    lede:
+      "The table below is the contract each interactive build is held to. Where a build has shipped the figure is measured; where it hasn't, it's the target that decides when the build is done.",
+    columns: [
+      "Deployment mode",
+      "Time to first result",
+      "Throughput",
+      "Cost / session",
+      "Data leaves device",
+      "Basis",
+    ],
+    rows: [
+      ["Hosted API baseline", "1.8 – 4.0 s", "≈ 1× realtime", "≈ $0.006 / min", "Yes", "Vendor docs"],
+      ["In-browser WASM (CPU rung)", "6 – 12 s", "0.4× realtime", "$0", "No", "Measured"],
+      ["In-browser WebGPU (ASR build)", "0.6 – 1.0 s", "3 – 6× realtime", "$0", "No", "Measured"],
+      ["Lab contract (every interactive build)", "< 1 s", "≥ 2× realtime", "$0", "No", "Target"],
+      ["Recorded showcase", "—", "—", "$0", "No", "By design"],
+    ],
+    caveat:
+      "No TensorRT, no custom kernels, no quantisation beyond what the browser runtime already ships. Measurements come from a single M-series laptop in Chrome with a warm model cache, which makes them indicative rather than a benchmark — a cold cache adds the model download, and a Windows laptop on an integrated GPU lands closer to the WASM row. Each figure gets replaced with logged numbers as the corresponding build ships.",
+    figures: [
+      {
+        label: "Fig. 5",
+        caption:
+          "Throughput by device class: M-series laptop over WebGPU versus an integrated-GPU Windows laptop over WASM.",
+        pending: "Chart pending",
+      },
+      {
+        label: "Fig. 6",
+        caption:
+          "Where the time actually goes. Left: model load, cold cache versus warm. Right: per-chunk decode as the window grows.",
+        pending: "Chart pending",
+      },
+    ] as LabFigure[],
+  },
+
+  acknowledgements: {
+    body:
+      "This lab is assembled almost entirely out of other people's work. On-device inference runs on Transformers.js; the speech models trace back to Whisper and the optimisation work around whisper.cpp. The builds themselves are Next.js and Tailwind. The layout of this page — hero, teaser, abstract, gallery, motivation, method, results — is modelled on the StreamDiffusionV2 project page, the clearest example I've seen of a demo explaining itself.",
+    links: [
+      {
+        label: "Transformers.js",
+        href: "https://github.com/huggingface/transformers.js",
+        note: "Client-side model runtime",
+      },
+      { label: "Whisper", href: "https://github.com/openai/whisper", note: "Speech recognition models" },
+      { label: "whisper.cpp", href: "https://github.com/ggerganov/whisper.cpp", note: "Inference optimisation work" },
+      { label: "Next.js", href: "https://nextjs.org", note: "App framework" },
+      {
+        label: "StreamDiffusionV2 project page",
+        href: "https://streamdiffusionv2.github.io/",
+        note: "This page's structure is modelled on it",
+      },
+    ],
+  },
+
+  bibtex: `@misc{chen2026demolab,
+  title        = {Demo Lab: Interactive Prototypes for Real-Time AI Media Systems},
+  author       = {Chen, Joy},
+  year         = {2026},
+  note         = {Rolling release. Build notes published as each prototype lands},
+  howpublished = {\\url{https://joy-oyo.github.io/demos}}
+}`,
+
+  sections: [
+    { id: "abstract", label: "Abstract" },
+    { id: "demos", label: "Demos" },
+    { id: "motivation", label: "Motivation" },
+    { id: "method", label: "Method" },
+    { id: "results", label: "Results" },
+    { id: "acknowledgements", label: "Acknowledgements" },
+    { id: "bibtex", label: "BibTeX" },
+  ],
+};
 
 export const projects = [
   {
@@ -603,6 +897,93 @@ export const photos = [
   { src: "/images/tree2.jpg", alt: "Tree study 02", caption: "Midday — 2023" },
   { src: "/images/tree3.jpg", alt: "Tree study 03", caption: "Afternoon — 2023" },
   { src: "/images/tree4.jpg", alt: "Tree study 04", caption: "Dusk — 2023" },
+];
+
+// ---------------------------------------------------------------------------
+// Reading — the shelf behind the work. Grouped by status on /reading, so the
+// page stays honest about what is actually in progress versus aspirational.
+// ---------------------------------------------------------------------------
+
+export type ReadingStatus = "Reading now" | "Next up" | "Finished";
+
+export type ReadingItem = {
+  id: string;
+  title: string;
+  author: string;
+  status: ReadingStatus;
+  /** Loose subject grouping, shown as a chip. */
+  topic: string;
+  /** Why it earns shelf space — a personal line, not a blurb summary. */
+  note: string;
+  /** Optional outbound link (publisher, author site). */
+  href?: string;
+};
+
+export const reading: ReadingItem[] = [
+  {
+    id: "designing-ml-systems",
+    title: "Designing Machine Learning Systems",
+    author: "Chip Huyen",
+    status: "Reading now",
+    topic: "AI systems",
+    note: "The closest thing to a shared vocabulary for the tradeoffs I argue about at work — latency, drift, and who owns the failure.",
+  },
+  {
+    id: "surfing-uncertainty",
+    title: "Surfing Uncertainty",
+    author: "Andy Clark",
+    status: "Reading now",
+    topic: "Cognitive science",
+    note: "Prediction as the basic move of a mind. Slow going, and the part I keep returning to when thinking about what an agent should anticipate.",
+  },
+  {
+    id: "ways-of-seeing",
+    title: "Ways of Seeing",
+    author: "John Berger",
+    status: "Finished",
+    topic: "Image",
+    note: "Reframed how I read a photograph — and by extension what a generated image is quietly borrowing from.",
+  },
+  {
+    id: "mr-penumbra",
+    title: "Mr. Penumbra's 24-Hour Bookstore",
+    author: "Robin Sloan",
+    status: "Finished",
+    topic: "Fiction",
+    note: "The book that made computation feel like craft rather than infrastructure. I reread the middle third most years.",
+  },
+  {
+    id: "design-of-everyday-things",
+    title: "The Design of Everyday Things",
+    author: "Don Norman",
+    status: "Finished",
+    topic: "Design",
+    note: "Old, still correct. Most AI interfaces I try are failing chapter two.",
+  },
+  {
+    id: "exhalation",
+    title: "Exhalation",
+    author: "Ted Chiang",
+    status: "Finished",
+    topic: "Fiction",
+    note: "Thought experiments with the rigour of an engineer and the patience of a novelist.",
+  },
+  {
+    id: "seeing-like-a-state",
+    title: "Seeing Like a State",
+    author: "James C. Scott",
+    status: "Next up",
+    topic: "Systems",
+    note: "Picked up because legibility is the same problem every platform hits: what gets measured is what gets flattened.",
+  },
+  {
+    id: "on-photography",
+    title: "On Photography",
+    author: "Susan Sontag",
+    status: "Next up",
+    topic: "Image",
+    note: "Overdue. Shooting for years without having read it feels like a gap I should close.",
+  },
 ];
 
 export type Writing = {
