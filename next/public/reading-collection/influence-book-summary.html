@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An interactive chapter-by-chapter guide to Influence: The Psychology of Persuasion by Robert B. Cialdini.">
+  <title>Influence — Interactive book summary</title>
+  <style>
+    :root {
+      --paper: #f7f6f2;
+      --white: #ffffff;
+      --ink: #171717;
+      --muted: #696969;
+      --line: #d7d5ce;
+      --soft: #eceae4;
+      --red: #e2231a;
+      --red-dark: #b51812;
+      --sidebar: 19rem;
+      --measure: 70ch;
+      --font: Helvetica, Arial, "Noto Sans", sans-serif;
+    ;--fs-1:.66rem;--fs-2:.69rem;--fs-3:.72rem;--fs-4:.79rem;--fs-5:.86rem;--fs-6:.93rem;--fs-7:1rem;--fs-brand:2.15rem;--fs-hero:clamp(3.2rem,7.4vw,7.4rem);--fs-hero-wide:clamp(3.4rem,8vw,8.2rem);--fs-lede:clamp(1.25rem,2.1vw,1.75rem);--fs-theme:clamp(1.45rem,2.4vw,2.05rem);--fs-chapter:clamp(3rem,6.7vw,6.5rem);--fs-number:clamp(2.5rem,5vw,5rem);--fs-lesson:clamp(1.1rem,1.7vw,1.4rem);--fs-bottom:clamp(1.5rem,3vw,2.6rem);--fs-mobile-hero:clamp(3.2rem,17vw,5.5rem);--fs-mobile-chapter:clamp(2.55rem,13vw,4.8rem);}
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: var(--fs-7);
+      line-height: 1.62;
+      text-rendering: optimizeLegibility;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 100;
+      padding: 0.55rem 0.8rem;
+      background: var(--ink);
+      color: #fff;
+      transform: translateY(-180%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .brand {
+      padding: 1.5rem 1.5rem 1.25rem;
+      border-top: 5px solid var(--red);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.6rem;
+      color: var(--red-dark);
+      font-size: var(--fs-2);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: var(--fs-brand);
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      line-height: 0.94;
+    }
+
+    .brand-subtitle {
+      max-width: 24ch;
+      margin: 0.9rem 0 0;
+      color: var(--muted);
+      font-size: var(--fs-4);
+      line-height: 1.45;
+    }
+
+    .nav-label {
+      margin: 0;
+      padding: 1rem 1.5rem 0.5rem;
+      color: var(--muted);
+      font-size: var(--fs-1);
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .chapter-nav {
+      flex: 1;
+      padding: 0 0.75rem 1rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .tab-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.2rem;
+      align-items: start;
+      padding: 0.67rem 0.75rem;
+      border: 0;
+      border-top: 1px solid var(--line);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      transition: background 140ms ease, color 140ms ease;
+    }
+
+    .tab-button:last-child { border-bottom: 1px solid var(--line); }
+    .tab-button:hover { background: var(--paper); }
+    .tab-button:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+
+    .tab-button[aria-selected="true"] {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .tab-number {
+      color: var(--red);
+      font-variant-numeric: tabular-nums;
+      font-size: var(--fs-2);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .tab-button[aria-selected="true"] .tab-number { color: #ff685f; }
+
+    .tab-name {
+      font-size: var(--fs-4);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.5rem 1.25rem;
+      border-top: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: var(--fs-2);
+      line-height: 1.5;
+    }
+
+    .main {
+      min-width: 0;
+      padding: clamp(1.5rem, 4vw, 4.5rem) clamp(1.25rem, 6vw, 7rem) 5rem;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: baseline;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid var(--ink);
+      color: var(--muted);
+      font-size: var(--fs-3);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .topline-left { display: flex; gap: 1rem; align-items: baseline; }
+
+    .collection-link {
+      color: var(--red-dark);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .collection-link:hover, .collection-link:focus-visible { text-decoration: underline; }
+    .topline strong { color: var(--ink); }
+
+    .panel {
+      display: none;
+      animation: reveal 220ms ease-out;
+    }
+
+    .panel.is-active { display: block; }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .panel { animation: none; }
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(12rem, 4fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: end;
+      min-height: 58vh;
+      padding: clamp(2.5rem, 7vw, 7rem) 0 3rem;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .hero h1,
+    .chapter-title {
+      margin: 0;
+      max-width: 13ch;
+      font-size: var(--fs-hero-wide);
+      font-weight: 700;
+      letter-spacing: -0.075em;
+      line-height: 0.84;
+      text-indent: -0.065em;
+    }
+
+    .hero h1 span { color: var(--red); }
+
+    .hero-meta {
+      border-top: 2px solid var(--ink);
+      padding-top: 0.8rem;
+    }
+
+    .hero-meta p { margin: 0 0 1rem; }
+    .hero-meta strong { display: block; font-size: var(--fs-3); text-transform: uppercase; letter-spacing: 0.08em; }
+    .hero-meta span { color: var(--muted); font-size: var(--fs-5); }
+
+    .lede {
+      max-width: var(--measure);
+      margin: 3rem 0;
+      font-size: var(--fs-lede);
+      letter-spacing: -0.025em;
+      line-height: 1.38;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(12rem, 4fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .overview-grid h2,
+    .section-heading {
+      margin: 0 0 1rem;
+      font-size: var(--fs-3);
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .prose { max-width: var(--measure); }
+    .prose p:first-child { margin-top: 0; }
+
+    .edition-note {
+      align-self: start;
+      padding: 1rem;
+      border-top: 3px solid var(--red);
+      background: var(--white);
+      font-size: var(--fs-5);
+    }
+
+    .edition-note strong { display: block; margin-bottom: 0.3rem; }
+
+    .principles {
+      margin: 1.5rem 0 3.5rem;
+      border-top: 3px solid var(--ink);
+    }
+
+    .principle-row {
+      display: grid;
+      grid-template-columns: 2.6rem minmax(8rem, 0.55fr) minmax(0, 1fr);
+      gap: 1rem;
+      align-items: baseline;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .principle-row:hover, .principle-row:focus-within { border-bottom-color: var(--red); }
+
+    .principle-index {
+      color: var(--red);
+      font-size: var(--fs-3);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+
+    .principle-name { font-weight: 700; letter-spacing: -0.02em; }
+    .principle-trigger { color: var(--muted); }
+
+    .chapter-head {
+      display: grid;
+      grid-template-columns: 6rem minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 4rem);
+      align-items: start;
+      min-height: 44vh;
+      padding: clamp(2.5rem, 7vw, 6.5rem) 0 3rem;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .chapter-no {
+      color: var(--red);
+      font-size: var(--fs-number);
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 0.8;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chapter-title {
+      max-width: 15ch;
+      font-size: var(--fs-hero);
+    }
+
+    .chapter-theme {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(13rem, 4fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: 2.5rem 0 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .theme-statement {
+      max-width: 32ch;
+      margin: 0;
+      font-size: var(--fs-theme);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.25;
+    }
+
+    .auto-reaction {
+      align-self: start;
+      margin: 0;
+      padding: 1rem 0 0;
+      border-top: 3px solid var(--red);
+      color: var(--muted);
+      font-size: var(--fs-6);
+    }
+
+    .auto-reaction strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--ink);
+      font-size: var(--fs-2);
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .chapter-body {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(13rem, 4fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: 3rem 0;
+    }
+
+    .chapter-copy { max-width: var(--measure); }
+    .chapter-copy p:first-child { margin-top: 0; }
+
+    .signals {
+      align-self: start;
+      padding: 1.2rem;
+      background: var(--white);
+      border-top: 3px solid var(--ink);
+    }
+
+    .signals h3 {
+      margin: 0 0 0.75rem;
+      font-size: var(--fs-2);
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .signals ul { margin: 0; padding: 0; list-style: none; }
+    .signals li { padding: 0.45rem 0; border-top: 1px solid var(--line); font-size: var(--fs-5); }
+
+    .key-lesson {
+      margin: 0 0 3rem;
+      padding: 1.5rem 0 1.5rem clamp(1rem, 3vw, 2rem);
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      border-left: 6px solid var(--red);
+      font-size: var(--fs-lesson);
+      line-height: 1.45;
+    }
+
+    .key-lesson strong {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: var(--fs-2);
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .chapter-controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+
+    .chapter-controls button {
+      padding: 0.7rem 0;
+      border: 0;
+      border-bottom: 2px solid var(--ink);
+      background: transparent;
+      cursor: pointer;
+      font-size: var(--fs-4);
+      font-weight: 700;
+    }
+
+    .chapter-controls button:hover { color: var(--red); border-color: var(--red); }
+    .chapter-controls button:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+
+    .bottom-line {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 3px solid var(--ink);
+    }
+
+    .bottom-line p {
+      max-width: 45ch;
+      margin: 0;
+      font-size: var(--fs-bottom);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.16;
+    }
+
+    .bottom-line span { color: var(--red); }
+
+    @media (max-width: 860px) {
+      .app { display: block; }
+      .sidebar { position: relative; height: auto; border-right: 0; }
+      .brand { padding: 1.1rem 1.25rem; }
+      .brand-title { font-size: var(--fs-brand); }
+      .brand-subtitle, .sidebar-footer, .nav-label { display: none; }
+      .chapter-nav {
+        display: flex;
+        gap: 0;
+        padding: 0;
+        overflow-x: auto;
+        border-bottom: 2px solid var(--ink);
+      }
+      .tab-button {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 8.4rem;
+        padding: 0.75rem 1rem;
+        border-top: 0;
+        border-right: 1px solid var(--line);
+        border-bottom: 0;
+      }
+      .tab-button:last-child { border-bottom: 0; }
+      .tab-name { white-space: nowrap; }
+      .main { padding-top: 1.25rem; }
+      .hero { min-height: auto; }
+    }
+
+    @media (max-width: 660px) {
+      .topline { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+      .topline-left { width: 100%; justify-content: space-between; }
+      .hero, .overview-grid, .chapter-theme, .chapter-body { grid-template-columns: 1fr; }
+      .hero { gap: 2.5rem; padding-top: 3.5rem; }
+      .hero h1 { font-size: var(--fs-mobile-hero); }
+      .chapter-head { grid-template-columns: 3.5rem 1fr; gap: 0.75rem; min-height: auto; }
+      .chapter-title { font-size: var(--fs-mobile-chapter); }
+      .chapter-no { font-size: var(--fs-number); }
+      .principle-row { grid-template-columns: 2rem 1fr; }
+      .principle-trigger { grid-column: 2; }
+      .chapter-controls { align-items: flex-end; }
+    }
+
+    @media print {
+      .app { display: block; }
+      .sidebar, .chapter-controls, .topline { display: none; }
+      .main { padding: 0; }
+      .panel { display: block !important; page-break-before: always; }
+      .panel:first-child { page-break-before: auto; }
+      .hero, .chapter-head { min-height: 0; }
+    }
+    .chapter-outcome{display:grid;grid-template-columns:minmax(9rem,2fr) minmax(0,5fr) minmax(0,4fr);margin:2rem 0 0;border-top:6px solid var(--red);border-bottom:1px solid var(--ink);background:var(--white)}.outcome-cell{min-width:0;padding:1.2rem;border-right:1px solid var(--line)}.outcome-cell:last-child{border-right:0}.outcome-role{background:var(--soft)}.outcome-label{display:block;margin-bottom:.55rem;color:var(--red-dark);font-size:var(--fs-1);font-weight:700;letter-spacing:.13em;text-transform:uppercase}.outcome-value{margin:0;font-size:var(--fs-lede);font-weight:700;letter-spacing:-.025em;line-height:1.35}.outcome-role .outcome-value{font-size:var(--fs-5);letter-spacing:0;text-transform:uppercase}.chapter-bridge{margin:-1.5rem 0 3rem;padding:.85rem 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:var(--fs-5)}.chapter-bridge strong{color:var(--ink);font-size:var(--fs-1);letter-spacing:.11em;text-transform:uppercase}.book-reality-check{margin:4rem 0 1rem;padding-top:1.5rem;border-top:6px solid var(--ink)}.review-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(13rem,4fr);gap:clamp(2rem,5vw,5rem);align-items:start}.review-title{max-width:12ch;margin:0;font-size:var(--fs-chapter);font-weight:700;letter-spacing:-.065em;line-height:.9}.review-intro{margin:0;padding-top:.8rem;border-top:3px solid var(--red);color:var(--muted)}.review-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin-top:2rem;background:var(--line);border:1px solid var(--line)}.review-point{padding:1.2rem;background:var(--paper)}.review-point strong{display:block;margin-bottom:.45rem;font-size:var(--fs-3)}.review-point span{color:var(--muted);font-size:var(--fs-5)}.outcome-hard .chapter-outcome{border-top-color:var(--ink);box-shadow:inset 6px 0 0 var(--red)}.outcome-hard .outcome-role{background:var(--ink);color:#fff}.outcome-hard .outcome-role .outcome-label{color:#ff685f}.outcome-lean .chapter-outcome{border-top:1px solid var(--ink);border-left:6px solid var(--red)}.outcome-lean .outcome-role{background:var(--ink);color:#fff}.outcome-lean .outcome-role .outcome-label{color:#ff685f}@media(max-width:720px){.chapter-outcome,.review-head{grid-template-columns:1fr}.outcome-cell{border-right:0;border-bottom:1px solid var(--line)}.outcome-cell:last-child{border-bottom:0}.review-points{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="app">
+    <aside class="sidebar" aria-label="Book summary navigation">
+      <div class="brand">
+        <p class="eyebrow">Interactive reading guide</p>
+        <p class="brand-title">Influence</p>
+        <p class="brand-subtitle">The Psychology of Persuasion<br>Robert B. Cialdini, Ph.D.</p>
+      </div>
+      <p class="nav-label">Contents</p>
+      <nav class="chapter-nav" role="tablist" aria-orientation="vertical">
+        <button class="tab-button" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" data-target="overview"><span class="tab-number">00</span><span class="tab-name">Book overview</span></button>
+        <button class="tab-button" id="tab-01" role="tab" aria-selected="false" aria-controls="panel-01" data-target="01" tabindex="-1"><span class="tab-number">01</span><span class="tab-name">Levers of influence</span></button>
+        <button class="tab-button" id="tab-02" role="tab" aria-selected="false" aria-controls="panel-02" data-target="02" tabindex="-1"><span class="tab-number">02</span><span class="tab-name">Reciprocation</span></button>
+        <button class="tab-button" id="tab-03" role="tab" aria-selected="false" aria-controls="panel-03" data-target="03" tabindex="-1"><span class="tab-number">03</span><span class="tab-name">Liking</span></button>
+        <button class="tab-button" id="tab-04" role="tab" aria-selected="false" aria-controls="panel-04" data-target="04" tabindex="-1"><span class="tab-number">04</span><span class="tab-name">Social proof</span></button>
+        <button class="tab-button" id="tab-05" role="tab" aria-selected="false" aria-controls="panel-05" data-target="05" tabindex="-1"><span class="tab-number">05</span><span class="tab-name">Authority</span></button>
+        <button class="tab-button" id="tab-06" role="tab" aria-selected="false" aria-controls="panel-06" data-target="06" tabindex="-1"><span class="tab-number">06</span><span class="tab-name">Scarcity</span></button>
+        <button class="tab-button" id="tab-07" role="tab" aria-selected="false" aria-controls="panel-07" data-target="07" tabindex="-1"><span class="tab-number">07</span><span class="tab-name">Commitment</span></button>
+        <button class="tab-button" id="tab-08" role="tab" aria-selected="false" aria-controls="panel-08" data-target="08" tabindex="-1"><span class="tab-number">08</span><span class="tab-name">Unity</span></button>
+        <button class="tab-button" id="tab-09" role="tab" aria-selected="false" aria-controls="panel-09" data-target="09" tabindex="-1"><span class="tab-number">09</span><span class="tab-name">Instant influence</span></button>
+      </nav>
+      <div class="sidebar-footer">Based on the 2021 New and Expanded edition. Use the arrow keys to move between chapters.</div>
+    </aside>
+
+    <main class="main" id="main-content">
+      <div class="topline"><div class="topline-left"><a class="collection-link" href="index.html">← Collection</a><strong>Influence / reading guide</strong></div><span id="progress-label">Overview · 1 of 10</span></div>
+
+      <section class="panel is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview">
+        <div class="hero">
+          <h1>Why people say <span>yes.</span></h1>
+          <div class="hero-meta">
+            <p><strong>Author</strong><span>Robert B. Cialdini, Ph.D.</span></p>
+            <p><strong>Subject</strong><span>Persuasion, compliance, and decision-making</span></p>
+            <p><strong>Core model</strong><span>Seven universal principles of influence</span></p>
+          </div>
+        </div>
+
+        <p class="lede">Humans use mental shortcuts to make decisions efficiently. Those shortcuts are necessary—but they can also be activated, amplified, or counterfeited by people trying to influence us.</p>
+
+        <div class="overview-grid">
+          <div class="prose">
+            <h2>Rough rundown</h2>
+            <p>Cialdini combines psychological research, real-world cases, and undercover observations inside sales, advertising, and fundraising organizations. He shows that thousands of persuasion tactics tend to rely on a small set of recurring psychological mechanisms.</p>
+            <p>The book is both an influence manual and a defense guide. Each principle explains why a certain type of request feels compelling, how ethical persuaders can use it honestly, and how to recognize attempts that manipulate the evidence behind it.</p>
+          </div>
+          <aside class="edition-note">
+            <strong>Edition note</strong>
+            This guide follows the 2021 New and Expanded edition. It contains nine chapters and adds Unity as the seventh principle. Older editions omit Unity and arrange some chapters differently.
+          </aside>
+        </div>
+
+        <h2 class="section-heading">The seven automatic reactions</h2>
+        <div class="principles" aria-label="Seven principles of influence">
+          <div class="principle-row"><span class="principle-index">01</span><span class="principle-name">Reciprocity</span><span class="principle-trigger">You gave me something, so I owe you.</span></div>
+          <div class="principle-row"><span class="principle-index">02</span><span class="principle-name">Liking</span><span class="principle-trigger">I like you, so I am inclined to trust you.</span></div>
+          <div class="principle-row"><span class="principle-index">03</span><span class="principle-name">Social proof</span><span class="principle-trigger">Others are doing it, so it is probably right.</span></div>
+          <div class="principle-row"><span class="principle-index">04</span><span class="principle-name">Authority</span><span class="principle-trigger">An expert says so, so I should comply.</span></div>
+          <div class="principle-row"><span class="principle-index">05</span><span class="principle-name">Scarcity</span><span class="principle-trigger">I may lose it, so I want it now.</span></div>
+          <div class="principle-row"><span class="principle-index">06</span><span class="principle-name">Commitment</span><span class="principle-trigger">I already agreed, so I should continue.</span></div>
+          <div class="principle-row"><span class="principle-index">07</span><span class="principle-name">Unity</span><span class="principle-trigger">You are one of us, so I should support you.</span></div>
+        </div>
+
+        <div class="bottom-line"><p>Identify the pressure. Then evaluate the <span>actual offer</span> separately.</p></div>
+        <div class="chapter-controls"><span></span><button type="button" data-next="01">Start chapter 1 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-01" role="tabpanel" aria-labelledby="tab-01" data-panel="01" hidden>
+        <div class="chapter-head"><span class="chapter-no">01</span><h1 class="chapter-title">Levers of influence</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">Much of human behavior runs on automatic mental shortcuts.</p>
+          <p class="auto-reaction"><strong>Core idea</strong>Small triggers can activate large, predictable responses.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>People cannot carefully analyze every choice. Instead, we use efficient rules such as “expensive means good,” “popular means trustworthy,” or “experts are probably right.” Cialdini compares this to a “click, run” pattern: notice the trigger, then launch the response.</p>
+            <p>The chapter also introduces <strong>perceptual contrast</strong>. Our judgment of an item changes according to what we encountered immediately before it. A modest expense can feel trivial after a major purchase; a request can appear reasonable after an intentionally excessive one.</p>
+          </div>
+          <aside class="signals"><h3>Watch for</h3><ul><li>Decisions made under time pressure</li><li>One vivid feature standing in for the whole</li><li>Comparisons arranged to shape perception</li><li>Automatic reactions without fresh evaluation</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Influence often works by controlling the context in which a decision is made.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="overview">← Overview</button><button type="button" data-next="02">Chapter 2 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-02" role="tabpanel" aria-labelledby="tab-02" data-panel="02" hidden>
+        <div class="chapter-head"><span class="chapter-no">02</span><h1 class="chapter-title">Reciprocation</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">When someone gives us something, we feel pressure to return the favor.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“You gave to me; now I should give to you.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Reciprocity supports cooperation, trust, and social exchange. But even a small, unsolicited, or unwanted favor can create a surprisingly strong obligation. Free samples, gifts, favors, and personalized information frequently activate this rule.</p>
+            <p>The principle also powers <strong>reciprocal concessions</strong>. A requester begins with an excessive demand, retreats to a smaller one, and makes the second request feel like a concession that deserves a concession in return.</p>
+          </div>
+          <aside class="signals"><h3>Common forms</h3><ul><li>Free samples and trial gifts</li><li>Unsolicited favors</li><li>Personalized information</li><li>Door-in-the-face requests</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>A gift may be generous, but it should not automatically give the giver control over your next decision.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="01">← Chapter 1</button><button type="button" data-next="03">Chapter 3 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-03" role="tabpanel" aria-labelledby="tab-03" data-panel="03" hidden>
+        <div class="chapter-head"><span class="chapter-no">03</span><h1 class="chapter-title">Liking</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">We are more likely to agree with people we know and like.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“I like you, so your proposal feels safer.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Liking can transfer from a person to whatever that person recommends. That is why referrals, friendship-based selling, celebrity endorsements, and deliberate rapport-building can be so effective.</p>
+            <p>Attractiveness, similarity, compliments, familiarity, cooperation, and positive association all tend to increase liking. None of these factors necessarily tells us whether the actual offer is valuable.</p>
+          </div>
+          <aside class="signals"><h3>What creates liking</h3><ul><li>Physical attractiveness</li><li>Similarity and familiarity</li><li>Compliments</li><li>Shared goals and cooperation</li><li>Positive associations</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Separate your feelings about the person from the merits of the proposal.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="02">← Chapter 2</button><button type="button" data-next="04">Chapter 4 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-04" role="tabpanel" aria-labelledby="tab-04" data-panel="04" hidden>
+        <div class="chapter-head"><span class="chapter-no">04</span><h1 class="chapter-title">Social proof</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">When uncertain, we look at what other people are doing.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“If many people chose it, it is probably correct.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Other people’s behavior becomes a guide to what is correct, safe, or desirable. Social proof is especially strong when a situation is ambiguous, when we lack experience, and when the people we observe appear similar to us.</p>
+            <p>Reviews, testimonials, bestseller lists, follower counts, and “most popular” labels all use the principle. Its darker side includes fabricated popularity, informational cascades, and pluralistic ignorance—where everyone waits for someone else to define the situation.</p>
+          </div>
+          <aside class="signals"><h3>High-impact conditions</h3><ul><li>Uncertainty or ambiguity</li><li>Similarity to the observed group</li><li>Large or visible participation</li><li>No clear independent evidence</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Other people’s behavior is evidence, not proof that something is correct.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="03">← Chapter 3</button><button type="button" data-next="05">Chapter 5 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-05" role="tabpanel" aria-labelledby="tab-05" data-panel="05" hidden>
+        <div class="chapter-head"><span class="chapter-no">05</span><h1 class="chapter-title">Authority</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">People are strongly inclined to follow recognized authorities.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“The expert knows better, so I should comply.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Deference to legitimate expertise saves time and helps society coordinate. The danger is that people may respond to symbols of authority instead of evaluating genuine competence.</p>
+            <p>Titles, credentials, uniforms, confident language, expensive possessions, and institutional affiliations can all create the appearance of authority. A person may be an expert in one field but unqualified—or financially conflicted—in another.</p>
+          </div>
+          <aside class="signals"><h3>Authority signals</h3><ul><li>Professional titles</li><li>Uniforms and formal clothing</li><li>Institutional affiliations</li><li>Confident technical language</li><li>Status symbols</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Ask whether this person is genuinely knowledgeable about this issue—and whether their interests align with yours.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="04">← Chapter 4</button><button type="button" data-next="06">Chapter 6 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-06" role="tabpanel" aria-labelledby="tab-06" data-panel="06" hidden>
+        <div class="chapter-head"><span class="chapter-no">06</span><h1 class="chapter-title">Scarcity</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">Opportunities become more desirable when they seem limited.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“I may lose access, so I need to act now.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Scarcity can imply value, but it also threatens freedom of choice. That threat creates <strong>psychological reactance</strong>: when an option may disappear, we want it more intensely.</p>
+            <p>Scarcity becomes particularly powerful when it is newly imposed, when people compete for the same resource, or when information appears restricted. Urgency can narrow attention and reduce careful comparison.</p>
+          </div>
+          <aside class="signals"><h3>Common forms</h3><ul><li>Limited quantities</li><li>Deadlines and countdowns</li><li>Exclusive access</li><li>Competing buyers</li><li>Restricted information</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Scarcity may affect availability, but it does not necessarily improve quality or usefulness.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="05">← Chapter 5</button><button type="button" data-next="07">Chapter 7 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-07" role="tabpanel" aria-labelledby="tab-07" data-panel="07" hidden>
+        <div class="chapter-head"><span class="chapter-no">07</span><h1 class="chapter-title">Commitment &amp; consistency</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">Once people take a position, they feel pressure to behave consistently with it.</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“I already agreed, so I should keep going.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Consistency supports reliability and a coherent identity. It can also trap people into defending outdated decisions. A small initial commitment may alter how a person sees themselves, making larger follow-up requests feel natural.</p>
+            <p>This powers the <strong>foot-in-the-door</strong> technique: obtain a small agreement first, then request something larger. Commitments are especially durable when they are active, public, written, voluntary, and effortful.</p>
+          </div>
+          <aside class="signals"><h3>Strong commitments</h3><ul><li>Active rather than passive</li><li>Publicly visible</li><li>Written down</li><li>Voluntarily chosen</li><li>Effortful to complete</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Do not confuse being consistent with being correct. Reconsider decisions when the facts change.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="06">← Chapter 6</button><button type="button" data-next="08">Chapter 8 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-08" role="tabpanel" aria-labelledby="tab-08" data-panel="08" hidden>
+        <div class="chapter-head"><span class="chapter-no">08</span><h1 class="chapter-title">Unity</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">Influence intensifies when another person is perceived as one of “us.”</p>
+          <p class="auto-reaction"><strong>Automatic reaction</strong>“You belong to my group, so I should support you.”</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Unity goes beyond liking. It involves shared identity—a sense that another person belongs to the same family, community, team, culture, organization, or cause. Their outcome can begin to feel connected to our own.</p>
+            <p>Kinship language, a shared background, acting together, creating something together, and facing a common challenge can all strengthen unity. The principle can build genuine cooperation, but it can also suppress independent judgment.</p>
+          </div>
+          <aside class="signals"><h3>Unity builders</h3><ul><li>Family and kinship language</li><li>Shared place or background</li><li>Group membership</li><li>Co-creation and joint action</li><li>A common challenge</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Shared identity can create trust, but belonging to the same group does not guarantee sound advice.</blockquote>
+        <div class="chapter-controls"><button type="button" data-next="07">← Chapter 7</button><button type="button" data-next="09">Chapter 9 →</button></div>
+      </section>
+
+      <section class="panel" id="panel-09" role="tabpanel" aria-labelledby="tab-09" data-panel="09" hidden>
+        <div class="chapter-head"><span class="chapter-no">09</span><h1 class="chapter-title">Instant influence</h1></div>
+        <div class="chapter-theme">
+          <p class="theme-statement">Information overload makes automatic influence increasingly powerful.</p>
+          <p class="auto-reaction"><strong>Core idea</strong>The more complex life becomes, the more we depend on shortcuts.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="chapter-copy">
+            <p>Modern decisions involve too much information, too many choices, and too little time. Cialdini argues that shortcuts are not inherently irrational; they are necessary tools for navigating complexity.</p>
+            <p>The real problem appears when someone counterfeits the signal behind a useful shortcut. Genuine popularity may be informative, while fake reviews manufacture social proof. Genuine expertise may guide us, while borrowed credentials merely imitate authority.</p>
+          </div>
+          <aside class="signals"><h3>Defense sequence</h3><ul><li>Pause when pressure spikes</li><li>Name the active principle</li><li>Check whether the signal is real</li><li>Evaluate the offer independently</li></ul></aside>
+        </div>
+        <blockquote class="key-lesson"><strong>Key lesson</strong>Protect useful decision shortcuts by resisting people who manipulate or counterfeit their signals.</blockquote>
+        <div class="bottom-line"><p>Ethical influence clarifies real value. Manipulation <span>manufactures the evidence.</span></p></div>
+        <div class="chapter-controls"><button type="button" data-next="08">← Chapter 8</button><button type="button" data-next="overview">Return to overview ↺</button></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+    const progressLabel = document.getElementById('progress-label');
+    const labels = {
+      overview: 'Overview', '01': 'Levers of influence', '02': 'Reciprocation',
+      '03': 'Liking', '04': 'Social proof', '05': 'Authority', '06': 'Scarcity',
+      '07': 'Commitment & consistency', '08': 'Unity', '09': 'Instant influence'
+    };
+
+    function activate(target, options = {}) {
+      const selectedTab = tabs.find(tab => tab.dataset.target === target);
+      const selectedPanel = panels.find(panel => panel.dataset.panel === target);
+      if (!selectedTab || !selectedPanel) return;
+
+      tabs.forEach(tab => {
+        const active = tab === selectedTab;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+
+      panels.forEach(panel => {
+        const active = panel === selectedPanel;
+        panel.classList.toggle('is-active', active);
+        panel.hidden = !active;
+      });
+
+      const index = tabs.indexOf(selectedTab);
+      progressLabel.textContent = `${labels[target]} · ${index + 1} of ${tabs.length}`;
+      history.replaceState(null, '', `#${target}`);
+      selectedTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      if (options.focus) selectedTab.focus();
+      if (options.scroll !== false) window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(tab.dataset.target));
+      tab.addEventListener('keydown', event => {
+        let nextIndex = null;
+        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+        if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') nextIndex = 0;
+        if (event.key === 'End') nextIndex = tabs.length - 1;
+        if (nextIndex !== null) {
+          event.preventDefault();
+          activate(tabs[nextIndex].dataset.target, { focus: true });
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-next]').forEach(button => {
+      button.addEventListener('click', () => activate(button.dataset.next));
+    });
+
+    const initial = window.location.hash.replace('#', '');
+    if (labels[initial]) activate(initial, { scroll: false });
+  </script>
+  <script>
+    (()=>{
+      document.body.classList.add('outcome-influence');
+      const outcomes={
+        '01':{role:'Foundation · automaticity',argument:'People conserve attention by responding to reliable trigger features and contrasts rather than reassessing every situation from first principles.',conclusion:'Efficient mental shortcuts are necessary, but whoever controls the trigger can redirect the response.',bridge:'With automatic compliance established, the book turns to the first social rule powerful enough to produce it: reciprocity.'},
+        '02':{role:'Principle · social obligation',argument:'Receiving a gift, favor, or concession creates pressure to repay, even when the original benefit was unsolicited or strategically offered.',conclusion:'Reciprocity sustains cooperation, yet it can also make a small first move purchase a much larger yes.',bridge:'Reciprocity works through obligation; the next principle works through affection for the person making the request.'},
+        '03':{role:'Principle · interpersonal affinity',argument:'We are more willing to comply with people we like, especially when attractiveness, similarity, praise, familiarity, or cooperation accelerates that liking.',conclusion:'The merits of an offer can become inseparable from our feelings about its messenger unless we deliberately judge them apart.',bridge:'Liking explains personal influence; social proof explains why the behavior of many strangers can feel equally persuasive.'},
+        '04':{role:'Principle · uncertainty reduction',argument:'When the correct action is unclear, people treat the behavior of similar others as evidence of what is true and appropriate.',conclusion:'Social proof is most powerful under uncertainty and similarity—the same conditions that can also produce collective error.',bridge:'Crowds answer “what do people like me do?”; authority answers “what does the expert say?”'},
+        '05':{role:'Principle · directed deference',argument:'People are trained to follow legitimate expertise, but they often respond to titles, uniforms, and status symbols before verifying actual competence or incentives.',conclusion:'Authority is a useful shortcut only when the claimed expert is both relevantly qualified and likely to be truthful here.',bridge:'Authority increases value through status; scarcity increases it through threatened loss.'},
+        '06':{role:'Principle · threatened freedom',argument:'Opportunities appear more valuable when access is limited, newly restricted, or contested because potential loss triggers psychological reactance.',conclusion:'Scarcity changes desire more reliably than it changes the underlying quality of what is being offered.',bridge:'Scarcity pressures an immediate choice; commitment explains why an earlier choice keeps directing later behavior.'},
+        '07':{role:'Principle · self-image',argument:'After making an active, public, effortful, and voluntary commitment, people reshape later behavior to remain consistent with that choice and the identity it implies.',conclusion:'A small commitment can become a durable self-definition, so the crucial question is whether the original choice still deserves loyalty.',bridge:'Consistency binds us to what “I” have chosen; unity expands influence through what “we” are.'},
+        '08':{role:'Principle · shared identity',argument:'Influence intensifies when another person is experienced not merely as similar or likable, but as part of a shared “we.”',conclusion:'Shared identity can make another person’s preferences feel like our own, amplifying every other principle of influence.',bridge:'The seven principles now converge in a final question: what happens when modern life gives us less time to inspect any of them?'},
+        '09':{role:'Synthesis · information overload',argument:'As information, speed, and complexity increase, people must rely more heavily on automatic influence shortcuts while persuaders can deploy them at greater scale.',conclusion:'The practical defense is not to abandon shortcuts, but to punish counterfeit evidence and protect the reliability of the signals we need.',bridge:'The argument closes where it began: automaticity is indispensable, so ethical influence depends on keeping its triggers honest.'}
+      };
+      const safe=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+      Object.entries(outcomes).forEach(([id,o])=>{const panel=document.querySelector(`[data-panel="${id}"]`);if(!panel)return;panel.querySelector('.chapter-head')?.insertAdjacentHTML('afterend',`<section class="chapter-outcome" aria-label="Chapter outcome"><div class="outcome-cell outcome-role"><span class="outcome-label">Role in the book</span><p class="outcome-value">${safe(o.role)}</p></div><div class="outcome-cell"><span class="outcome-label">Core argument</span><p class="outcome-value">${safe(o.argument)}</p></div><div class="outcome-cell"><span class="outcome-label">Author's conclusion</span><p class="outcome-value">${safe(o.conclusion)}</p></div></section>`);const h=panel.querySelector('.signals h3');if(h)h.textContent=id==='01'?'Automatic mechanisms':id==='09'?'Synthesis points':'Mechanisms and cues';const lesson=panel.querySelector('.key-lesson');if(lesson){lesson.innerHTML=`<strong>Chapter outcome</strong>${safe(o.conclusion)}`;lesson.insertAdjacentHTML('afterend',`<p class="chapter-bridge"><strong>Bridge</strong> · ${safe(o.bridge)}</p>`);}});
+      const overview=document.querySelector('[data-panel="overview"]');const concepts=overview?.querySelector('.concepts, .principles');if(concepts)concepts.insertAdjacentHTML('afterend',`<section class="book-reality-check" aria-labelledby="influence-review"><div class="review-head"><h2 class="review-title" id="influence-review">Book review / reality check.</h2><p class="review-intro">The chapter pages above represent Cialdini's argument. This separate review keeps the book useful without treating every example as equally timeless or universal.</p></div><div class="review-points"><div class="review-point"><strong>Evidence age</strong><span>Several famous studies are decades old; some social-psychology findings deserve replication-aware interpretation.</span></div><div class="review-point"><strong>Context matters</strong><span>The principles are broad tendencies, not deterministic buttons. Culture, relationship, stakes, and prior beliefs change their strength.</span></div><div class="review-point"><strong>Principles interact</strong><span>Real persuasion usually combines identity, authority, scarcity, and social proof; treating them as isolated causes can oversimplify.</span></div><div class="review-point"><strong>Ethical boundary</strong><span>Truthful signals help people decide. Manufactured scarcity, fake consensus, and borrowed authority corrupt the shortcuts the framework describes.</span></div><div class="review-point"><strong>Digital scale</strong><span>Ratings, feeds, influencers, and algorithmic interfaces now automate these triggers far beyond the interpersonal settings of the original edition.</span></div><div class="review-point"><strong>Best use</strong><span>Use the framework to diagnose pressure and improve transparency—not to assume every yes is merely manipulation.</span></div></div></section>`);
+    })();
+  </script>
+</body>
+</html>

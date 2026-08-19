@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An outcome-first interactive guide to No Rules Rules by Reed Hastings and Erin Meyer.">
+  <title>No Rules Rules — Interactive book guide</title>
+  <style>
+    :root{--paper:#f7f6f2;--white:#fff;--ink:#171717;--muted:#696969;--line:#d7d5ce;--soft:#eceae4;--red:#e2231a;--red-dark:#b51812;--sidebar:19rem;--measure:72ch;--font:Helvetica,Arial,"Noto Sans",sans-serif;--fs-1:.66rem;--fs-2:.69rem;--fs-3:.72rem;--fs-4:.79rem;--fs-5:.86rem;--fs-6:.93rem;--fs-7:1rem;--fs-brand:2.15rem;--fs-hero:clamp(3.2rem,7.4vw,7.4rem);--fs-lede:clamp(1.2rem,2vw,1.7rem);--fs-chapter:clamp(3rem,6.8vw,6.7rem);--fs-number:clamp(2.5rem,5vw,5rem);--fs-theme:clamp(1.4rem,2.4vw,2rem);--fs-lesson:clamp(1.1rem,1.7vw,1.4rem);--fs-mobile-hero:clamp(3rem,16vw,5.4rem);--fs-mobile-chapter:clamp(2.5rem,13vw,4.7rem)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:var(--fs-7);line-height:1.62;text-rendering:optimizeLegibility}button{font:inherit;color:inherit}.skip-link{position:fixed;top:.75rem;left:.75rem;z-index:100;padding:.55rem .8rem;background:var(--ink);color:var(--white);transform:translateY(-180%)}.skip-link:focus{transform:translateY(0)}.app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--line);overflow:hidden}.brand{padding:1.5rem 1.5rem 1.25rem;border-top:5px solid var(--red);border-bottom:2px solid var(--ink)}.eyebrow{margin:0 0 .6rem;color:var(--red-dark);font-size:var(--fs-2);font-weight:700;letter-spacing:.14em;line-height:1.25;text-transform:uppercase}.brand-title{margin:0;max-width:10ch;font-size:var(--fs-brand);font-weight:700;letter-spacing:-.06em;line-height:.92}.brand-subtitle{max-width:25ch;margin:.9rem 0 0;color:var(--muted);font-size:var(--fs-4);line-height:1.45}.nav-label{margin:0;padding:1rem 1.5rem .5rem;color:var(--muted);font-size:var(--fs-1);font-weight:700;letter-spacing:.13em;text-transform:uppercase}.chapter-nav{flex:1;padding:0 .75rem 1rem;overflow-y:auto;scrollbar-width:thin}.tab-button{width:100%;display:grid;grid-template-columns:2rem 1fr;gap:.2rem;align-items:start;padding:.67rem .75rem;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;cursor:pointer;transition:background 140ms ease,color 140ms ease}.tab-button:last-child{border-bottom:1px solid var(--line)}.tab-button:hover{background:var(--paper)}.tab-button:focus-visible{outline:2px solid var(--red);outline-offset:-2px}.tab-button[aria-selected="true"]{background:var(--ink);color:var(--white)}.tab-index{color:var(--red);font-size:var(--fs-2);font-weight:700;font-variant-numeric:tabular-nums}.tab-button[aria-selected="true"] .tab-index{color:#ff6a61}.tab-name{font-size:var(--fs-5);font-weight:700;line-height:1.25}.sidebar-footer{padding:1rem 1.5rem 1.25rem;border-top:2px solid var(--ink);font-size:var(--fs-3)}.collection-link{display:inline-flex;gap:.45rem;align-items:center;color:var(--ink);font-weight:700;text-decoration:none}.collection-link:hover,.collection-link:focus-visible{color:var(--red)}.collection-link:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+    .content{min-width:0}.panel{display:none;min-height:100vh;padding:clamp(1.5rem,4vw,4rem) clamp(1.25rem,6vw,6rem) 5rem}.panel.is-active{display:block}.overview-hero{min-height:54vh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:3rem;border-bottom:5px solid var(--ink)}.overview-kicker{margin:0 0 1.2rem;color:var(--red-dark);font-size:var(--fs-2);font-weight:700;letter-spacing:.14em;text-transform:uppercase}.overview-title{max-width:10ch;margin:0;font-size:var(--fs-hero);font-weight:700;letter-spacing:-.08em;line-height:.82;text-indent:-.06em}.overview-deck{display:grid;grid-template-columns:minmax(0,7fr) minmax(15rem,4fr);gap:clamp(2rem,6vw,6rem);align-items:start;padding:2rem 0 3.5rem}.overview-lede{max-width:32ch;margin:0;font-size:var(--fs-lede);font-weight:700;letter-spacing:-.025em;line-height:1.25}.overview-copy{max-width:52ch;margin:0;padding-top:.8rem;border-top:3px solid var(--red);color:var(--muted)}
+    .culture-system{margin:0 0 4rem;border-top:5px solid var(--red)}.system-row{display:grid;grid-template-columns:5rem minmax(10rem,1fr) minmax(0,2fr);gap:1rem;padding:1.15rem 0;border-bottom:1px solid var(--line)}.system-no{color:var(--red);font-size:var(--fs-3);font-weight:700}.system-name{font-size:var(--fs-theme);font-weight:700;letter-spacing:-.04em;line-height:1}.system-copy{max-width:58ch;margin:0;color:var(--muted)}.sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0 0 4rem;background:var(--ink);border:1px solid var(--ink)}.sequence-card{padding:1.25rem;background:var(--paper)}.sequence-card span{display:block;color:var(--red);font-size:var(--fs-2);font-weight:700;text-transform:uppercase}.sequence-card strong{display:block;margin:.7rem 0 .45rem;font-size:var(--fs-theme);letter-spacing:-.04em;line-height:1}.sequence-card p{margin:0;color:var(--muted);font-size:var(--fs-5)}
+    .chapter-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(7rem,2fr);gap:2rem;align-items:end;padding-bottom:2rem;border-bottom:5px solid var(--ink)}.chapter-kicker{margin:0 0 .8rem;color:var(--red-dark);font-size:var(--fs-2);font-weight:700;letter-spacing:.14em;text-transform:uppercase}.chapter-title{max-width:13ch;margin:0;font-size:var(--fs-chapter);font-weight:700;letter-spacing:-.075em;line-height:.84;text-indent:-.05em}.chapter-number{justify-self:end;color:var(--red);font-size:var(--fs-number);font-weight:700;line-height:.8;font-variant-numeric:tabular-nums}.chapter-outcome{display:grid;grid-template-columns:minmax(9rem,2fr) minmax(0,5fr) minmax(0,4fr);margin:2rem 0 0;border-top:1px solid var(--ink);border-left:6px solid var(--red);border-bottom:1px solid var(--ink);background:var(--white)}.outcome-cell{min-width:0;padding:1.2rem;border-right:1px solid var(--line)}.outcome-cell:last-child{border-right:0}.outcome-role{background:var(--ink);color:var(--white)}.outcome-label{display:block;margin-bottom:.55rem;color:var(--red-dark);font-size:var(--fs-1);font-weight:700;letter-spacing:.13em;text-transform:uppercase}.outcome-role .outcome-label{color:#ff6a61}.outcome-value{margin:0;font-size:var(--fs-lede);font-weight:700;letter-spacing:-.025em;line-height:1.35}.outcome-role .outcome-value{font-size:var(--fs-5);letter-spacing:0;text-transform:uppercase}
+    .chapter-body{display:grid;grid-template-columns:minmax(0,7fr) minmax(15rem,4fr);gap:clamp(2rem,6vw,6rem);padding:2.5rem 0}.chapter-rundown{max-width:var(--measure)}.chapter-rundown h3,.guardrail h3{margin:2.2rem 0 .65rem;font-size:var(--fs-theme);letter-spacing:-.04em;line-height:1}.chapter-rundown h3:first-child{margin-top:0}.chapter-rundown p{margin:.75rem 0;color:var(--muted)}.chapter-rundown strong{color:var(--ink)}.mechanisms{border-top:3px solid var(--red)}.mechanisms h3{margin:0;padding:.8rem 0;border-bottom:1px solid var(--ink);font-size:var(--fs-2);letter-spacing:.13em;text-transform:uppercase}.mechanism{padding:1rem 0;border-bottom:1px solid var(--line)}.mechanism strong{display:block;margin-bottom:.35rem;font-size:var(--fs-5)}.mechanism span{display:block;color:var(--muted);font-size:var(--fs-5)}.guardrail{margin:0 0 2.2rem;padding:1.2rem;border-left:5px solid var(--red);background:var(--white)}.guardrail h3{margin:0 0 .55rem}.guardrail p{margin:0;color:var(--muted)}.chapter-lesson{margin:1rem 0 0;padding:1.25rem 0;border-top:5px solid var(--ink);border-bottom:1px solid var(--ink);font-size:var(--fs-lesson);font-weight:700;letter-spacing:-.025em}.chapter-lesson strong{display:block;margin-bottom:.45rem;color:var(--red-dark);font-size:var(--fs-2);letter-spacing:.13em;text-transform:uppercase}.chapter-bridge{margin:0 0 3rem;padding:.85rem 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:var(--fs-5)}.chapter-bridge strong{color:var(--ink);font-size:var(--fs-1);letter-spacing:.11em;text-transform:uppercase}.next-button{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 1.25rem;border:0;background:var(--ink);color:var(--white);font-weight:700;cursor:pointer}.next-button:hover,.next-button:focus-visible{background:var(--red)}.next-button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+    .book-review{margin:4rem 0 1rem;padding-top:1.5rem;border-top:6px solid var(--ink)}.review-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(13rem,4fr);gap:clamp(2rem,5vw,5rem);align-items:start}.review-title{max-width:12ch;margin:0;font-size:var(--fs-chapter);font-weight:700;letter-spacing:-.065em;line-height:.9}.review-intro{margin:0;padding-top:.8rem;border-top:3px solid var(--red);color:var(--muted)}.review-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin-top:2rem;background:var(--line);border:1px solid var(--line)}.review-point{padding:1.2rem;background:var(--paper)}.review-point strong{display:block;margin-bottom:.45rem;font-size:var(--fs-3)}.review-point span{color:var(--muted);font-size:var(--fs-5)}.progress{margin:.65rem 0 0;color:var(--muted);font-size:var(--fs-3);font-variant-numeric:tabular-nums}
+    @media(max-width:860px){:root{--sidebar:15.5rem}.overview-deck,.chapter-body,.review-head{grid-template-columns:1fr}.sequence{grid-template-columns:1fr}.chapter-outcome{grid-template-columns:1fr}.outcome-cell{border-right:0;border-bottom:1px solid var(--line)}.outcome-cell:last-child{border-bottom:0}.review-points{grid-template-columns:1fr}.system-row{grid-template-columns:3rem minmax(0,1fr)}.system-copy{grid-column:2}.chapter-head{grid-template-columns:1fr}.chapter-number{justify-self:start}}
+    @media(max-width:680px){.app{display:block}.sidebar{position:relative;height:auto;border-right:0;border-bottom:2px solid var(--ink)}.chapter-nav{display:flex;gap:.35rem;padding:.65rem .75rem;overflow-x:auto}.tab-button{flex:0 0 auto;width:auto;min-width:8.5rem;border:1px solid var(--line)}.tab-button:last-child{border-bottom:1px solid var(--line)}.sidebar-footer{display:flex;justify-content:space-between;gap:1rem}.panel{min-height:auto;padding:1.25rem 1rem 4rem}.overview-hero{min-height:48vh}.overview-title{font-size:var(--fs-mobile-hero)}.chapter-title{font-size:var(--fs-mobile-chapter)}.brand-title{max-width:none}.brand-subtitle{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tab-button,.next-button{transition:none}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#guide-content">Skip to guide content</a>
+  <noscript>
+    <main class="panel is-active">
+      <section><h1>No Rules Rules</h1><p>An interactive guide to Netflix’s culture of freedom and responsibility. Enable JavaScript to use chapter tabs.</p></section>
+      <section><h2>1. First build up talent density</h2></section><section><h2>2. Then increase candor</h2></section><section><h2>3. Now begin removing controls</h2></section><section><h2>4. Pay top of personal market</h2></section><section><h2>5. Open the books</h2></section><section><h2>6. No decision-making approvals needed</h2></section><section><h2>7. The Keeper Test</h2></section><section><h2>8. A circle of feedback</h2></section><section><h2>9. Lead with context, not control</h2></section><section><h2>10. Bring it all to the world</h2></section>
+    </main>
+  </noscript>
+  <div class="app">
+    <aside class="sidebar" aria-label="Book navigation">
+      <header class="brand">
+        <p class="eyebrow">Interactive book guide</p>
+        <p class="brand-title">No Rules Rules</p>
+        <p class="brand-subtitle">Netflix and the Culture of Reinvention · Reed Hastings &amp; Erin Meyer</p>
+      </header>
+      <p class="nav-label">Guide sections</p>
+      <nav class="chapter-nav" role="tablist" aria-label="Book sections" id="chapter-nav"></nav>
+      <footer class="sidebar-footer">
+        <a class="collection-link" href="index.html">← Book collection</a>
+        <p class="progress" id="progress">Overview · 1 of 11</p>
+      </footer>
+    </aside>
+    <main class="content" id="guide-content"></main>
+  </div>
+  <script>
+    const guide = {
+      overview: {
+        title: 'Freedom needs a system.',
+        lede: 'Netflix did not remove rules first. It built the conditions that could make fewer rules productive: exceptional colleagues, unusually candid information, and leaders who replace approval with context.',
+        copy: 'Reed Hastings and Erin Meyer present Netflix culture as a staged operating system for creative work. Each pass strengthens talent density, increases candor, and then removes another layer of control. The sequence is the argument: freedom without the preconditions becomes confusion, while rules without freedom slow adaptation.',
+        levers: [
+          ['01','Talent density','A small concentration of exceptional colleagues raises the quality of decisions, feedback, and coordination while reducing the need for process.'],
+          ['02','Candor','Frequent, actionable feedback and broad transparency surface problems before hierarchy or politeness can hide them.'],
+          ['03','Fewer controls','When people have the ability and information to decide well, policies and approvals can be replaced by context and accountability.']
+        ],
+        stages: [
+          ['First steps','Build the foundation','Raise talent density, teach candid feedback, then remove vacation and expense controls.'],
+          ['Next steps','Increase the stakes','Pay top of personal market, open sensitive information, and disperse decision authority.'],
+          ['Reinforcement','Keep freedom viable','Use the Keeper Test, feedback rituals, and context-rich leadership to prevent freedom from decaying.']
+        ]
+      },
+      chapters: [
+        {
+          id:'01', title:'First build up talent density', phase:'Section one · Foundation', role:'Precondition · colleague quality',
+          problem:'A few merely adequate or destructive colleagues can consume managerial attention, suppress candor, and pull down the performance of an otherwise strong team.',
+          mechanism:'Concentrate exceptional performers so the team can coordinate through judgment and peer standards rather than through protective process.',
+          conclusion:'A great workplace is not primarily perks or job security; it is being surrounded by stunning colleagues who make ambitious work possible.',
+          sections:[
+            ['The unexpected lesson from layoffs','After Netflix reduced headcount during the dot-com crisis, the remaining team delivered more with fewer people. Hastings interprets the result as a rise in <strong>talent density</strong>: when strong contributors no longer compensate for weaker or corrosive behavior, energy and cooperation improve.'],
+            ['Why density changes the operating system','High performers learn faster from one another, challenge weak work, and need less supervision. The authors argue that an adequate employee is not neutral on a creative team; their presence can increase process, lower the standard of discussion, and cause exceptional colleagues to leave.'],
+            ['Performance, not effort','Netflix evaluates contribution rather than visible effort or loyalty. A colleague can work hard and still be a poor fit if their output, judgment, or collaboration does not strengthen the team. The desired metaphor is a championship team, not a family with unconditional membership.']
+          ],
+          mechanisms:[['Talent density','Exceptional people amplify one another and reduce coordination drag.'],['Contagion effect','Behavior and performance norms spread through a team.'],['Creative work','For innovation roles, one exceptional contributor may create disproportionately more value than several adequate ones.']],
+          guardrail:'High talent density cannot mean “brilliant jerks.” The chapter treats collaboration, generosity, and the effect on colleagues as part of performance.',
+          bridge:'Once the team can handle direct truth, Netflix can increase the speed and quality of feedback.'
+        },
+        {
+          id:'02', title:'Then increase candor', phase:'Section one · Foundation', role:'Information system · feedback',
+          problem:'Hierarchy, politeness, and fear allow weak ideas and damaging behavior to persist even when colleagues can see the problem.',
+          mechanism:'Make frequent, direct feedback a normal contribution to the work, and teach a shared protocol for giving and receiving it.',
+          conclusion:'Candor turns a group of talented individuals into a learning system, but only when the intent is helpful and the feedback is actionable.',
+          sections:[
+            ['Feedback is part of the job','Netflix treats useful feedback as something colleagues owe one another. A high performer who withholds an important observation protects comfort at the expense of the team’s future performance.'],
+            ['The 4A framework','When giving feedback, <strong>Aim to assist</strong> and make it <strong>Actionable</strong>. When receiving it, <strong>Appreciate</strong> the effort and then <strong>Accept or discard</strong> the advice. The recipient retains agency; candor is not obedience.'],
+            ['Leaders go first','A leader must ask for criticism publicly and respond without retaliation. Their reaction teaches more than any feedback policy: visible appreciation signals that dissent belongs, while defensiveness silently restores hierarchy.']
+          ],
+          mechanisms:[['Aim to assist','The purpose is improvement, not venting or status.'],['Actionable','Describe a behavior the recipient can change.'],['Appreciate','Treat feedback as a contribution, even when uncomfortable.'],['Accept or discard','The receiver decides what to do.']],
+          guardrail:'Candor is not permission for cruelty. Remove people who use “honesty” to behave like jerks, and separate constructive challenge from personal attack.',
+          bridge:'With talent and candor established, Netflix begins replacing written controls with judgment.'
+        },
+        {
+          id:'03', title:'Now begin removing controls', phase:'Section one · Freedom', role:'First freedom · time and spending',
+          problem:'Vacation limits and expense approvals protect against abuse, but they also teach adults to optimize for policy instead of business judgment.',
+          mechanism:'Remove the policies, give leaders responsibility for setting context, audit outcomes, and respond visibly when trust is abused.',
+          conclusion:'Removing a rule does not remove management; it replaces prescriptive control with explicit context, modeling, and consequences.',
+          sections:[
+            ['No vacation policy','Employees decide when and how much time to take without tracking days or seeking formal approval. But the absence of a rule creates ambiguity. Leaders must discuss seasonal needs, team coordination, and what responsible absence looks like—and visibly take vacation themselves.'],
+            ['“Act in Netflix’s best interest”','Travel and expense policy becomes a short principle instead of a catalog of limits. Managers explain the business situation in advance, while finance audits a sample afterward. The goal is faster, more context-aware spending rather than permission seeking.'],
+            ['Trust with visible consequences','The system accepts that some expenses may rise. What it cannot tolerate is deliberate abuse. When abuse is found, Netflix removes the person and communicates the reason so freedom is understood as responsibility rather than entitlement.']
+          ],
+          mechanisms:[['Leader modeling','Behavior fills the vacuum left by policy.'],['Context before action','Teams need to know constraints and business priorities.'],['Audit after action','Inspect patterns without requiring universal preapproval.'],['Consequences','Intentional abuse costs the freedom of the individual, not everyone else.']],
+          guardrail:'Where errors can cause injury, illegality, or catastrophic loss, rules remain appropriate. The book’s argument is aimed primarily at creative and judgment-intensive work.',
+          bridge:'Greater freedom raises the value of exceptional judgment, so the next stage strengthens talent density through compensation.'
+        },
+        {
+          id:'04', title:'Pay top of personal market', phase:'Section two · Reinforce talent', role:'Talent density · compensation',
+          problem:'Standard salary bands, annual adjustments, and bonuses can underpay exceptional creative talent and encourage people to leave before the company recognizes their market value.',
+          mechanism:'Pay each creative employee at the top of their current personal market and revisit that market continuously rather than tying pay to an internal range or annual bonus.',
+          conclusion:'For high-leverage creative roles, Netflix would rather employ fewer exceptional people at very high salaries than spread the budget across more adequate performers.',
+          sections:[
+            ['Personal market, not job title','The relevant question is what another employer would pay this particular person now, considering their skills, scarcity, network, and value. Two people with the same title may therefore have different market prices.'],
+            ['Salary over bonus','The authors argue that bonuses work better for routine goals than creative work, where the most valuable result may be unexpected. Netflix puts more compensation into guaranteed salary so employees can focus on the business rather than a formula.'],
+            ['Recruiter calls as market data','Employees are encouraged to learn what the market would pay them and share that information. Managers are expected to adjust proactively rather than treating outside offers as disloyalty.']
+          ],
+          mechanisms:[['Top of personal market','Price the individual’s external opportunity, not only the internal role.'],['No bonus formula','Avoid narrowing creative attention to predefined targets.'],['Continuous calibration','Use market conversations to update compensation before retention becomes a crisis.']],
+          guardrail:'This logic depends on roles where performance differences are highly leveraged. It is less transferable to work that scales mainly through headcount or operates under fixed public-sector or union pay structures.',
+          bridge:'Paying for judgment is not enough; people also need the information required to exercise it.'
+        },
+        {
+          id:'05', title:'Open the books', phase:'Section two · Candor', role:'Information access · transparency',
+          problem:'Leaders ask employees to make sophisticated decisions while withholding the strategy, financial position, mistakes, and upcoming changes that would make those decisions intelligible.',
+          mechanism:'Share sensitive business information broadly, explain how to interpret it, and treat transparency about work as the default.',
+          conclusion:'If employees are expected to act like owners, leaders must trust them with the context owners use—even when the information creates discomfort.',
+          sections:[
+            ['Transparency creates adult relationships','Netflix shares financial results, strategic debates, and possible reorganizations earlier than many companies. The short-term cost is anxiety or leakage risk; the intended gain is trust and better distributed judgment.'],
+            ['Sunshine mistakes','Leaders openly describe their own errors and what they learned. Once competence is established, acknowledging failure can increase trust because it signals that bad news does not need to be hidden.'],
+            ['Work transparency, personal privacy','The authors draw a boundary: incidents at work should generally be discussed so the organization can learn; private life belongs to the person. Transparency is not a claim on every personal fact.']
+          ],
+          mechanisms:[['Open financials','Teach people to read the business, not just their function.'],['Early disclosure','Share likely changes before every detail is settled.'],['Sunshining','Turn visible mistakes into collective learning.'],['Privacy boundary','Distinguish organizational facts from personal information.']],
+          guardrail:'Transparency still has legal, contractual, security, and privacy limits. The principle is broad access to decision context—not indiscriminate disclosure.',
+          bridge:'Once information travels widely, decision authority can follow it.'
+        },
+        {
+          id:'06', title:'No decision-making approvals needed', phase:'Section two · Freedom', role:'Decision rights · informed captain',
+          problem:'Approval chains move decisions toward the most senior person rather than the person with the deepest information, slowing innovation and teaching employees to please the boss.',
+          mechanism:'Assign an informed captain, require them to farm for dissent and understand context, then let them make and own the bet without seeking permission.',
+          conclusion:'Leadership should improve the quality of decentralized bets, not convert every bet into a senior executive’s decision.',
+          sections:[
+            ['Do not seek to please your boss','A proposal is not good because a manager likes it. The employee closest to the issue is expected to pursue what they believe is best for Netflix after gathering relevant views.'],
+            ['Farm for dissent','Before acting, the informed captain actively asks colleagues—including skeptics—for criticism. This increases information without turning the choice into consensus. The captain remains accountable for the call.'],
+            ['Celebrate the bet, sunshine the result','A failed project is not automatically a performance failure. Afterward, the captain explains what happened and what was learned. Leaders evaluate the quality of the reasoning and the portfolio of bets, not only one outcome.']
+          ],
+          mechanisms:[['Informed captain','Put ownership with the person who has the deepest context.'],['Farm for dissent','Collect disagreement before committing.'],['Think in bets','Judge a portfolio under uncertainty, not hindsight alone.'],['Sunshine failure','Make learning visible instead of hiding the miss.']],
+          guardrail:'Decentralization fails when strategy is unclear, context is missing, or a decision creates unbounded risk for others. Leaders must define stakes and constraints before releasing control.',
+          bridge:'More authority makes team quality even more consequential, leading to Netflix’s most demanding talent practice.'
+        },
+        {
+          id:'07', title:'The Keeper Test', phase:'Section three · Reinforce talent', role:'Talent density · active renewal',
+          problem:'Managers keep adequate performers because dismissal is painful, past loyalty is emotionally powerful, and the employee has not committed a visible offense.',
+          mechanism:'Regularly ask whether you would fight to keep this person if they planned to leave; if not, offer generous severance and seek a stronger fit.',
+          conclusion:'A dream team is maintained through active selection, so adequate performance may receive a generous exit rather than indefinite membership.',
+          sections:[
+            ['Team, not family','Netflix uses the professional sports team metaphor. Members support one another intensely, but positions are continually matched to what the team needs now. Past contribution earns respect, not a permanent role.'],
+            ['The manager’s question','The Keeper Test asks: if this person said they were leaving for a peer company, would I fight hard to keep them? A quiet sense of relief is treated as evidence that the role should be reopened.'],
+            ['The Keeper Test prompt','Employees are encouraged to ask managers: “If I were thinking of leaving, how hard would you work to change my mind?” This attempts to reduce hidden uncertainty and give people a chance to improve before a surprise exit.']
+          ],
+          mechanisms:[['Keeper Test','Convert vague satisfaction into a direct retention judgment.'],['Keeper Test prompt','Let employees surface the manager’s current assessment.'],['Generous severance','Make a performance-based transition less punitive and more workable.'],['Role fit over loyalty','Evaluate present contribution against present team needs.']],
+          guardrail:'The practice can produce fear, bias, and short-termism if standards are unclear or managers avoid candid coaching. A generous severance does not substitute for fair, evidence-based judgment.',
+          bridge:'When employment is this fluid, feedback must become more systematic and visible.'
+        },
+        {
+          id:'08', title:'A circle of feedback', phase:'Section three · Reinforce candor', role:'Feedback system · rituals',
+          problem:'Informal one-to-one candor can remain uneven, hierarchical, or avoidant, leaving blind spots that colleagues collectively recognize but no one surfaces.',
+          mechanism:'Create recurring, structured feedback rituals in which everyone gives and receives useful observations under the same 4A rules.',
+          conclusion:'Candor becomes culture only when feedback is routine, multi-directional, and practiced in public enough to overcome hierarchy.',
+          sections:[
+            ['Live 360 feedback','Teams gather to offer direct feedback around a circle. The format creates shared accountability: leaders receive criticism in front of others, and participants learn what useful candor sounds like.'],
+            ['Written 360 feedback','Written input can broaden participation and create reflection time, especially across geographies. Netflix separates developmental feedback from a scored annual performance process.'],
+            ['Feedback is not consensus','The receiver appreciates the contribution but decides whether to accept or discard it. This protects autonomy while ensuring that relevant observations enter the decision environment.']
+          ],
+          mechanisms:[['Recurring ritual','Do not leave difficult truth to chance.'],['Multi-directional input','Peers and reports can challenge leaders.'],['4A discipline','Keep feedback helpful, actionable, appreciated, and nonbinding.'],['Development focus','Use feedback to improve performance rather than to produce a bureaucratic score.']],
+          guardrail:'Public feedback can humiliate people if facilitation is weak or power differences are ignored. The quality of intent, specificity, and psychological safety determines whether the ritual teaches or harms.',
+          bridge:'With feedback flowing, the final removal of control depends on leaders supplying enough strategic context.'
+        },
+        {
+          id:'09', title:'Lead with context, not control', phase:'Section three · Freedom', role:'Leadership model · alignment',
+          problem:'Leaders either centralize decisions to preserve alignment or delegate without enough shared understanding, producing obedience in one case and fragmentation in the other.',
+          mechanism:'Create high alignment through clear strategy, stakes, assumptions, and constraints, then allow loosely coupled teams to decide how to execute.',
+          conclusion:'The leader’s core job is not to approve the right answer but to build the context in which capable people can discover it independently.',
+          sections:[
+            ['The tree, not the pyramid','Senior leaders set broad direction; each level adds relevant context for the decisions below. Information should travel down and learning should travel up without turning every branch decision into a trunk decision.'],
+            ['High alignment, loose coupling','Teams share the destination and dependencies but do not require constant cross-approval. This supports speed only when goals and interfaces are clear.'],
+            ['When a decision fails','The leader first asks what context they failed to provide: Was the strategy unclear? Were goals contradictory? Did the person lack capability? Control is added only if the environment truly requires error prevention.']
+          ],
+          mechanisms:[['Context','Explain strategy, objectives, stakes, assumptions, and constraints.'],['High alignment','Create a shared understanding of what matters.'],['Loose coupling','Let teams decide without unnecessary coordination.'],['Error prevention vs innovation','Use more control where failure is intolerable; use more freedom where learning is valuable.']],
+          guardrail:'Context cannot be a slogan. If leaders retain hidden preferences, punish reasonable misses, or change strategy without explanation, employees will correctly return to approval seeking.',
+          bridge:'The model was built in a direct, US-centered culture; global expansion tests whether its assumptions can travel.'
+        },
+        {
+          id:'10', title:'Bring it all to the world', phase:'Section four · Global', role:'Adaptation · cultural context',
+          problem:'Practices such as radical candor, individual decision authority, and “team not family” carry different meanings across national cultures.',
+          mechanism:'Map company culture against local norms, preserve the principle, and adapt the behavior and feedback channels used to express it.',
+          conclusion:'A strong culture should travel with adaptability: do not abandon the value, but do not assume the US expression of that value is universal.',
+          sections:[
+            ['Map the cultural distance','Meyer compares Netflix norms with local expectations for directness, hierarchy, trust, and decision-making. The larger the gap, the more explicit translation the organization needs.'],
+            ['Candor requires localization','In less direct cultures, spontaneous criticism may be rare, so Netflix adds formal feedback moments and puts feedback on the agenda. In more direct cultures, teams discuss how bluntness may be interpreted by international colleagues.'],
+            ['The fifth A: Adaptability','The global extension to the 4A model is adaptability. Both sides should remain curious, explain intent, and adjust delivery so the underlying information survives the cultural translation.']
+          ],
+          mechanisms:[['Culture mapping','Compare corporate and national communication norms.'],['Formal channels','Create scheduled feedback where informal candor is unlikely.'],['Explicit translation','Discuss how the same behavior is interpreted across cultures.'],['Adaptability','Listen before teaching and change the expression without losing the principle.']],
+          guardrail:'Localization cannot become a way to dismiss local employees as “not candid enough.” Cultural adaptation is a two-way design problem, not a demand that every office imitate headquarters.',
+          bridge:'The book ends with a conditional claim: freedom and responsibility work when the organization keeps rebuilding the conditions that support them.'
+        }
+      ],
+      review: [
+        ['Survivorship bias','Netflix’s success makes the culture persuasive, but the cases do not prove that each practice caused the outcome or will reproduce it elsewhere.'],
+        ['Creative-work boundary','The model is most plausible where innovation and judgment matter more than error prevention. Safety-critical, regulated, operational, and public-service contexts may need stronger controls.'],
+        ['Power and candor','Employees giving candid feedback to leaders still face asymmetric risk. A framework cannot by itself guarantee psychological safety or prevent retaliation.'],
+        ['Keeper Test costs','Continuous selection may sustain performance, but it can also increase anxiety, bias, internal competition, and reluctance to take long-horizon bets.'],
+        ['Compensation economics','Top-of-personal-market pay depends on business margins, labor scarcity, and high individual leverage; it is not a universal workforce model.'],
+        ['Best use','Treat the book as a sequence of conditional design choices: build capability and information before removing control, then keep testing whether the conditions still hold.']
+      ]
+    };
+
+    const labels = {overview:'Overview'};
+    guide.chapters.forEach(chapter => labels[chapter.id] = chapter.title);
+    const nav = document.getElementById('chapter-nav');
+    const content = document.getElementById('guide-content');
+    const progress = document.getElementById('progress');
+    const safe = value => value.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+
+    function makeTab(target,index,name){const button=document.createElement('button');button.className='tab-button';button.type='button';button.role='tab';button.dataset.target=target;button.id=`tab-${target}`;button.setAttribute('aria-controls',`panel-${target}`);button.setAttribute('aria-selected',String(index===0));button.tabIndex=index===0?0:-1;button.innerHTML=`<span class="tab-index">${index===0?'00':String(index).padStart(2,'0')}</span><span class="tab-name">${safe(name)}</span>`;return button}
+    nav.append(makeTab('overview',0,'Overview'),...guide.chapters.map((chapter,index)=>makeTab(chapter.id,index+1,chapter.title)));
+
+    const overview=document.createElement('section');overview.className='panel is-active';overview.id='panel-overview';overview.role='tabpanel';overview.dataset.panel='overview';overview.setAttribute('aria-labelledby','tab-overview');overview.innerHTML=`
+      <div class="overview-hero"><p class="overview-kicker">Reed Hastings × Erin Meyer · 2020</p><h1 class="overview-title">${safe(guide.overview.title)}</h1></div>
+      <div class="overview-deck"><p class="overview-lede">${safe(guide.overview.lede)}</p><p class="overview-copy">${safe(guide.overview.copy)}</p></div>
+      <section class="culture-system" aria-label="Netflix culture levers">${guide.overview.levers.map(item=>`<article class="system-row"><span class="system-no">${item[0]}</span><strong class="system-name">${item[1]}</strong><p class="system-copy">${item[2]}</p></article>`).join('')}</section>
+      <section class="sequence" aria-label="Culture-building sequence">${guide.overview.stages.map(item=>`<article class="sequence-card"><span>${item[0]}</span><strong>${item[1]}</strong><p>${item[2]}</p></article>`).join('')}</section>
+      <section class="book-review" aria-labelledby="review-title"><div class="review-head"><h2 class="review-title" id="review-title">Book review / reality check.</h2><p class="review-intro">The chapters represent Hastings and Meyer’s argument. This separate review preserves that argument while making its assumptions and transfer limits visible.</p></div><div class="review-points">${guide.review.map(item=>`<div class="review-point"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join('')}</div></section>`;
+    content.append(overview);
+
+    guide.chapters.forEach((chapter,index)=>{const panel=document.createElement('section');panel.className='panel';panel.id=`panel-${chapter.id}`;panel.role='tabpanel';panel.hidden=true;panel.dataset.panel=chapter.id;panel.setAttribute('aria-labelledby',`tab-${chapter.id}`);const next=guide.chapters[index+1];panel.innerHTML=`
+      <header class="chapter-head"><div><p class="chapter-kicker">${safe(chapter.phase)}</p><h2 class="chapter-title">${safe(chapter.title)}</h2></div><span class="chapter-number">${chapter.id}</span></header>
+      <section class="chapter-outcome" aria-label="Chapter outcome"><div class="outcome-cell outcome-role"><span class="outcome-label">Role in the system</span><p class="outcome-value">${safe(chapter.role)}</p></div><div class="outcome-cell"><span class="outcome-label">Culture problem</span><p class="outcome-value">${safe(chapter.problem)}</p></div><div class="outcome-cell"><span class="outcome-label">Author conclusion</span><p class="outcome-value">${safe(chapter.conclusion)}</p></div></section>
+      <div class="chapter-body"><div class="chapter-rundown">${chapter.sections.map(section=>`<h3>${section[0]}</h3><p>${section[1]}</p>`).join('')}<aside class="guardrail"><h3>Condition for freedom</h3><p>${safe(chapter.guardrail)}</p></aside><p class="chapter-lesson"><strong>Chapter outcome</strong>${safe(chapter.conclusion)}</p><p class="chapter-bridge"><strong>Bridge</strong> · ${safe(chapter.bridge)}</p>${next?`<button class="next-button" type="button" data-next="${next.id}">Continue to ${safe(next.title)} →</button>`:''}</div><aside class="mechanisms"><h3>Operating mechanisms</h3>${chapter.mechanisms.map(item=>`<div class="mechanism"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join('')}</aside></div>`;content.append(panel)});
+
+    const tabs=Array.from(document.querySelectorAll('.tab-button'));const panels=Array.from(document.querySelectorAll('[role="tabpanel"]'));
+    function activate(target,options={}){const selected=tabs.find(tab=>tab.dataset.target===target);const panel=panels.find(item=>item.dataset.panel===target);if(!selected||!panel)return;tabs.forEach(tab=>{const active=tab===selected;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1});panels.forEach(item=>{const active=item===panel;item.classList.toggle('is-active',active);item.hidden=!active});const index=tabs.indexOf(selected);progress.textContent=`${labels[target]} · ${index+1} of ${tabs.length}`;history.replaceState(null,'',`#${target}`);selected.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});if(options.focus)selected.focus();if(options.scroll!==false)window.scrollTo({top:0,behavior:'smooth'})}
+    tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>activate(tab.dataset.target));tab.addEventListener('keydown',event=>{let next=null;if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%tabs.length;if(event.key==='ArrowUp'||event.key==='ArrowLeft')next=(index-1+tabs.length)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==null){event.preventDefault();activate(tabs[next].dataset.target,{focus:true})}})});document.querySelectorAll('[data-next]').forEach(button=>button.addEventListener('click',()=>activate(button.dataset.next)));const initial=window.location.hash.replace('#','');if(labels[initial])activate(initial,{scroll:false});
+  </script>
+</body>
+</html>

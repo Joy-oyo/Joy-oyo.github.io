@@ -447,7 +447,13 @@ export type DemoProject = {
   tag: string;
   body: string;
   status: "Planned" | "In progress" | "Available";
-  format: "Interactive demo" | "Video showcase";
+  /**
+   * Publishing track. "Hosted session" exists because some builds genuinely
+   * cannot run in a browser tab — they need a rented GPU, which breaks the
+   * lab's zero-cost / nothing-leaves-your-device contract. Giving them their
+   * own track keeps that contract honest instead of quietly widening it.
+   */
+  format: "Interactive demo" | "Hosted session" | "Video showcase";
   formatNote: string;
   /**
    * Live build. Each interactive demo deploys as its own project on its own
@@ -508,8 +514,10 @@ export const demoProjects: DemoProject[] = [
       "Whisper runs entirely in the browser — drop in audio or record live, then export timestamped text.",
     body: "Private, on-device speech-to-text with timestamps and subtitle export. No upload, no API keys.",
     repo: "https://github.com/Joy-oyo/asr-transcriber",
-    // Set to the deployed origin (e.g. https://asr.joylism.com) and flip status
-    // to "Available" once the Vercel project is live.
+    // Served from its own repo and Vercel project, proxied in at this path as a
+    // multi-zone (see `rewrites` in next.config.mjs). Flip status to
+    // "Available" once that deploy is live.
+    href: "/asrtranscriber",
     stack: ["Next.js", "Transformers.js", "Whisper", "WebGPU", "Web Worker"],
   },
   {
@@ -547,6 +555,18 @@ export const demoProjects: DemoProject[] = [
     format: "Video showcase",
     formatNote: "A gameplay video will compare dynamic director decisions across play styles.",
     body: "Dynamically changes difficulty, story, and NPC behavior based on the player.",
+  },
+  {
+    id: "live-stream-restyler",
+    title: "Live Stream Restyler",
+    tag: "AI / Real-time video",
+    status: "In progress",
+    format: "Hosted session",
+    formatNote:
+      "Runs on a hosted realtime video model rather than in this tab — book a 60-second session and restyle your own camera feed live.",
+    body:
+      "Restyle a live camera feed from a text prompt at 720p, streamed over WebRTC. Built on Decart's Lucy realtime API, with StreamDiffusionV2 self-hosting held in reserve as the margin play.",
+    stack: ["Lucy Restyle 2", "Decart realtime API", "WebRTC", "Next.js", "Ephemeral tokens"],
   },
 ];
 
@@ -624,15 +644,15 @@ export const demoLab = {
   ],
 
   abstractStats: [
-    { value: "9", label: "Prototypes in the lab", note: "7 interactive · 2 recorded" },
+    { value: "10", label: "Prototypes in the lab", note: "7 interactive · 1 hosted · 2 recorded" },
     { value: "< 1s", label: "Time to first result", note: "Hard constraint, not a metric" },
     { value: "0", label: "API keys in the client", note: "Secrets stay server-side or absent" },
-    { value: "$0", label: "Marginal cost per session", note: "Inference runs on your hardware" },
+    { value: "$0", label: "Marginal cost per session", note: "Interactive builds run on your hardware" },
   ] as LabStat[],
 
   gallery: {
     lede:
-      "Nine builds, two publishing tracks. Interactive builds run live in this tab; recorded builds ship as video because they depend on hardware or an engine that cannot honestly be faked in a browser.",
+      "Ten builds, three publishing tracks. Interactive builds run live in this tab. Hosted sessions need a GPU big enough that it has to be rented, so they are queued and time-boxed. Recorded builds ship as video because they depend on hardware or an engine that cannot honestly be faked in a browser.",
     groups: [
       {
         id: "interactive-builds",
@@ -640,6 +660,13 @@ export const demoLab = {
         counterLabel: "Demo",
         note: "Runs client-side in this tab. No upload, no key, no quota.",
         format: "Interactive demo" as const,
+      },
+      {
+        id: "hosted-sessions",
+        title: "Hosted sessions",
+        counterLabel: "Session",
+        note: "Runs on someone else's GPU through a metered API, not in your browser — so unlike everything else here, it costs real money per minute and your camera frames do leave your device. Both are stated up front rather than buried.",
+        format: "Hosted session" as const,
       },
       {
         id: "recorded-builds",
@@ -764,10 +791,11 @@ export const demoLab = {
       ["In-browser WASM (CPU rung)", "6 – 12 s", "0.4× realtime", "$0", "No", "Measured"],
       ["In-browser WebGPU (ASR build)", "0.6 – 1.0 s", "3 – 6× realtime", "$0", "No", "Measured"],
       ["Lab contract (every interactive build)", "< 1 s", "≥ 2× realtime", "$0", "No", "Target"],
+      ["Hosted session (Lucy realtime API, 720p)", "to measure", "720p realtime", "$0.60 – 1.20 / min", "Yes", "Vendor pricing"],
       ["Recorded showcase", "—", "—", "$0", "No", "By design"],
     ],
     caveat:
-      "No TensorRT, no custom kernels, no quantisation beyond what the browser runtime already ships. Measurements come from a single M-series laptop in Chrome with a warm model cache, which makes them indicative rather than a benchmark — a cold cache adds the model download, and a Windows laptop on an integrated GPU lands closer to the WASM row. Each figure gets replaced with logged numbers as the corresponding build ships.",
+      "No TensorRT, no custom kernels, no quantisation beyond what the browser runtime already ships. Measurements come from a single M-series laptop in Chrome with a warm model cache, which makes them indicative rather than a benchmark — a cold cache adds the model download, and a Windows laptop on an integrated GPU lands closer to the WASM row. The hosted row is the exception on every axis: it is someone else's GPU, its price comes straight from the vendor's rate card, and its latency is deliberately left blank because the vendor does not publish one. Each figure gets replaced with logged numbers as the corresponding build ships.",
     figures: [
       {
         label: "Fig. 5",

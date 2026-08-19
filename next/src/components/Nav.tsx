@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { site } from "@/content/portfolio";
@@ -25,10 +25,54 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
 
+  // /reading embeds a paper-white document that owns the whole viewport. The
+  // dark glass bar fights that surface, so there the nav parks off-screen and
+  // slides in only when the pointer reaches the top edge — or when focus lands
+  // inside it, which keeps it reachable by keyboard.
+  const autoHide = pathname?.startsWith("/reading") ?? false;
+  const [revealed, setRevealed] = useState(false);
+  const hideTimer = useRef<number | null>(null);
+
+  const cancelHide = useCallback(() => {
+    if (hideTimer.current !== null) {
+      window.clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+  }, []);
+
+  /** Touch has no "leave" to hide on, so a tapped reveal times itself out. */
+  const reveal = useCallback(
+    (autoHideAfter?: number) => {
+      cancelHide();
+      setRevealed(true);
+      if (autoHideAfter) {
+        hideTimer.current = window.setTimeout(() => setRevealed(false), autoHideAfter);
+      }
+    },
+    [cancelHide]
+  );
+
+  // Small delay so a pointer clipping the edge of the bar does not flicker it.
+  const dismiss = useCallback(
+    (delay = 180) => {
+      cancelHide();
+      hideTimer.current = window.setTimeout(() => setRevealed(false), delay);
+    },
+    [cancelHide]
+  );
+
+  useEffect(() => cancelHide, [cancelHide]);
+
   // Close mobile menu on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // Leaving the route drops the bar back to its normal, always-visible state.
+  useEffect(() => {
+    cancelHide();
+    setRevealed(false);
+  }, [pathname, cancelHide]);
 
   // Track scroll to add backdrop after first scroll
   useEffect(() => {
@@ -68,21 +112,66 @@ export default function Nav() {
   const focusRing =
     "outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
 
+  // Open menu wins over auto-hide: a bar that vanishes under its own menu is
+  // worse than one that overstays.
+  const barHidden = autoHide && !revealed && !open;
+  // Nothing scrolls behind the embedded document, so on auto-hide routes the
+  // backdrop has to come from the reveal instead — otherwise pale nav text
+  // would sit on a transparent bar over a white page.
+  const solid = scrolled || (autoHide && !barHidden);
+
   return (
     <>
       <a href="#main" className={cn("skip-link", focusRing)}>
         Skip to content
       </a>
 
+      {/* Hover target along the very top edge. Deliberately thin, and empty of
+          links, so an overshooting cursor reveals the bar while a stray click
+          near the top of the document can never navigate anywhere. */}
+      {autoHide && (
+        <div
+          aria-hidden
+          onPointerEnter={(e) => reveal(e.pointerType === "mouse" ? undefined : 3500)}
+          className="fixed inset-x-0 top-0 z-40 h-6"
+        />
+      )}
+
       <motion.header
         initial={reduceMotion ? { opacity: 0 } : { y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        animate={
+          barHidden
+            ? { y: reduceMotion ? 0 : "-100%", opacity: 0 }
+            : { y: 0, opacity: 1 }
+        }
+        transition={{
+          // Reveal/dismiss wants to feel immediate; the one-off intro on normal
+          // routes keeps its original, slower settle.
+          duration: autoHide ? (reduceMotion ? 0.2 : 0.4) : 0.6,
+          ease: "easeOut",
+        }}
+        onPointerEnter={autoHide ? () => reveal() : undefined}
+        onPointerLeave={autoHide ? () => dismiss() : undefined}
+        onFocus={autoHide ? () => reveal() : undefined}
+        onBlur={
+          autoHide
+            ? (e) => {
+                // Ignore focus moving between the bar's own links.
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  dismiss(0);
+                }
+              }
+            : undefined
+        }
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          scrolled
+          // transition-colors, not transition-all: the transform and opacity
+          // belong to motion, and a CSS transition on top double-eases them.
+          "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
+          solid
             ? "border-b border-ink-50/10 bg-ink-950/95 shadow-glass"
-            : "border-b border-transparent bg-transparent"
+            : "border-b border-transparent bg-transparent",
+          // Off-screen and unclickable, but still tabbable — focus brings it back.
+          barHidden && "pointer-events-none"
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 md:py-5">

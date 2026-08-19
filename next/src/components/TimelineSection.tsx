@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
-  site,
   industryTrack,
   researchTrack,
   education,
@@ -38,6 +37,22 @@ export default function TimelineSection() {
   const industryVariant: Variant = flipped ? "yin" : "yang";
   const researchVariant: Variant = flipped ? "yang" : "yin";
 
+  // Education and About both sit as folded drawers under the taiji card —
+  // they're context, not headline.
+  const [eduOpen, setEduOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  // Deep links (the nav's /#about, or an in-page jump) should reveal the
+  // folded About drawer rather than scrolling to a closed header.
+  useEffect(() => {
+    const openIfHashed = () => {
+      if (window.location.hash === "#about") setAboutOpen(true);
+    };
+    openIfHashed();
+    window.addEventListener("hashchange", openIfHashed);
+    return () => window.removeEventListener("hashchange", openIfHashed);
+  }, []);
+
   return (
     <section id="trajectory" className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
       {/* Section label — sits on the dark page background. */}
@@ -53,6 +68,7 @@ export default function TimelineSection() {
         </span>
         <Link
           href="#about"
+          onClick={() => setAboutOpen(true)}
           className="text-[10px] uppercase tracking-[0.3em] text-ink-50/50 hover:text-ink-50 transition-colors"
         >
           More about me ↓
@@ -120,24 +136,14 @@ export default function TimelineSection() {
         </div>
       </motion.div>
 
-      {/* Education — beneath both tracks, on the dark page bg */}
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.8, delay: 0.05 }}
-        className="mt-16 md:mt-20 pt-10 border-t border-ink-50/10"
+      {/* Education — folded drawer under the two tracks */}
+      <FoldPanel
+        title="Education"
+        dotClass="bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]"
+        open={eduOpen}
+        onToggle={() => setEduOpen((v) => !v)}
+        className="mt-12 md:mt-16"
       >
-        <div className="flex items-baseline justify-between mb-6">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]" />
-            <h3 className="display text-xl md:text-2xl text-ink-50">Education</h3>
-          </div>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
-            03 / Study
-          </span>
-        </div>
-
         <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
           {education.map((e) => (
             <li key={`${e.school}-${e.period ?? ""}`} className="relative pl-5">
@@ -167,27 +173,17 @@ export default function TimelineSection() {
             </li>
           ))}
         </ol>
-      </motion.div>
+      </FoldPanel>
 
-      {/* About — the longer story, what I'm thinking about, off the clock, toolkit */}
-      <motion.div
+      {/* About — a second folded drawer, stacked right under Education */}
+      <FoldPanel
         id="about"
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.8, delay: 0.05 }}
-        className="mt-16 md:mt-20 pt-10 border-t border-ink-50/10"
+        title="About"
+        dotClass="bg-sky-300/80 shadow-[0_0_10px_rgba(125,211,252,0.6)]"
+        open={aboutOpen}
+        onToggle={() => setAboutOpen((v) => !v)}
+        className="mt-3 md:mt-4"
       >
-        <div className="flex items-baseline justify-between mb-8">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-sky-300/80 shadow-[0_0_10px_rgba(125,211,252,0.6)]" />
-            <h3 className="display text-xl md:text-2xl text-ink-50">About</h3>
-          </div>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/35">
-            04 / Who
-          </span>
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
           {/* How I got here */}
           <div className="md:col-span-2 max-w-3xl">
@@ -266,44 +262,80 @@ export default function TimelineSection() {
             </div>
           </div>
         </div>
-      </motion.div>
-
-      {/* Get in touch */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.8 }}
-        className="mt-24 md:mt-32 pt-12 border-t border-ink-50/10"
-      >
-        <span className="text-[10px] uppercase tracking-[0.4em] text-ink-50/50">
-          Get in touch
-        </span>
-        <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
-          <a
-            href={`mailto:${site.email}`}
-            className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-950 px-5 py-2.5 font-medium hover:bg-white transition-colors"
-          >
-            {site.email}
-            <span aria-hidden>→</span>
-          </a>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-50/55">
-            {site.socials.map((s) => (
-              <li key={s.href}>
-                <a
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-ink-50 transition-colors"
-                >
-                  {s.label} ↗
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </motion.div>
+      </FoldPanel>
     </section>
+  );
+}
+
+/* ---------- Folded drawer (Education, About) ---------- */
+
+/**
+ * FoldPanel — a collapsed section header that expands in place.
+ * Used for the two "context" blocks that hang below the taiji card
+ * (Education, About) so the trajectory stays the visual headline.
+ */
+function FoldPanel({
+  id,
+  title,
+  dotClass,
+  open,
+  onToggle,
+  className = "",
+  children,
+}: {
+  id?: string;
+  title: string;
+  dotClass: string;
+  open: boolean;
+  onToggle: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      id={id}
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.7, delay: 0.05 }}
+      className={`scroll-mt-28 ${className}`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="group w-full flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3.5 ring-1 ring-ink-50/10 hover:ring-ink-50/20 transition-colors text-left"
+      >
+        <span className="flex items-center gap-2.5">
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${dotClass}`} />
+          <span className="display text-xl md:text-2xl text-ink-50">{title}</span>
+        </span>
+        <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-ink-50/40 group-hover:text-ink-50/70 transition-colors">
+          <span>{open ? "Less" : "More"}</span>
+          <span
+            aria-hidden
+            className={`transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+          >
+            →
+          </span>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="fold-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pt-6 pb-2">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 

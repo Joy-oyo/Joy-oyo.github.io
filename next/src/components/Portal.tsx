@@ -66,8 +66,10 @@ export default function Portal() {
   const router = useRouter();
   const [hovered, setHovered] = useState(false);
 
-  // Hide the portal on the cyber page itself
-  if (pathname?.startsWith("/cyber")) return null;
+  // Hide the portal on the cyber page itself, and on /reading — that route is
+  // a paper-white document that owns the viewport, and a glowing dark tile
+  // floating over it reads as a bug rather than an invitation.
+  if (pathname?.startsWith("/cyber") || pathname?.startsWith("/reading")) return null;
 
   const enter = () => {
     // Light flash + navigate

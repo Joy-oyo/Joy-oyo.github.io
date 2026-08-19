@@ -400,7 +400,16 @@ function DemoCard({
   counter: string;
 }) {
   const isInteractive = project.format === "Interactive demo";
+  const isHosted = project.format === "Hosted session";
   const isLive = project.status !== "Planned";
+
+  // Placeholder copy differs per track so an empty slot still says what it is
+  // waiting on — a deploy, a booking system, or a shoot.
+  const pendingLabel = isInteractive
+    ? "Online demo coming soon"
+    : isHosted
+      ? "Session booking coming soon"
+      : "Video coming soon";
 
   return (
     <article
@@ -422,9 +431,7 @@ function DemoCard({
             <span className="relative font-mono text-[10px] uppercase tracking-[0.32em] text-ink-50/35">
               {counter}
             </span>
-            <span className="display relative text-lg text-ink-50/45">
-              {isInteractive ? "Online demo coming soon" : "Video coming soon"}
-            </span>
+            <span className="display relative text-lg text-ink-50/45">{pendingLabel}</span>
           </div>
         )}
       </div>
@@ -444,7 +451,9 @@ function DemoCard({
             className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] ${
               isInteractive
                 ? "border-klein/45 bg-klein/20 text-ink-50/85"
-                : "border-ink-50/15 bg-ink-50/[0.05] text-ink-50/60"
+                : isHosted
+                  ? "border-amber-300/40 bg-amber-300/10 text-ink-50/80"
+                  : "border-ink-50/15 bg-ink-50/[0.05] text-ink-50/60"
             }`}
           >
             {project.format}
@@ -502,12 +511,15 @@ function DemoCard({
             {project.href && (
               <a
                 href={project.href}
+                // New tab even for a same-origin zone: these builds hold work in
+                // progress and a cached model, and a back navigation would throw
+                // both away.
                 target="_blank"
                 rel="noreferrer"
                 className={`inline-flex items-center gap-2 rounded-full bg-ink-50 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-950 transition-colors hover:bg-white ${focusRing}`}
               >
                 Open demo
-                <span aria-hidden>↗</span>
+                <span aria-hidden>{project.href.startsWith("/") ? "→" : "↗"}</span>
               </a>
             )}
             {project.repo && (
