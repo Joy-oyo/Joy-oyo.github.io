@@ -1,0 +1,692 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import {
+  industryTrack,
+  researchTrack,
+  education,
+  talks,
+  type TrackItem,
+} from "@/content/timeline";
+import { story, currentlyThinking, elsewhere, toolkit } from "@/content/about";
+import YinYang from "@/components/YinYang";
+
+/**
+ * TimelineSection — Home version.
+ *
+ * Two parallel trajectories, framed as a taiji (yin-yang).
+ *   • Industry  (left)  — yang / black panel — "doing"
+ *   • Research  (right) — yin  / white panel — "knowing"
+ * Both sit on a light-grey "stone" backdrop; a yin-yang glyph rotates
+ * slowly at the seam, making the unity-of-opposites motif explicit.
+ *
+ * The About block (story, currently-thinking, off-the-clock, toolkit)
+ * lives further down this same section — no separate /about page.
+ */
+export default function TimelineSection() {
+  // Clicking the yin-yang glyph at the seam swaps which column is black
+  // (yang) and which is white (yin) — Industry and Research literally
+  // trade colors, the taiji metaphor made interactive.
+  const [flipped, setFlipped] = useState(false);
+  const toggleFlipped = () => setFlipped((f) => !f);
+  const industryVariant: Variant = flipped ? "yin" : "yang";
+  const researchVariant: Variant = flipped ? "yang" : "yin";
+
+  // Education and About both sit as folded drawers under the taiji card —
+  // they're context, not headline.
+  const [eduOpen, setEduOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  // Deep links (the nav's /#about, or an in-page jump) should reveal the
+  // folded About drawer rather than scrolling to a closed header.
+  useEffect(() => {
+    const openIfHashed = () => {
+      if (window.location.hash === "#about") setAboutOpen(true);
+    };
+    openIfHashed();
+    window.addEventListener("hashchange", openIfHashed);
+    return () => window.removeEventListener("hashchange", openIfHashed);
+  }, []);
+
+  return (
+    <section id="trajectory" className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
+      {/* Section label — sits on the dark page background. */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-15%" }}
+        transition={{ duration: 0.7 }}
+        className="flex items-baseline justify-between"
+      >
+        <span className="text-[10px] uppercase tracking-[0.4em] text-ink-50/50">
+          Trajectory · 太极
+        </span>
+        <Link
+          href="#about"
+          onClick={() => setAboutOpen(true)}
+          className="text-[10px] uppercase tracking-[0.3em] text-ink-50/50 hover:text-ink-50 transition-colors"
+        >
+          More about me ↓
+        </Link>
+      </motion.div>
+
+      {/* ─── Taiji shell ──────────────────────────────────────────────
+          A light-grey "stone" card that hosts both halves. The two
+          inner panels (yang/yin) sit flush against one another and
+          are visually stitched by the central yin-yang glyph. */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.9 }}
+        className="taiji-surface mt-6 rounded-3xl overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] ring-1 ring-black/10 relative"
+      >
+        {/* Two-track grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 relative">
+          {/* ─── Industry (left) — color follows industryVariant ─── */}
+          <div className={industryVariant === "yang" ? "taiji-yang p-8 md:p-10" : "taiji-yin p-8 md:p-10"}>
+            <Track
+              label="Industry"
+              eyebrow={industryVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
+              items={industryTrack}
+              variant={industryVariant}
+              delay={0.05}
+              firstItemExtra={<TalksExtra variant={industryVariant} />}
+            />
+          </div>
+
+          {/* ─── Research (right) — color follows researchVariant ─── */}
+          <div className={researchVariant === "yang" ? "taiji-yang p-8 md:p-10" : "taiji-yin p-8 md:p-10"}>
+            <Track
+              label="Research & Projects"
+              eyebrow={researchVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
+              items={researchTrack}
+              variant={researchVariant}
+              delay={0.15}
+            />
+          </div>
+
+          {/* Faint S-curve seam between the two halves (md+). */}
+          <div
+            aria-hidden
+            className="taiji-divider hidden md:block absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-px pointer-events-none"
+          />
+
+          {/* The yin-yang glyph straddling the boundary — desktop.
+              Clickable: flips the glyph AND swaps the two panels' colors —
+              a purely local, decorative toggle that doesn't touch the
+              site-wide theme. */}
+          <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div className="rounded-full bg-[var(--stone-soft)] p-2 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] ring-1 ring-black/10">
+              <YinYang size={64} interactive flipped={flipped} onToggle={toggleFlipped} />
+            </div>
+          </div>
+
+          {/* Mobile: render the glyph between the two stacked panels. */}
+          <div className="md:hidden flex justify-center -my-6 relative z-10">
+            <div className="rounded-full bg-[var(--stone-soft)] p-2 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] ring-1 ring-black/10">
+              <YinYang size={52} interactive flipped={flipped} onToggle={toggleFlipped} />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Education — folded drawer under the two tracks */}
+      <FoldPanel
+        title="Education"
+        dotClass="bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]"
+        open={eduOpen}
+        onToggle={() => setEduOpen((v) => !v)}
+        className="mt-12 md:mt-16"
+      >
+        <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+          {education.map((e) => (
+            <li key={`${e.school}-${e.period ?? ""}`} className="relative pl-5">
+              <span
+                aria-hidden
+                className="absolute left-0 top-[7px] w-1.5 h-1.5 rounded-full bg-ink-50/30"
+              />
+              {e.period && (
+                <span className="text-[11px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
+                  {e.period}
+                </span>
+              )}
+              <h4 className="display mt-1.5 text-xl md:text-2xl text-ink-50 leading-tight">
+                {e.school}
+              </h4>
+              <p className="mt-1 text-sm md:text-[15px] text-ink-50/70">
+                {e.degree}
+                {e.location && (
+                  <span className="text-ink-50/30"> · {e.location}</span>
+                )}
+              </p>
+              {e.note && (
+                <p className="mt-2 text-xs md:text-sm text-ink-50/45 leading-relaxed">
+                  {e.note}
+                </p>
+              )}
+            </li>
+          ))}
+        </ol>
+      </FoldPanel>
+
+      {/* About — a second folded drawer, stacked right under Education */}
+      <FoldPanel
+        id="about"
+        title="About"
+        dotClass="bg-sky-300/80 shadow-[0_0_10px_rgba(125,211,252,0.6)]"
+        open={aboutOpen}
+        onToggle={() => setAboutOpen((v) => !v)}
+        className="mt-3 md:mt-4"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+          {/* How I got here */}
+          <div className="md:col-span-2 max-w-3xl">
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+              How I got here
+            </h4>
+            <div className="space-y-4 text-sm md:text-[15px] text-ink-50/70 leading-relaxed">
+              {story.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          </div>
+
+          {/* What I'm thinking about */}
+          <div>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+              What I&rsquo;m thinking about
+            </h4>
+            <div className="space-y-6">
+              {currentlyThinking.map((c, i) => (
+                <div key={i}>
+                  <h5 className="display text-base md:text-lg text-ink-50 leading-snug">
+                    {c.title}
+                  </h5>
+                  <p className="mt-2 text-sm text-ink-50/60 leading-relaxed">
+                    {c.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Off the clock + toolkit */}
+          <div className="space-y-10">
+            <div>
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+                Off the clock
+              </h4>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {elsewhere.map((e) => (
+                  <div key={e.label}>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
+                      {e.label}
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink-50/70 leading-relaxed">
+                      {e.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div>
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
+                What I reach for
+              </h4>
+              <div className="space-y-4">
+                {toolkit.map((group) => (
+                  <div key={group.group}>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
+                      {group.group}
+                    </span>
+                    <ul className="mt-2 flex flex-wrap gap-2">
+                      {group.items.map((s) => (
+                        <li
+                          key={s}
+                          className="glass rounded-full px-3 py-1 text-[11px] tracking-wide text-ink-50/80"
+                        >
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </FoldPanel>
+    </section>
+  );
+}
+
+/* ---------- Folded drawer (Education, About) ---------- */
+
+/**
+ * FoldPanel — a collapsed section header that expands in place.
+ * Used for the two "context" blocks that hang below the taiji card
+ * (Education, About) so the trajectory stays the visual headline.
+ */
+function FoldPanel({
+  id,
+  title,
+  dotClass,
+  open,
+  onToggle,
+  className = "",
+  children,
+}: {
+  id?: string;
+  title: string;
+  dotClass: string;
+  open: boolean;
+  onToggle: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      id={id}
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.7, delay: 0.05 }}
+      className={`scroll-mt-28 ${className}`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="group w-full flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3.5 ring-1 ring-ink-50/10 hover:ring-ink-50/20 transition-colors text-left"
+      >
+        <span className="flex items-center gap-2.5">
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${dotClass}`} />
+          <span className="display text-xl md:text-2xl text-ink-50">{title}</span>
+        </span>
+        <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-ink-50/40 group-hover:text-ink-50/70 transition-colors">
+          <span>{open ? "Less" : "More"}</span>
+          <span
+            aria-hidden
+            className={`transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+          >
+            →
+          </span>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="fold-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pt-6 pb-2">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* ---------- Track column ---------- */
+
+type Variant = "yang" | "yin";
+
+/**
+ * Variant tokens — the only place that knows about "dark text on white"
+ * vs "light text on black". Everything below pulls from this map so the
+ * two columns stay perfectly symmetric in structure (Tao-style).
+ */
+const variantTokens: Record<
+  Variant,
+  {
+    dot: string;
+    glow: string;
+    tag: string;
+    link: string;
+    title: string;
+    subtle: string;
+    faint: string;
+    guide: string;
+    detailText: string;
+    detailBullet: string;
+    button: string;
+  }
+> = {
+  // Industry — black panel, light type
+  yang: {
+    dot: "bg-white/80 shadow-[0_0_10px_rgba(255,255,255,0.5)]",
+    glow: "bg-white/10",
+    tag: "text-white/80 border-white/30",
+    link: "text-white/85 hover:text-white",
+    title: "text-white",
+    subtle: "text-white/65",
+    faint: "text-white/45",
+    guide: "bg-white/10",
+    detailText: "text-white/65",
+    detailBullet: "bg-white/30",
+    button: "text-white/55 hover:text-white",
+  },
+  // Research — white panel, dark type
+  yin: {
+    dot: "bg-black/85 shadow-[0_0_10px_rgba(0,0,0,0.25)]",
+    glow: "bg-black/5",
+    tag: "text-black/70 border-black/25",
+    link: "text-black/80 hover:text-black",
+    title: "text-black",
+    subtle: "text-black/65",
+    faint: "text-black/45",
+    guide: "bg-black/10",
+    detailText: "text-black/65",
+    detailBullet: "bg-black/30",
+    button: "text-black/55 hover:text-black",
+  },
+};
+
+/**
+ * TalksExtra — the References & Speaking sub-list nested under the first
+ * Industry entry. Styled via `talkTokens` so it stays legible whichever
+ * color the Industry panel currently is (black or white, per `variant`).
+ */
+const talkTokens: Record<
+  Variant,
+  {
+    border: string;
+    dot: string;
+    meta: string;
+    metaFaint: string;
+    title: string;
+    titleHover: string;
+    underline: string;
+    venue: string;
+    body: string;
+  }
+> = {
+  yang: {
+    border: "border-white/10",
+    dot: "bg-white/30",
+    meta: "text-white/45",
+    metaFaint: "text-white/30",
+    title: "text-white",
+    titleHover: "hover:text-white",
+    underline: "decoration-white/30 hover:decoration-white/70",
+    venue: "text-white/65",
+    body: "text-white/45",
+  },
+  yin: {
+    border: "border-black/10",
+    dot: "bg-black/30",
+    meta: "text-black/45",
+    metaFaint: "text-black/30",
+    title: "text-black",
+    titleHover: "hover:text-black",
+    underline: "decoration-black/30 hover:decoration-black/70",
+    venue: "text-black/65",
+    body: "text-black/45",
+  },
+};
+
+function TalksExtra({ variant }: { variant: Variant }) {
+  const tt = talkTokens[variant];
+  return (
+    <div className={`mt-1 pt-3 border-t border-dashed ${tt.border}`}>
+      <ol className="space-y-3">
+        {talks.map((t) => (
+          <li key={t.id} className="relative pl-3.5">
+            <span aria-hidden className={`absolute left-0 top-[7px] w-1 h-1 rounded-full ${tt.dot}`} />
+            <span className={`text-[10px] uppercase tracking-[0.25em] tabular-nums ${tt.meta}`}>
+              {t.year}
+              {t.location && <span className={tt.metaFaint}> · {t.location}</span>}
+            </span>
+            <p className={`display mt-0.5 text-sm md:text-[15px] leading-snug ${tt.title}`}>
+              {t.href ? (
+                <a
+                  href={t.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`transition-colors underline decoration-dotted underline-offset-4 ${tt.titleHover} ${tt.underline}`}
+                >
+                  {t.title}
+                </a>
+              ) : (
+                t.title
+              )}
+            </p>
+            <p className={`mt-0.5 text-[12px] ${tt.venue}`}>{t.venue}</p>
+            {t.body && (
+              <p className={`mt-1 text-[11px] md:text-xs leading-relaxed ${tt.body}`}>{t.body}</p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function Track({
+  label,
+  eyebrow,
+  items,
+  variant,
+  delay,
+  firstItemExtra,
+}: {
+  label: string;
+  eyebrow?: string;
+  items: TrackItem[];
+  variant: Variant;
+  delay: number;
+  firstItemExtra?: React.ReactNode;
+}) {
+  const tokens = variantTokens[variant];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.8, delay }}
+      className="relative"
+    >
+      {/* Column header */}
+      <div className="flex items-baseline justify-between mb-5">
+        <div className="flex items-center gap-2.5">
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${tokens.dot}`} />
+          <h3 className={`display text-xl md:text-2xl ${tokens.title}`}>{label}</h3>
+        </div>
+        {eyebrow && (
+          <span className={`text-[10px] uppercase tracking-[0.3em] ${tokens.faint}`}>
+            {eyebrow}
+          </span>
+        )}
+      </div>
+
+      {/* Items */}
+      <ol className="relative space-y-5">
+        {/* Subtle vertical guide inside the column */}
+        <div
+          aria-hidden
+          className={`absolute left-0 top-2 bottom-2 w-px ${tokens.guide}`}
+        />
+
+        {items.map((t, i) => (
+          <TrackEntry
+            key={`${t.title}-${t.period ?? i}`}
+            item={t}
+            tokens={tokens}
+            spotlightGlow={i === 0 && !!t.current}
+            extra={i === 0 ? firstItemExtra : undefined}
+          />
+        ))}
+      </ol>
+    </motion.div>
+  );
+}
+
+/* ---------- Single entry (expandable) ---------- */
+
+function TrackEntry({
+  item: t,
+  tokens,
+  spotlightGlow,
+  extra,
+}: {
+  item: TrackItem;
+  tokens: (typeof variantTokens)[Variant];
+  spotlightGlow: boolean;
+  extra?: React.ReactNode;
+}) {
+  const hasDetails = (t.highlights && t.highlights.length > 0) || (t.links && t.links.length > 0);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <li className="relative pl-5 group">
+      {/* Bullet on the guide */}
+      <span
+        aria-hidden
+        className={`absolute left-[-3px] top-[7px] w-1.5 h-1.5 rounded-full ${
+          t.current ? tokens.dot : tokens.guide
+        }`}
+      />
+
+      <div className="relative">
+        {spotlightGlow && (
+          <div
+            aria-hidden
+            className={`absolute -top-8 -left-4 w-32 h-32 rounded-full blur-3xl pointer-events-none ${tokens.glow}`}
+          />
+        )}
+
+        <div className="relative">
+          {/* Top meta row — period (if any) + Now tag. */}
+          {(t.period || t.current) && (
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              {t.period && (
+                <span className={`text-[11px] uppercase tracking-[0.25em] tabular-nums ${tokens.faint}`}>
+                  {t.period}
+                </span>
+              )}
+              {t.current && (
+                <span
+                  className={`text-[9px] uppercase tracking-[0.3em] px-1.5 py-0.5 rounded-full border ${tokens.tag}`}
+                >
+                  Now
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Primary title — bigger, display font */}
+          <h4
+            className={`display text-lg md:text-xl leading-tight ${tokens.title} ${
+              t.period || t.current ? "mt-1.5" : ""
+            }`}
+          >
+            {t.title}
+          </h4>
+          {/* Subtitle + location */}
+          {(t.subtitle || t.location) && (
+            <p className={`mt-0.5 text-sm ${tokens.subtle}`}>
+              {t.subtitle}
+              {t.subtitle && t.location && (
+                <span className={tokens.faint}> · {t.location}</span>
+              )}
+              {!t.subtitle && t.location && (
+                <span className={tokens.faint}>{t.location}</span>
+              )}
+            </p>
+          )}
+          {t.note && (
+            <p className={`mt-1.5 text-xs md:text-[13px] leading-relaxed ${tokens.faint}`}>
+              {t.note}
+            </p>
+          )}
+
+          {/* Details toggle */}
+          {hasDetails && (
+            <>
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                className={`mt-2.5 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.3em] transition-colors ${tokens.button}`}
+              >
+                <span>{open ? "Less" : "More"}</span>
+                <span
+                  aria-hidden
+                  className={`transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+                >
+                  →
+                </span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {open && (
+                  <motion.div
+                    key="details"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-3">
+                      {t.highlights && t.highlights.length > 0 && (
+                        <ul className="space-y-1.5">
+                          {t.highlights.map((h, hi) => (
+                            <li
+                              key={hi}
+                              className={`relative pl-3 text-[13px] leading-relaxed ${tokens.detailText}`}
+                            >
+                              <span
+                                aria-hidden
+                                className={`absolute left-0 top-[9px] w-1 h-px ${tokens.detailBullet}`}
+                              />
+                              {h}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {t.links && t.links.length > 0 && (
+                        <ul className="mt-3 space-y-1">
+                          {t.links.map((l) => (
+                            <li key={l.href}>
+                              <a
+                                href={l.href}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`inline-flex items-baseline gap-1.5 text-[12px] leading-snug transition-colors ${tokens.link}`}
+                              >
+                                <span aria-hidden className="opacity-70">↗</span>
+                                <span className="underline decoration-dotted underline-offset-4">
+                                  {l.label}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
+          )}
+
+          {/* Per-entry extra slot — used to nest References & Speaking
+              directly under the Tencent chapter as a subsection. */}
+          {extra}
+        </div>
+      </div>
+    </li>
+  );
+}

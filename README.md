@@ -1,45 +1,68 @@
 # joylism.com
 
-Personal portfolio of Joy Chen — built with Next.js, deployed on Vercel.
+Personal portfolio of Joy Chen. This repository contains two deployable projects:
 
-🌐 Live site: <https://joylism.com>
+- the Next.js portfolio at the repository root;
+- a dependency-free static reading microsite in `reading-collection/`.
+
+Live site: <https://joylism.com>
 
 ## Stack
 
 - [Next.js 14](https://nextjs.org/) (App Router)
-- TypeScript
-- Tailwind CSS
-- Framer Motion + GSAP
-- React Three Fiber (3D)
-- Nodemailer (contact-form verification)
+- TypeScript and Tailwind CSS
+- Framer Motion
+- React Three Fiber
+- Nodemailer
+- Plain HTML, CSS, and JavaScript for Reading Collection
 
 ## Local development
 
+Copy `.env.example` to `.env.local`. Set `EMAIL_USER` and `EMAIL_PASS` if the
+contact verification flow is needed.
+
+Run the static reading project in one terminal:
+
 ```bash
-cd next
+python3 -m http.server 3002 --directory reading-collection
+```
+
+Run the portfolio in another:
+
+```bash
 npm install
 npm run dev
 ```
 
-Then open <http://localhost:3001>.
-
-To use the email verification feature locally, copy `next/.env.example` to
-`next/.env.local` and fill in `EMAIL_USER` / `EMAIL_PASS` (Gmail App Password).
+`READING_COLLECTION_ORIGIN` defaults to the documented local value
+`http://127.0.0.1:3002` in `.env.example`. Open <http://localhost:3001>.
 
 ## Deployment
 
-Every push to `main` is auto-deployed to Vercel.
-See [`DEPLOY.md`](./DEPLOY.md) for the full setup (Vercel + Cloudflare DNS).
+The same Git repository is connected to two Vercel projects:
 
-## Repo layout
+| Project | Root Directory | Framework |
+| --- | --- | --- |
+| Portfolio | repository root | Next.js |
+| Reading Collection | `reading-collection` | Other / Static |
 
-```
-next/                  # the Next.js app (all production code lives here)
-├─ src/app/            # routes (App Router)
-├─ src/components/     # React components
-├─ src/content/        # portfolio data
-├─ src/lib/            # utilities
-└─ public/             # static assets
+Deploy Reading Collection first, then set its stable production URL as
+`READING_COLLECTION_ORIGIN` in the portfolio project and deploy the portfolio.
+The main site proxies `/reading-collection/*` to that origin while `/reading`
+keeps the portfolio shell and embeds the collection.
 
-DEPLOY.md              # deployment & DNS guide
+See [`DEPLOY.md`](./DEPLOY.md) for the complete Vercel and Cloudflare runbook.
+
+## Repository layout
+
+```text
+src/app/                  # App Router pages and API routes
+src/components/           # React UI, animation, and 3D components
+src/content/              # domain-specific content modules
+src/lib/                  # shared utilities and verification state
+public/                   # portfolio images and static assets
+reading-collection/       # independently deployable static microsite
+docs/                     # project plans and supporting documentation
+ARCHITECTURE.md            # technical architecture
+DEPLOY.md                  # deployment and DNS runbook
 ```

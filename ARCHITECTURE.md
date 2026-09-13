@@ -1,7 +1,7 @@
 # Technical Architecture
 
-**Repo:** `Joy-oyo.github.io` · **App:** `next/` · **Live:** <https://joylism.com> (Vercel)
-**Last verified against source:** August 2026
+**Repo and app root:** `Joy-oyo.github.io/` · **Live:** <https://joylism.com> (Vercel)
+**Last verified against source:** September 2026
 
 This document describes what the code *currently does*, not what it should do. Where the
 code and the existing docs disagree, the code wins and the disagreement is flagged in
@@ -11,9 +11,11 @@ code and the existing docs disagree, the code wins and the disagreement is flagg
 
 ## 1. What this repository is
 
-A single-author portfolio site. One Next.js application, no monorepo tooling, no backend
-service, no database. All persistent content is a TypeScript module compiled into the
-bundle; the only server-side logic is a two-route email-verification API.
+A single-author portfolio with two deployable projects in one repository: the root Next.js
+application and a dependency-free static Reading Collection. There is no monorepo tooling,
+backend service, or database. Portfolio content is compiled from domain-specific TypeScript
+modules; the only application server logic is a two-route email-verification API plus
+external rewrites for Reading Collection and ASR Transcriber.
 
 The site has an unusual amount of client-side 3D for a portfolio — three independent WebGL
 canvases, one of which is a walkable procedural city — so the dominant architectural
@@ -22,22 +24,24 @@ concern is **keeping WebGL off the server and off the critical path**, not data 
 ### Repo layout
 
 ```
-Joy-oyo.github.io/
-├─ next/                    # the entire application
-│  ├─ src/
-│  │  ├─ app/               # App Router routes
-│  │  ├─ components/        # all React components (flat + demos/ subfolder)
-│  │  ├─ content/           # portfolio.ts — the whole content layer
-│  │  └─ lib/               # cn(), verificationStore
-│  ├─ public/               # images, cyber signage
-│  ├─ .env.example
-│  ├─ next.config.mjs
-│  ├─ tailwind.config.ts
-│  └─ tsconfig.json
-├─ .vercel/                 # linked Vercel project
+Joy-oyo.github.io/           # repository and Next.js application root
+├─ src/
+│  ├─ app/                  # App Router routes and API handlers
+│  ├─ components/           # React components (flat + demos/ subfolder)
+│  ├─ content/              # site, timeline, about, demos, writing, and media data
+│  └─ lib/                  # cn(), verificationStore
+├─ public/                  # portfolio images and cyber signage
+├─ reading-collection/      # independent static project (HTML + vercel.json)
+├─ docs/                    # project plans and supporting documentation
+├─ .env.example
+├─ next.config.mjs
+├─ package.json
+├─ package-lock.json
+├─ tailwind.config.ts
+├─ tsconfig.json
+├─ ARCHITECTURE.md
 ├─ DEPLOY.md                # Vercel + Cloudflare DNS runbook
-├─ README.md
-└─ package-lock.json        # ORPHAN — 96 bytes, zero packages, no sibling package.json
+└─ README.md
 ```
 
 There is **no CI configuration** (`.github/` does not exist). Deployment is entirely
@@ -59,7 +63,7 @@ Vercel's Git integration. There is no test suite and no test runner installed.
 | Email | nodemailer (Gmail SMTP) | `6.9.15` |
 
 **Declared but unused — zero imports anywhere in `src/`:** `gsap`, `lucide-react`,
-`dotenv`. Both READMEs advertise GSAP as part of the animation stack; it is not used.
+`dotenv`.
 
 Path alias: `@/*` → `./src/*`.
 
@@ -84,6 +88,7 @@ app/page.tsx                    →   Landing          ("use client")
 app/demos/page.tsx              →   SectionNav, CopyBlock
 app/writing/**, photography,
 contact, demos                  →   ContactForm, PageHeader
+app/reading/page.tsx            →   ReadingCollectionEmbed → external static project
 app/cyber/page.tsx ("use client")                                  →  CyberCity   (dynamic)
 ```
 
@@ -96,8 +101,9 @@ Three rules follow from this and should be preserved:
 2. **Page shells stay server components** so content, metadata, and layout ship as HTML.
    `PageHeader` is the one exception — it is a client component purely for its entrance
    animation, which is a cost worth knowing about.
-3. **No data fetching exists.** Content is a static import, so every page is statically
-   prerendered at build time. The only dynamic code paths are the two API routes.
+3. **No portfolio content fetching exists.** Content is statically imported, so pages are
+   prerendered at build time. Dynamic boundaries are the two API routes and the external
+   rewrites for Reading Collection and ASR Transcriber.
 
 ---
 
@@ -111,6 +117,9 @@ Three rules follow from this and should be preserved:
 | `/writing` | RSC | Index, sorted newest-first, computes reading time. |
 | `/writing/[slug]` | RSC + `generateStaticParams` | Statically generated per `writings` entry. `notFound()` on miss. |
 | `/contact` | RSC | Wraps the `ContactForm` client island. |
+| `/reading` | RSC shell + client iframe | Embeds the independent static Reading Collection full-screen; the site nav auto-hides. |
+| `/reading-collection/*` | External rewrite | Proxies to `READING_COLLECTION_ORIGIN`, stripping the local prefix upstream. |
+| `/asrtranscriber/*` | External rewrite | Multi-zone proxy to `ASR_DEMO_ORIGIN`; the upstream keeps its base path. |
 | `/cyber` | **Client** | Full-screen immersive world; `Nav` and `Portal` self-hide here. |
 | `/api/send-verification` | Route handler, `runtime = "nodejs"` | POST. |
 | `/api/verify-code` | Route handler, `runtime = "nodejs"` | POST. |
@@ -119,40 +128,37 @@ Three rules follow from this and should be preserved:
 earlier structure. About and Work were merged into `/` as the `#about` and `#trajectory`
 sections.
 
-Two components opt out of the global chrome by inspecting `usePathname()`:
+Global chrome adapts by pathname. `Portal` is absent on `/cyber` and `/reading`.
+`Nav` is absent on `/cyber`; on `/reading` it parks above the viewport and reveals on a
+top-edge pointer hover or keyboard focus. This lets the paper-white static microsite keep
+its original visual system without removing portfolio navigation entirely.
 
-```ts
-// Nav.tsx and Portal.tsx both do this
-if (pathname?.startsWith("/cyber")) return null;
-```
-
-This is a deliberate escape hatch, but it means `/cyber` has **no navigation back** except
-the links the page renders itself.
+`/cyber` therefore has no global navigation back except the links rendered by that page.
 
 ---
 
 ## 5. Content layer
 
-`src/content/portfolio.ts` is the single source of truth for everything readable on the
-site — roughly 1,000 lines of typed exports, no CMS, no MDX, no filesystem reads.
+Portfolio content is split by domain under `src/content/`. There is no CMS, MDX, or runtime
+filesystem read; these typed modules are compiled into the routes that consume them.
 
-| Export | Consumed by |
-| --- | --- |
-| `site` | Nav, Footer, Landing, contact, TimelineSection |
-| `albums` | AlbumStack |
-| `industryTrack`, `researchTrack`, `education`, `talks` | TimelineSection |
-| `story`, `currentlyThinking`, `elsewhere`, `toolkit` | TimelineSection (About block) |
-| `demoProjects` | `/demos` gallery |
-| `demoLab` | `/demos` — hero, abstract, motivation, method, results, credits, BibTeX |
-| `photos` | `/photography` |
-| `writings` | `/writing`, `/writing/[slug]` |
-| `timeline`, `workExperience`, `experiences`, `skills`, `projects` | **nothing — dead exports** |
+| Module | Main exports | Consumed by |
+| --- | --- | --- |
+| `site.ts` | `site` | Nav, Footer, Landing, contact, timeline mail link |
+| `albums.ts` | `albums`, `Album` | AlbumStack |
+| `timeline.ts` | work/research tracks, education, talks | TimelineSection |
+| `about.ts` | story, current questions, elsewhere, toolkit | TimelineSection About block |
+| `demos.ts` | `demoProjects`, `demoLab`, demo types | `/demos`, FigureFrame |
+| `photography.ts` | `photos` | `/photography` |
+| `writing.ts` | `writings`, `Writing` | `/writing`, `/writing/[slug]` |
+| `projects.ts` | legacy selected-project data | currently unconsumed |
 
-Editing content requires no component changes. Adding a blog post is a single array entry;
-`generateStaticParams` picks it up on the next build.
+The former TypeScript `reading` array was removed: Reading Collection now owns its content
+inside its independent static project. Editing a blog post still requires only one entry in
+`writing.ts`; `generateStaticParams` picks it up on the next build.
 
 **Types worth knowing:** `TrackItem`, `DemoProject`, `Writing`, `Album`, and the demo-lab
-set `LabFigure` / `LabAuthor` / `LabResource` / `LabStat`.
+set `LabFigure` / `LabResource` / `LabStat`.
 
 `LabFigure` deserves a note because it encodes a deliberate pattern: `src` is optional, and
 `FigureFrame` renders a designed placeholder when it's absent. Unshot figures read as
@@ -361,6 +367,11 @@ is handled properly here: `autoComplete="one-time-code"`, `inputMode="numeric"`,
 **Secrets** are environment-only (`EMAIL_USER`, `EMAIL_PASS`) — no keys in the bundle, no
 keys in the repo. The dev fallback logs to the server console rather than weakening the flow.
 
+`READING_COLLECTION_ORIGIN` and `ASR_DEMO_ORIGIN` are non-secret deploy-time origins.
+`next.config.mjs` accepts public HTTPS origins in production and loopback HTTP during local
+development; request data can never select an upstream. Production refuses to build without
+a valid Reading Collection origin.
+
 ### The known structural flaw
 
 `verificationStore` is an in-memory `Map` pinned to `globalThis`. On Vercel, the two routes
@@ -374,7 +385,6 @@ or a signed JWT carrying the code). Still open.
 ## 10. Build and deploy
 
 ```bash
-cd next
 npm install
 cp .env.example .env.local     # optional; only the contact form needs it
 npm run dev                    # http://localhost:3001
@@ -398,9 +408,12 @@ images: { remotePatterns: [ images.unsplash.com, chenj219.wixsite.com ] },
 transpilePackages: ["three"],
 ```
 
-**Deploy:** push to `main` → Vercel builds with **Root Directory = `next`**. Domain
-`joylism.com` resolves via Cloudflare DNS in *DNS-only* mode (grey cloud) to avoid
-double-CDN in front of Vercel. Full runbook and rollback steps in `DEPLOY.md`.
+**Deploy:** the same Git repository feeds two Vercel projects. Reading Collection builds
+first from Root Directory `reading-collection`; the portfolio then builds from the repository
+root with `READING_COLLECTION_ORIGIN` pointing at the static project's stable HTTPS alias.
+`next.config.mjs` exposes that origin below `/reading-collection/*`. Domain `joylism.com`
+resolves via Cloudflare DNS in *DNS-only* mode. Full ordering, environment, and rollback
+steps are in `DEPLOY.md`.
 
 ---
 
@@ -418,12 +431,11 @@ Ordered by how much it would hurt.
 | 6 | Medium | `AlbumStack` cards are clickable `motion.div`s with no `role="button"`, no `tabIndex`, and no keyboard activation; hidden `Link`s inside non-top cards remain focusable but call `preventDefault()`, creating a confusing focus trap. | `components/AlbumStack.tsx` |
 | 7 | Low–Med | `twitter.card` is `summary_large_image` and `openGraph` is configured, but **no image asset exists** — no `opengraph-image`, no `public/og*`. Social shares render blank. No `sitemap.ts` or `robots.ts` either. | `app/layout.tsx`, `public/` |
 | 8 | Low–Med | Per-frame allocations in `useFrame` (`new THREE.Vector3`) and an unmemoised 512×512 canvas texture built in an IIFE inside JSX. | `Portal.tsx`, `Scene3D.tsx` |
-| 9 | Low | Three unused dependencies shipped in `package.json`: `gsap`, `lucide-react`, `dotenv`. Both READMEs claim GSAP is in use. | `package.json` |
-| 10 | Low | Dead code: empty `app/about/` and `app/work/` directories; unused exports `timeline`, `workExperience`, `experiences`, `skills`, `projects`; orphan root `package-lock.json`. | various |
-| 11 | Low | `DEPLOY.md` describes a "legacy static site at the repo root (`index.html`, `css/`, `js/`, `server.js`)" that no longer exists. `next/README.md` describes routes (`/about`, `/projects`), a component (`Hero.tsx`), and fonts (Instrument Serif, Geist) that no longer exist. | `DEPLOY.md`, `next/README.md` |
-| 12 | Low | Font CSS variables named `--font-geist-*` actually resolve to Inter and JetBrains Mono. | `globals.css` vs `layout.tsx` |
-| 13 | Low | `AlbumStack` passes a dynamically changing `priority` to `next/image`; the prop is intended as a static LCP hint. | `components/AlbumStack.tsx` |
-| 14 | Low | No tests and no CI. Type safety is the only automated guardrail, and only when run manually. | repo |
+| 9 | Low | Three unused dependencies shipped in `package.json`: `gsap`, `lucide-react`, `dotenv`. | `package.json` |
+| 10 | Low | Dead code: empty `app/about/` and `app/work/` directories; legacy exports in `timeline.ts` and `projects.ts` are currently unconsumed. | various |
+| 11 | Low | Font CSS variables named `--font-geist-*` actually resolve to Inter and JetBrains Mono. | `globals.css` vs `layout.tsx` |
+| 12 | Low | `AlbumStack` passes a dynamically changing `priority` to `next/image`; the prop is intended as a static LCP hint. | `components/AlbumStack.tsx` |
+| 13 | Low | No tests and no CI. Type safety is the only automated guardrail, and only when run manually. | repo |
 
 ### Content-vs-code gap
 
@@ -431,8 +443,9 @@ Worth separating from the list above because it isn't a bug — it's a promise t
 caught up to. `demoProjects` marks **ASR Transcriber** as `In progress` with a stack of
 `Transformers.js · Whisper · WebGPU · Web Worker`. A search across `src/` for
 `transformers`, `whisper`, `webgpu`, `onnx`, `AudioContext`, or `MediaRecorder` returns
-**only `portfolio.ts`** — the prose. None of those packages are in `package.json`. The demo
-does not exist in this repository in any form.
+**only `content/demos.ts`** — the portfolio metadata. None of those packages are in this
+application's `package.json`; the implementation lives in the external ASR project reached
+through `/asrtranscriber`.
 
 The same applies to the `/cyber` ambient audio: `public/audio/cyber-rain.mp3` is probed for
 but has never been added.
@@ -445,7 +458,8 @@ Patterns the codebase already commits to. Breaking them is what will make it fee
 inconsistent.
 
 **Structure**
-- Content goes in `portfolio.ts`, never inline in a component.
+- Content goes in the matching `src/content/<domain>.ts` module, never inline in a component.
+- Reading guides stay inside `reading-collection/` and use relative same-directory links.
 - Pages are server components; push interactivity into the smallest possible client leaf.
 - Anything touching WebGL, `window`, or `document` at module scope must be behind
   `dynamic(..., { ssr: false })`.

@@ -1,7 +1,0 @@
-node_modules
-.next
-.next-verify
-out
-.env*.local
-.DS_Store
-tsconfig.tsbuildinfo

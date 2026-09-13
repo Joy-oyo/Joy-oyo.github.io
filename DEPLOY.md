@@ -1,108 +1,145 @@
-# Deploying to Vercel (with Cloudflare-registered domain)
+# Deploying joylism.com
 
-This repository contains two things:
+This repository contains two deployable projects:
 
-- The **legacy static site** at the repo root (`index.html`, `css/`, `js/`, `images/`, `server.js`, …) — currently served by GitHub Pages on `joylism.com`.
-- The **new Next.js portfolio** in `next/` — what we are deploying to Vercel.
+| Project | Vercel Root Directory | Purpose |
+| --- | --- | --- |
+| Portfolio | repository root | Next.js application served at `joylism.com` |
+| Reading Collection | `reading-collection` | Static HTML microsite proxied below `/reading-collection/*` |
 
-After following this guide, `joylism.com` will point to the Next.js app on Vercel. The old GitHub Pages content stops being served, but the files stay in the repo (history preserved).
+The ASR Transcriber remains a third, external repository and Vercel project.
 
----
+## 1. Deploy Reading Collection
 
-## 1. Push current state to GitHub
+Import `Joy-oyo/Joy-oyo.github.io` as a new Vercel project and configure:
 
-```bash
-git add .
-git commit -m "Prepare for Vercel deployment"
-git push
+- **Root Directory:** `reading-collection`
+- **Framework Preset:** Other
+- **Build Command:** empty
+- **Output Directory:** `.`
+- **Deployment Protection:** disabled for the production deployment
+
+Deploy it and keep its stable production URL, for example:
+
+```text
+https://reading-collection.vercel.app
 ```
 
-## 2. Import the project on Vercel
+Verify these paths directly on that origin:
 
-1. Go to <https://vercel.com/new>.
-2. Import the GitHub repo `Joy-oyo/Joy-oyo.github.io`.
-3. **Important — set the project root**:
-   - **Root Directory**: `next`
-   - Framework Preset: `Next.js` (auto-detected)
-   - Build Command, Output Directory, Install Command: leave defaults.
-4. Click **Deploy**. First build takes ~2 minutes.
+- `/index.html`
+- `/good-to-great-summary.html`
+- `/influence-book-summary.html`
+- `/no-rules-rules-summary.html`
+- `/skin-in-the-game-summary.html`
+- `/the-hard-thing-about-hard-things-summary.html`
+- `/the-lean-startup-summary.html`
 
-You should now have a working URL like `joy-oyo-github-io.vercel.app`.
+Do not enable clean URLs. The pages intentionally use `.html` filenames and
+same-directory relative links.
 
-## 3. Add environment variables
+## 2. Configure the portfolio project
 
-In **Vercel → Project → Settings → Environment Variables**, add (for `Production`, `Preview`, `Development`):
+Import the same GitHub repository, or update the existing portfolio project:
 
-| Key          | Value                              | Notes                                                                 |
-| ------------ | ---------------------------------- | --------------------------------------------------------------------- |
-| `EMAIL_USER` | `your-gmail@gmail.com`             | Gmail address that sends verification codes                           |
-| `EMAIL_PASS` | `your-gmail-app-password`          | Gmail **App Password**, not your real password. Generate one at <https://myaccount.google.com/apppasswords> |
+- **Root Directory:** empty (repository root)
+- **Framework Preset:** Next.js
+- **Build Command, Output Directory, Install Command:** defaults
 
-Trigger a redeploy so the API routes pick up the new vars.
+If the project was linked before September 2026, remove the old `next` Root
+Directory under **Settings → Build and Deployment**.
 
-> ⚠️ Without these vars, `/api/send-verification` will fall back to logging the code to the server console (visible only in Vercel logs).
+## 3. Add portfolio environment variables
 
-## 4. Add the custom domain on Vercel
+In **Vercel → Portfolio Project → Settings → Environment Variables**, configure:
 
-1. **Vercel → Project → Settings → Domains → Add**.
-2. Enter `joylism.com`. Vercel will also offer to add `www.joylism.com` (accept it; Vercel will redirect www → apex or vice versa).
-3. Vercel shows you the DNS records to set. Typical values:
-   - `A   @   76.76.21.21`
-   - `CNAME   www   cname.vercel-dns.com`
+| Key | Required | Value |
+| --- | --- | --- |
+| `READING_COLLECTION_ORIGIN` | Production | Stable HTTPS origin from step 1, with no path or trailing data |
+| `ASR_DEMO_ORIGIN` | If the ASR route is enabled | Stable HTTPS origin of the external ASR project |
+| `EMAIL_USER` | For contact verification | Gmail sender address |
+| `EMAIL_PASS` | For contact verification | Gmail App Password, never the account password |
 
-Leave this tab open while you configure Cloudflare.
+Set values for the environments that need each feature, then redeploy. The
+portfolio production build intentionally fails when
+`READING_COLLECTION_ORIGIN` is missing or invalid, preventing a deployment with
+an empty Reading page.
 
-## 5. Update DNS in Cloudflare
+The origin variables are deploy-time configuration, not request input. In
+production only public HTTPS origins are accepted; local HTTP is limited to
+loopback addresses.
 
-> Cloudflare-registered domains use Cloudflare DNS by default. We just need to swap the records.
+## 4. Deploy and verify the integration
 
-1. Cloudflare dashboard → select `joylism.com` → **DNS → Records**.
-2. **Delete or replace** the existing GitHub Pages records (these point to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` and a CNAME for www).
-3. Add the records from Vercel:
-   - Type `A`, Name `@` (or `joylism.com`), Content `76.76.21.21`, **Proxy status: DNS only** (gray cloud).
-   - Type `CNAME`, Name `www`, Content `cname.vercel-dns.com`, **Proxy status: DNS only** (gray cloud).
-4. Save.
+Deploy Reading Collection before the portfolio. Then verify on the portfolio
+origin:
 
-> 💡 **Why DNS only (gray cloud)?**
-> Vercel issues its own SSL certificate via Let's Encrypt and serves through its global CDN. Putting Cloudflare's proxy in front (orange cloud) creates double-CDN, can break SSL handshake and Next.js features (ISR, streaming). Use DNS-only — it's simpler and faster. You still keep Cloudflare's domain registration, DNSSEC, and email forwarding.
+- `/`
+- `/reading`
+- `/reading-collection/index.html`
+- each summary URL under `/reading-collection/`
+- navigation from the collection to a book and back
+- chapter hash navigation such as `/skin-in-the-game-summary.html#19`
+- mobile layout and the top-edge navigation reveal on `/reading`
+- `/asrtranscriber`, when `ASR_DEMO_ORIGIN` is configured
+- `/contact`, including receiving and verifying a real email code
 
-## 6. Wait for SSL & verify
+## 5. Add the custom domain
 
-- Back on Vercel, the domain status will move from `Invalid Configuration` → `Valid Configuration` → certificate issued (usually < 5 minutes).
-- Open <https://joylism.com> — should show the Next.js site.
-- Test `/contact` to confirm the verification-code flow works end-to-end (you'll receive a real email).
+In the portfolio Vercel project:
 
-## 7. Disable GitHub Pages
+1. Open **Settings → Domains** and add `joylism.com`.
+2. Add `www.joylism.com` and choose the preferred redirect direction.
+3. In Cloudflare DNS, remove old GitHub Pages records.
+4. Add the values Vercel provides. Typical records are:
+   - `A @ 76.76.21.21`
+   - `CNAME www cname.vercel-dns.com`
+5. Keep both records **DNS only** (grey cloud), avoiding a second CDN proxy in
+   front of Vercel.
 
-After the new site is live and verified:
+No custom DNS record is required for Reading Collection; the portfolio accesses
+its Vercel production origin through a server rewrite.
 
-1. GitHub repo → **Settings → Pages** → set Source to **None**.
-2. (Optional) delete the root `CNAME` file in the repo — it's only used by GitHub Pages and no longer needed:
-   ```bash
-   git rm CNAME
-   git commit -m "Remove GitHub Pages CNAME"
-   git push
-   ```
+## Local integration test
 
-That's it. Every push to `main` now triggers an automatic Vercel deployment.
+Serve Reading Collection:
 
----
+```bash
+python3 -m http.server 3002 --directory reading-collection
+```
 
-## Notes on the verification-code API
+Set this in `.env.local`:
 
-`src/lib/verificationStore.ts` is an **in-memory `Map`**. On Vercel, each API route runs in a serverless function whose memory does **not** persist across cold starts or scale-out instances. In practice it usually still works because the same warm instance handles both `send-verification` and `verify-code` if the user is fast, but it is **not reliable**. For a production-grade store, swap it for:
+```dotenv
+READING_COLLECTION_ORIGIN=http://127.0.0.1:3002
+```
 
-- [Vercel KV](https://vercel.com/docs/storage/vercel-kv) (Redis, free tier available), or
-- [Upstash Redis](https://upstash.com/) (free tier, works on Vercel), or
-- A signed JWT containing the code (no storage needed).
+Then restart `npm run dev` and open <http://localhost:3001/reading>. Test through
+the main site rather than only opening the static files directly; that verifies
+the rewrite and iframe integration.
 
-Not blocking for launch — flag it as a follow-up.
+## Verification-code API limitation
+
+`src/lib/verificationStore.ts` stores codes in an in-memory `Map`. Vercel route
+handlers can execute in different serverless instances, so a code written by
+`send-verification` is not guaranteed to be visible to `verify-code`.
+
+Before treating this flow as production-reliable, replace the store with one of:
+
+- Upstash Redis or Vercel-supported Redis;
+- another shared TTL key-value store;
+- a short-lived signed token that requires no server-side persistence.
 
 ## Rollback
 
-If anything goes wrong:
+### Reading Collection
 
-1. In Cloudflare DNS, restore the GitHub Pages records (4 × A records to `185.199.108-111.153` and CNAME `www → joy-oyo.github.io`).
-2. Re-enable GitHub Pages in repo settings.
-3. Restore `CNAME` if you deleted it.
-DNS propagation back is also a few minutes.
+Point `READING_COLLECTION_ORIGIN` back to the previous stable static deployment
+and redeploy the portfolio. Because the public URL prefix remains unchanged, no
+HTML links need to change.
+
+### Portfolio domain
+
+Use Vercel's previous deployment rollback. If a full DNS rollback is required,
+restore the former provider's records in Cloudflare; DNS propagation may take a
+few minutes.

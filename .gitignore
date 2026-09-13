@@ -4,6 +4,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Next.js and TypeScript build output
+.next/
+.next-verify/
+out/
+tsconfig.tsbuildinfo
+
+# Local Vercel project link
+.vercel/
+
 # Environment variables
 .env
 .env.local
