@@ -16,5 +16,8 @@ export const site = {
   ],
   socials: [
     { label: "GitHub", href: "https://github.com/Joy-oyo" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/joy-oyo" },
+    { label: "X", href: "https://x.com/Joy_oyo" },
+    { label: "Substack", href: "https://joyoyo.substack.com" },
   ],
 };

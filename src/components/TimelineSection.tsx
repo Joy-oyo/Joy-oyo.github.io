@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import Link from "next/link";
 import {
   industryTrack,
   researchTrack,
@@ -10,8 +9,8 @@ import {
   talks,
   type TrackItem,
 } from "@/content/timeline";
-import { story, currentlyThinking, elsewhere, toolkit } from "@/content/about";
 import { useTaiji } from "@/components/TaijiHome";
+import Footer from "@/components/Footer";
 
 /**
  * TimelineSection — Home version.
@@ -26,9 +25,6 @@ import { useTaiji } from "@/components/TaijiHome";
  * halves of the whole page — hero, trajectory, nav bar — at once.
  * (Below md the page split is hidden, so each panel falls back to its
  * own fill and the flip only recolors this section's cards.)
- *
- * The About block (story, currently-thinking, off-the-clock, toolkit)
- * lives further down this same section — no separate /about page.
  */
 export default function TimelineSection() {
   // The flip is owned by TaijiHome (its switch lives in the site header);
@@ -38,22 +34,6 @@ export default function TimelineSection() {
   const industryVariant: Variant = flipped ? "yin" : "yang";
   const researchVariant: Variant = flipped ? "yang" : "yin";
   const reduceMotion = useReducedMotion();
-
-  // Education and About both sit as folded drawers under the taiji card —
-  // they're context, not headline.
-  const [eduOpen, setEduOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
-
-  // Deep links (the nav's /#about, or an in-page jump) should reveal the
-  // folded About drawer rather than scrolling to a closed header.
-  useEffect(() => {
-    const openIfHashed = () => {
-      if (window.location.hash === "#about") setAboutOpen(true);
-    };
-    openIfHashed();
-    window.addEventListener("hashchange", openIfHashed);
-    return () => window.removeEventListener("hashchange", openIfHashed);
-  }, []);
 
   return (
     <section id="trajectory" className="relative px-6 pt-10 md:pt-14 pb-6 max-w-6xl mx-auto">
@@ -67,22 +47,12 @@ export default function TimelineSection() {
         transition={{ duration: reduceMotion ? 0 : 0.7 }}
         className="flex items-baseline justify-between"
       >
-        {/* Each end of the row takes the polarity of the page half it
-            sits over, so the labels never cross the seam unstyled. */}
         <span
           data-polarity={industryVariant}
           className="text-[10px] uppercase tracking-[0.4em] text-on/60"
         >
           Trajectory · 太极
         </span>
-        <Link
-          data-polarity={researchVariant}
-          href="#about"
-          onClick={() => setAboutOpen(true)}
-          className="text-[10px] uppercase tracking-[0.3em] text-on/60 hover:text-on transition-colors"
-        >
-          More about me ↓
-        </Link>
       </motion.div>
 
       <div className="taiji-pair mt-6">
@@ -91,10 +61,10 @@ export default function TimelineSection() {
               label="Industry"
               eyebrow={industryVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
               items={industryTrack}
-              seedTitle="FinTech4Good"
-              seedLabel="Research in practice"
-              seedPolarity={researchVariant}
-              firstItemExtra={<TalksExtra />}
+              cardPolarity={researchVariant}
+              // No card entries on this side — the conference talks under the
+              // Tencent chapter carry the card treatment instead.
+              firstItemExtra={<TalksExtra polarity={researchVariant} />}
             />
           </div>
 
@@ -103,216 +73,75 @@ export default function TimelineSection() {
               label="Research & Projects"
               eyebrow={researchVariant === "yang" ? "Yang · 阳" : "Yin · 阴"}
               items={researchTrack}
-              seedTitle="Find the Gate"
-              seedLabel="Practice in research"
-              seedPolarity={industryVariant}
+              cardPolarity={industryVariant}
             />
           </div>
       </div>
 
-      {/* Education — folded drawer under the two tracks */}
-      <FoldPanel
-        title="Education"
-        dotClass="bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]"
-        open={eduOpen}
-        onToggle={() => setEduOpen((v) => !v)}
-        className="mt-12 md:mt-16"
-      >
-        <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-          {education.map((e) => (
-            <li key={`${e.school}-${e.period ?? ""}`} className="relative pl-5">
-              <span
-                aria-hidden
-                className="absolute left-0 top-[7px] w-1.5 h-1.5 rounded-full bg-ink-50/30"
-              />
-              {e.period && (
-                <span className="text-[11px] uppercase tracking-[0.25em] text-ink-50/45 tabular-nums">
-                  {e.period}
-                </span>
-              )}
-              <h4 className="display mt-1.5 text-xl md:text-2xl text-ink-50 leading-tight">
-                {e.school}
-              </h4>
-              <p className="mt-1 text-sm md:text-[15px] text-ink-50/70">
-                {e.degree}
-                {e.location && (
-                  <span className="text-ink-50/30"> · {e.location}</span>
-                )}
-              </p>
-              {e.note && (
-                <p className="mt-2 text-xs md:text-sm text-ink-50/45 leading-relaxed">
-                  {e.note}
-                </p>
-              )}
-            </li>
-          ))}
-        </ol>
-      </FoldPanel>
-
-      {/* About — a second folded drawer, stacked right under Education */}
-      <FoldPanel
-        id="about"
-        title="About"
-        dotClass="bg-sky-300/80 shadow-[0_0_10px_rgba(125,211,252,0.6)]"
-        open={aboutOpen}
-        onToggle={() => setAboutOpen((v) => !v)}
-        className="mt-3 md:mt-4"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-          {/* How I got here */}
-          <div className="md:col-span-2 max-w-3xl">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
-              How I got here
-            </h4>
-            <div className="space-y-4 text-sm md:text-[15px] text-ink-50/70 leading-relaxed">
-              {story.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
-          </div>
-
-          {/* What I'm thinking about */}
-          <div>
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
-              What I&rsquo;m thinking about
-            </h4>
-            <div className="space-y-6">
-              {currentlyThinking.map((c, i) => (
-                <div key={i}>
-                  <h5 className="display text-base md:text-lg text-ink-50 leading-snug">
-                    {c.title}
-                  </h5>
-                  <p className="mt-2 text-sm text-ink-50/60 leading-relaxed">
-                    {c.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Off the clock + toolkit */}
-          <div className="space-y-10">
-            <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
-                Off the clock
-              </h4>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {elsewhere.map((e) => (
-                  <div key={e.label}>
-                    <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
-                      {e.label}
-                    </dt>
-                    <dd className="mt-1 text-sm text-ink-50/70 leading-relaxed">
-                      {e.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-50/40 mb-4">
-                What I reach for
-              </h4>
-              <div className="space-y-4">
-                {toolkit.map((group) => (
-                  <div key={group.group}>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-50/35">
-                      {group.group}
-                    </span>
-                    <ul className="mt-2 flex flex-wrap gap-2">
-                      {group.items.map((s) => (
-                        <li
-                          key={s}
-                          className="glass rounded-full px-3 py-1 text-[11px] tracking-wide text-ink-50/80"
-                        >
-                          {s}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Closing pair — Education on the left, the site footer on the right,
+          both as expanded cards. Each takes the opposite polarity to the
+          half it sits in: another seed of the other side. */}
+      <div className="taiji-pair taiji-pair-closing mt-10 md:mt-14">
+        <div data-polarity={industryVariant} className="taiji-panel taiji-panel-industry">
+          <EducationCard polarity={researchVariant} />
         </div>
-      </FoldPanel>
+
+        <div data-polarity={researchVariant} className="taiji-panel taiji-panel-research">
+          <Footer polarity={industryVariant} />
+        </div>
+      </div>
     </section>
   );
 }
 
-/* ---------- Folded drawer (Education, About) ---------- */
+/* ---------- Education card (left half) ---------- */
 
 /**
- * FoldPanel — a collapsed section header that expands in place.
- * Used for the two "context" blocks that hang below the taiji pair
- * (Education, About) so the trajectory stays the visual headline.
- * Each fold is a self-surfaced dark (yang) band, so it reads
- * intentionally over either assignment of the page's halves.
+ * EducationCard — the left half's closing card, always expanded: short
+ * enough to show in full, and it balances the footer card opposite it.
+ * Carries the opposite polarity to the half it sits in, like every other
+ * seed card on the page, and reads through the `on` tokens so it stays
+ * legible in either assignment.
  */
-function FoldPanel({
-  id,
-  title,
-  dotClass,
-  open,
-  onToggle,
-  className = "",
-  children,
-}: {
-  id?: string;
-  title: string;
-  dotClass: string;
-  open: boolean;
-  onToggle: () => void;
-  className?: string;
-  children: React.ReactNode;
-}) {
+function EducationCard({ polarity }: { polarity: Variant }) {
   return (
-    <motion.div
-      id={id}
-      data-polarity="yang"
-      initial={{ y: 12 }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.7, delay: 0.05 }}
-      className={`taiji-fold scroll-mt-28 ${className}`}
-    >
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={open}
-        className="group w-full flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3.5 ring-1 ring-ink-50/10 hover:ring-ink-50/20 transition-colors text-left"
-      >
-        <span className="flex items-center gap-2.5">
-          <span className={`inline-block w-1.5 h-1.5 rounded-full ${dotClass}`} />
-          <span className="display text-xl md:text-2xl text-ink-50">{title}</span>
-        </span>
-        <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-ink-50/40 group-hover:text-ink-50/70 transition-colors">
-          <span>{open ? "Less" : "More"}</span>
-          <span
-            aria-hidden
-            className={`transition-transform duration-300 ${open ? "rotate-90" : ""}`}
-          >
-            →
-          </span>
-        </span>
-      </button>
+    <div data-polarity={polarity} className="taiji-seed">
+      {/* The dot is taken out of flow so the word itself sits on the card's
+          centre line rather than centre-minus-the-dot. */}
+      <div className="relative mb-5 flex items-center justify-center">
+        <span
+          aria-hidden
+          className="absolute left-0 h-1.5 w-1.5 rounded-full bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]"
+        />
+        <h3 className="display text-center text-xl leading-tight text-on md:text-2xl">Education</h3>
+      </div>
 
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="fold-body"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pt-6 pb-2">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      <ol className="space-y-6">
+        {education.map((e) => (
+          <li key={`${e.school}-${e.period ?? ""}`} className="relative pl-5">
+            <span
+              aria-hidden
+              className="absolute left-0 top-[7px] h-1.5 w-1.5 rounded-full bg-on/30"
+            />
+            {e.period && (
+              <span className="text-[11px] uppercase tabular-nums tracking-[0.25em] text-on2">
+                {e.period}
+              </span>
+            )}
+            <h4 className="display mt-1.5 text-lg leading-tight text-on md:text-xl">
+              {e.school}
+            </h4>
+            <p className="mt-1 text-sm text-on3 md:text-[15px]">
+              {e.degree}
+              {e.location && <span className="text-on4"> · {e.location}</span>}
+            </p>
+            {e.note && (
+              <p className="mt-2 text-xs leading-relaxed text-on4 md:text-sm">{e.note}</p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -328,18 +157,23 @@ type Variant = "yang" | "yin";
  * `text-on3` (body) → `text-on4` (faint); all ≥ WCAG AA on both surfaces.
  * Non-text marks (guides, bullets, dashed rules) use /alpha modifiers.
  */
-function TalksExtra() {
+/**
+ * Conference talks — each one is a seed card (`.taiji-seed`) carrying the
+ * opposite polarity, so speaking reads as the industry half's "seed" rather
+ * than another line in a list. This is the card treatment that used to sit
+ * on the Fintech Startup entry.
+ */
+function TalksExtra({ polarity }: { polarity: Variant }) {
   return (
-    <div className="mt-1 pt-3 border-t border-dashed border-on/10">
-      <ol className="space-y-3">
-        {talks.map((t) => (
-          <li key={t.id} className="relative pl-3.5">
-            <span aria-hidden className="absolute left-0 top-[7px] w-1 h-1 rounded-full bg-on/30" />
+    <ol className="mt-3 space-y-3 border-t border-dashed border-on/10 pt-3">
+      {talks.map((t) => (
+        <li key={t.id}>
+          <div data-polarity={polarity} className="taiji-seed">
             <span className="text-[10px] uppercase tracking-[0.25em] tabular-nums text-on2">
               {t.year}
               {t.location && <span className="text-on4"> · {t.location}</span>}
             </span>
-            <p className="display mt-0.5 text-sm md:text-[15px] leading-snug text-on">
+            <p className="display mt-1 text-sm leading-snug text-on md:text-[15px]">
               {t.href ? (
                 <a
                   href={t.href}
@@ -355,12 +189,12 @@ function TalksExtra() {
             </p>
             <p className="mt-0.5 text-[12px] text-on3">{t.venue}</p>
             {t.body && (
-              <p className="mt-1 text-[11px] md:text-xs leading-relaxed text-on2">{t.body}</p>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-on2 md:text-xs">{t.body}</p>
             )}
-          </li>
-        ))}
-      </ol>
-    </div>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -368,17 +202,14 @@ function Track({
   label,
   eyebrow,
   items,
-  seedTitle,
-  seedLabel,
-  seedPolarity,
+  cardPolarity,
   firstItemExtra,
 }: {
   label: string;
   eyebrow: string;
   items: TrackItem[];
-  seedTitle: string;
-  seedLabel: string;
-  seedPolarity: Variant;
+  /** Polarity a `card` entry takes — normally the opposite half's. */
+  cardPolarity: Variant;
   firstItemExtra?: React.ReactNode;
 }) {
   return (
@@ -404,7 +235,7 @@ function Track({
             item={t}
             spotlightGlow={i === 0 && !!t.current}
             extra={i === 0 ? firstItemExtra : undefined}
-            seed={t.title === seedTitle ? { label: seedLabel, polarity: seedPolarity } : undefined}
+            seed={t.card ? { label: t.cardLabel, polarity: cardPolarity } : undefined}
           />
         ))}
       </ol>
@@ -423,7 +254,7 @@ function TrackEntry({
   item: TrackItem;
   spotlightGlow: boolean;
   extra?: React.ReactNode;
-  seed?: { label: string; polarity: Variant };
+  seed?: { label?: string; polarity: Variant };
 }) {
   const hasDetails = (t.highlights && t.highlights.length > 0) || (t.links && t.links.length > 0);
   const [open, setOpen] = useState(Boolean(seed && !t.highlights?.length));
@@ -449,7 +280,7 @@ function TrackEntry({
         )}
 
         <div className="relative">
-          {seed && (
+          {seed?.label && (
             <p className="mb-3 flex items-center gap-2 text-[11px] leading-relaxed tracking-wide text-on2">
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-on" />
               {seed.label}
@@ -547,7 +378,9 @@ function TrackEntry({
                       )}
 
                       {t.links && t.links.length > 0 && (
-                        <ul className="mt-3 space-y-1">
+                        // One wrapping row: short exits belong side by side,
+                        // longer ones fall to their own line.
+                        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
                           {t.links.map((l) => (
                             <li key={l.href}>
                               <a

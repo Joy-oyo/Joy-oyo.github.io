@@ -1,0 +1,37 @@
+- generic [active]:
+  - alert [ref=e1]
+  - dialog [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Build Error" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Failed to compile
+        - generic [ref=e9]:
+          - text: Next.js (14.2.15) is outdated
+          - link "(learn more)" [ref=e11] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - link "./src/components/TimelineSection.tsx" [ref=e14] [cursor=pointer]
+          - generic [ref=e19]:
+            - generic [ref=e20]: "Error:"
+            - text: x
+            - generic [ref=e21]: "Unexpected token `li`. Expected jsx identifier ,-["
+            - text: /Users/jc/Documents/GitHub/Joy-oyo.github.io/src/components/TimelineSection.tsx
+            - generic [ref=e22]: :431:1]
+            - text: "431"
+            - generic [ref=e23]: "| const reduceMotion = useReducedMotion();"
+            - text: "432"
+            - generic [ref=e24]: "|"
+            - text: "433"
+            - generic [ref=e25]: "| return ("
+            - text: "434"
+            - generic [ref=e26]: "| <li className=\"relative pl-5 group\"> :"
+            - generic [ref=e27]: ^^
+            - text: "435"
+            - generic [ref=e28]: "| {/* Bullet on the guide */}"
+            - text: "436"
+            - generic [ref=e29]: "| <span"
+            - text: "437"
+            - generic [ref=e30]: "| aria-hidden `---- Caused by: Syntax Error"
+        - contentinfo [ref=e31]:
+          - paragraph [ref=e32]: This error occurred during the build process and can only be dismissed by fixing the error.

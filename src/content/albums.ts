@@ -20,8 +20,8 @@ export const albums: Album[] = [
     title: "About / Resume",
     subtitle: "Background, experience, the stuff that shaped me.",
     description:
-      "Lives further down this page — the longer story, what I'm thinking about, and the tools I reach for.",
-    href: "/#about",
+      "Lives in the Trajectory section below — industry experience, research, and education.",
+    href: "/#trajectory",
     accent: "from-[#1a1a2e] to-[#002FA7]",
   },
   {

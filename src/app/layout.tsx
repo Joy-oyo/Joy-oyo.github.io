@@ -3,6 +3,7 @@ import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import PortalMount from "@/components/PortalMount";
+import SiteCopyright from "@/components/SiteCopyright";
 
 // Fraunces is a variable font — omit `weight` to load the full wght range,
 // which is required when declaring extra `axes` (opsz / SOFT).
@@ -71,6 +72,7 @@ export default function RootLayout({
       <body className="grain">
         <Nav />
         {children}
+        <SiteCopyright />
         <PortalMount />
       </body>
     </html>

@@ -10,11 +10,11 @@ export const workExperience = [
     current: true,
   },
   {
-    org: "Consulting Practice",
-    role: "Co-founder",
+    org: "Bridger",
+    role: "Founder",
     period: "2022 — 2024",
-    location: "Palo Alto",
-    note: "Professional consulting for the general public",
+    location: "Remote · Chicago, IL",
+    note: "Professional consulting platform — mentors and mentees",
     current: false,
   },
 ];
@@ -54,14 +54,14 @@ export const timeline: TimelineItem[] = [
   {
     kind: "work",
     period: "2022 — 2024",
-    role: "Co-founder",
-    org: "Consulting Practice",
-    location: "Remote",
-    note: "Professional consulting — making expert knowledge accessible to the general public",
+    role: "Founder",
+    org: "Bridger",
+    location: "Remote · Chicago, IL",
+    note: "Startup — professional consulting platform connecting mentors and mentees",
     highlights: [
-      "Co-founded a consulting practice that translates professional expertise into actionable guidance for everyday clients.",
-      "Led service design, client onboarding, and end-to-end delivery across multiple engagement types.",
-      "Designed the brand, marketing presence, and core client experience from the ground up.",
+      "Founded the platform end to end: market and user research, product definition, launch.",
+      "Designed the matching experience — intake, mentor and mentee profiles, and the ranking that pairs them.",
+      "Owned positioning and growth: messaging, landing page, and early acquisition experiments.",
     ],
   },
   {
@@ -116,6 +116,13 @@ export type TrackItem = {
   /** External references: talks, papers, repos, etc. */
   links?: TrackLink[];
   current?: boolean;
+  /**
+   * Render this entry as a seed card — a surfaced panel in the opposite
+   * polarity, the way each half of the taiji carries a seed of the other.
+   */
+  card?: boolean;
+  /** Optional caption above a card's title (e.g. "Practice in research"). */
+  cardLabel?: string;
 };
 
 export const industryTrack: TrackItem[] = [
@@ -142,18 +149,18 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    title: "Consulting Practice",
-    subtitle: "Co-founder",
-    location: "Remote",
-    note: "Professional consulting — making expert knowledge accessible to the general public.",
+    title: "Bridger",
+    subtitle: "Founder",
+    location: "Remote · Chicago, IL",
+    note: "Startup — a professional consulting platform where people find mentors and mentees.",
     highlights: [
-      "Co-founded a consulting practice that translates professional expertise into actionable guidance for everyday clients.",
-      "Led service design, client onboarding, and end-to-end delivery across multiple engagement types.",
-      "Designed the brand, marketing presence, and core client experience from the ground up.",
+      "Founded the platform end to end: market and user research, product definition, launch.",
+      "Designed the matching experience — intake, mentor and mentee profiles, and the ranking that pairs them.",
+      "Owned positioning and growth: messaging, landing page, and early acquisition experiments.",
     ],
   },
   {
-    title: "FinTech4Good",
+    title: "Fintech Startup",
     subtitle: "Market Research Fellow",
     location: "Chicago, IL",
     note: "AI adoption across finance & healthcare — research and executive briefings.",
@@ -165,7 +172,7 @@ export const industryTrack: TrackItem[] = [
   },
   {
     title: "ByteDance",
-    subtitle: "AI Content Strategy & UX Analyst (Data Science)",
+    subtitle: "AI Research Analyst (Math & Logics)",
     location: "Beijing, China",
     note: "Recommendation-system performance, content quality, and large-scale UX analytics.",
     highlights: [
@@ -175,7 +182,7 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    title: "UrBanests",
+    title: "Real-estate Startup",
     subtitle: "Marketing Analyst",
     note: "Performance marketing & acquisition analytics — Google Ads, ROAS, channel ROI.",
     highlights: [
@@ -189,6 +196,7 @@ export const industryTrack: TrackItem[] = [
 export const researchTrack: TrackItem[] = [
   {
     title: "HRI Lab, University of Chicago",
+    card: true,
     location: "Chicago, IL",
     note: "Rapport, social engagement, and robot-facilitated conversation studies.",
     highlights: [
@@ -200,6 +208,7 @@ export const researchTrack: TrackItem[] = [
   },
   {
     title: "Cannon Lab, University of Chicago",
+    card: true,
     location: "Chicago, IL",
     note: "Evidence-based K–12 CS education with Scratch Encore.",
     highlights: [
@@ -234,7 +243,7 @@ export const researchTrack: TrackItem[] = [
     note: "A small atmospheric game exploring place, memory, and the act of finding.",
     links: [
       { label: "Play on Itch.io", href: "https://joy-oyo.itch.io/find-the-gate" },
-      { label: "DM me for code", href: `mailto:${site.email}` },
+      { label: "DM me for password", href: `mailto:${site.email}` },
     ],
   },
 ];
@@ -255,13 +264,12 @@ export const education: EducationItem[] = [
     degree: "M.A. in Digital Studies",
     school: "University of Chicago",
     location: "Chicago, IL",
-    note: "Concentration: Artificial Intelligence & Language.",
   },
   {
     degree: "B.S. in Business Management",
     school: "Wake Forest University",
     location: "Winston-Salem, NC",
-    note: "Double major in Media Studies & Communication.",
+    note: "Double major in Film Studies.",
   },
 ];
 

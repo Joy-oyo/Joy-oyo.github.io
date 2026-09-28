@@ -497,6 +497,24 @@ button.glass-lift:active {
   border-radius: 1.25rem;
 }
 
+/* Closing pair (Education / Footer) — one seed card per half, so the
+   shorter card stretches to the row height rather than leaving the pair
+   with two cards of different depths. */
+.taiji-pair-closing .taiji-panel {
+  display: flex;
+  flex-direction: column;
+}
+/* The footer card arrives wrapped in <footer>, which has to stretch too. */
+.taiji-pair-closing .taiji-panel > footer {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.taiji-pair-closing .taiji-seed {
+  flex: 1 1 auto;
+}
+
 .taiji-panel {
   position: relative;
   min-width: 0;
@@ -552,6 +570,10 @@ button.glass-lift:active {
   /* Fixed layers repeat on every printed page — drop the split and
      give each panel/fold its own surface so text stays legible. */
   .taiji-page { display: none; }
+  .site-copyright {
+    mix-blend-mode: normal;
+    color: #111;
+  }
   .taiji-panel,
   .taiji-fold {
     background: var(--surface-fill);
@@ -592,6 +614,20 @@ button.glass-lift:active {
   }
   html[data-taiji="flipped"] .taiji-logo-primary { color: var(--yang); }
   html[data-taiji="flipped"] .taiji-logo-secondary { color: rgba(10, 10, 18, 0.6); }
+}
+
+/* Page-bottom copyright — lives outside every card, centered under the
+   whole document. Painted in difference blend so it inverts against its
+   backdrop: light text on the near-black pages, and dark over the white
+   half of the home taiji split, without any polarity bookkeeping. */
+.site-copyright {
+  position: relative;
+  padding: 1.5rem 1.5rem 2.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--fg);
+  mix-blend-mode: difference;
 }
 
 /* Cyber world — different background system, used on /cyber */
