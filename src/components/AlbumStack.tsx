@@ -72,18 +72,6 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
     return () => window.removeEventListener("wheel", onWheel);
   }, [next, prev, compact, isStackInView]);
 
-  // Custom events — let external UI (e.g. Landing's hint arrows) drive the stack
-  useEffect(() => {
-    const onPrev = () => prev();
-    const onNext = () => next();
-    window.addEventListener("albumstack:prev", onPrev);
-    window.addEventListener("albumstack:next", onNext);
-    return () => {
-      window.removeEventListener("albumstack:prev", onPrev);
-      window.removeEventListener("albumstack:next", onNext);
-    };
-  }, [next, prev]);
-
   // --- Inner stack (shared between compact and full) ---
   const stack = (
     <div
@@ -168,7 +156,7 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
       >
         <button
           onClick={prev}
-          className="glass w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-ink-50 hover:text-ink-950 transition-colors"
+          className="glass w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-on hover:text-surface transition-colors"
           aria-label="Previous album"
         >
           ←
@@ -181,7 +169,7 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
               onClick={() => setIndex(i)}
               className={cn(
                 "h-1 rounded-full transition-all",
-                i === index ? "w-8 bg-ink-50" : "w-4 bg-ink-50/30"
+                i === index ? "w-8 bg-on" : "w-4 bg-on/30"
               )}
               aria-label={`Go to ${a.title}`}
             />
@@ -190,15 +178,21 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
 
         <button
           onClick={next}
-          className="glass w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-ink-50 hover:text-ink-950 transition-colors"
+          className="glass w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-on hover:text-surface transition-colors"
           aria-label="Next album"
         >
           →
         </button>
       </div>
 
-      <div className="mt-4 text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
-        {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+      {/* Counter doubles as the affordance line: position, and the other
+          way in. Kept in the same row group as the arrows so the whole
+          control reads as one thing. */}
+      <div className="mt-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-on/60">
+        <span>
+          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+        </span>
+        {compact && <span aria-hidden>· or drag</span>}
       </div>
     </>
   );
@@ -221,19 +215,19 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
       className="relative flex flex-col items-center px-6 pt-8 md:pt-12 pb-20"
     >
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ y: 20 }}
+        whileInView={{ y: 0 }}
         viewport={{ once: true, margin: "-20%" }}
         transition={{ duration: 0.8 }}
         className="text-center mb-10 md:mb-12"
       >
-        <span className="text-[10px] uppercase tracking-[0.4em] text-ink-50/50">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-on/65">
           Browse by album
         </span>
-        <h2 className="display text-3xl md:text-4xl mt-4 text-ink-50/90">
+        <h2 className="display text-3xl md:text-4xl mt-4 text-on/90">
           A few corners of the work
         </h2>
-        <p className="mt-3 text-xs text-ink-50/50 max-w-sm mx-auto">
+        <p className="mt-3 text-xs text-on/65 max-w-sm mx-auto">
           Click a card, use ← → keys, or scroll.
         </p>
       </motion.div>
@@ -254,7 +248,10 @@ function AlbumCard({
   compact?: boolean;
 }) {
   return (
+    // Cards keep their own dark (yang) surface on either half of the
+    // page — pinned so a yin column never turns the artwork panel pale.
     <div
+      data-polarity="yang"
       className={cn(
         "relative w-full h-full rounded-3xl overflow-hidden glass-strong",
         "shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"

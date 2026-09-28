@@ -28,6 +28,7 @@ export default function YinYang({
   stroke = "rgba(10,10,18,0.35)",
   className = "",
   title = "Yin-Yang",
+  actionLabel = "Flip the yin-yang glyph",
   interactive = false,
   flipped: flippedProp,
   onToggle,
@@ -42,6 +43,7 @@ export default function YinYang({
   stroke?: string;
   className?: string;
   title?: string;
+  actionLabel?: string;
   /** Render as a clickable toggle button that flips colors + spin direction. */
   interactive?: boolean;
   /** Controlled mode: current flipped state, owned by a parent (e.g. so
@@ -72,8 +74,9 @@ export default function YinYang({
   const glyph = (
     <motion.svg
       key={flipped ? "flipped" : "base"}
-      role="img"
-      aria-label={title}
+      role={interactive ? undefined : "img"}
+      aria-hidden={interactive || undefined}
+      aria-label={interactive ? undefined : title}
       width={size}
       height={size}
       viewBox="0 0 100 100"
@@ -108,8 +111,8 @@ export default function YinYang({
       />
 
       {/* Seeds — each half holds a small dot of the opposite color. */}
-      <circle cx="50" cy="25.5" r="6" style={{ fill: yin, transition: "fill 0.4s ease" }} />
-      <circle cx="50" cy="74.5" r="6" style={{ fill: yang, transition: "fill 0.4s ease" }} />
+      <circle cx="50" cy="25.5" r="6" style={{ fill: yang, transition: "fill 0.4s ease" }} />
+      <circle cx="50" cy="74.5" r="6" style={{ fill: yin, transition: "fill 0.4s ease" }} />
     </motion.svg>
   );
 
@@ -119,11 +122,11 @@ export default function YinYang({
     <motion.button
       type="button"
       onClick={handleClick}
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.9 }}
+      whileHover={reduce ? undefined : { scale: 1.08 }}
+      whileTap={reduce ? undefined : { scale: 0.9 }}
       aria-pressed={flipped}
-      aria-label="Flip the yin-yang glyph"
-      title="Flip the yin-yang glyph"
+      aria-label={actionLabel}
+      title={actionLabel}
       className={`inline-flex items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${className}`}
     >
       {glyph}

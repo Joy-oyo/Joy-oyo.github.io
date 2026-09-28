@@ -1,0 +1,259 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner:
+    - navigation "Main" [ref=e3]:
+      - list [ref=e4]:
+        - listitem [ref=e5]:
+          - link "Home" [ref=e6] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e8]:
+          - link "Demos" [ref=e9] [cursor=pointer]:
+            - /url: /demos
+        - listitem [ref=e10]:
+          - link "Photography" [ref=e11] [cursor=pointer]:
+            - /url: /photography
+            - img "Photography" [ref=e13]
+        - listitem [ref=e18]:
+          - link "Blog" [ref=e19] [cursor=pointer]:
+            - /url: /writing
+        - listitem [ref=e20]:
+          - link "Reading" [ref=e21] [cursor=pointer]:
+            - /url: /reading
+  - main [ref=e25]:
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - heading "Joy Chen" [level=1] [ref=e29]
+        - paragraph [ref=e30]: AI × products × human interaction × real-world systems.
+        - paragraph [ref=e32]:
+          - generic [ref=e33]: Generalist in life.
+          - generic [ref=e36]: Specialist in craft.
+        - generic [ref=e41]:
+          - link "Say hi" [ref=e42] [cursor=pointer]:
+            - /url: /contact
+            - text: Say hi
+            - generic [aria-hidden] [ref=e43]: →
+          - link "joychen0709@gmail.com" [ref=e44] [cursor=pointer]:
+            - /url: mailto:joychen0709@gmail.com
+      - generic [ref=e45]:
+        - generic [ref=e46]: Explore the work
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e54]:
+              - generic [ref=e55]:
+                - generic [ref=e56]: Who
+                - generic [ref=e57]: "01"
+              - generic [ref=e58]:
+                - heading "About / Resume" [level=3] [ref=e59]
+                - paragraph [ref=e60]: Background, experience, the stuff that shaped me.
+                - link "Open About / Resume →" [ref=e61] [cursor=pointer]:
+                  - /url: /#about
+            - generic [ref=e66] [cursor=pointer]:
+              - generic [ref=e67]:
+                - generic [ref=e68]: See
+                - generic [ref=e69]: "02"
+              - generic [ref=e70]:
+                - heading "Photography" [level=3] [ref=e71]
+                - paragraph [ref=e72]: Light, texture, and quiet moments.
+                - link "Open Photography →" [ref=e73]:
+                  - /url: /photography
+            - generic [ref=e77] [cursor=pointer]:
+              - generic [ref=e78]:
+                - generic [ref=e79]: Build
+                - generic [ref=e80]: "03"
+              - generic [ref=e81]:
+                - heading "Selected Work" [level=3] [ref=e82]
+                - paragraph [ref=e83]: Products, prototypes, papers, and playful things.
+                - link "Open Selected Work →" [ref=e84]:
+                  - /url: /#trajectory
+            - generic [ref=e88] [cursor=pointer]:
+              - generic [ref=e89]:
+                - generic [ref=e90]: Think
+                - generic [ref=e91]: "04"
+              - generic [ref=e92]:
+                - heading "Blog" [level=3] [ref=e93]
+                - paragraph [ref=e94]: Notes on design, code, and curious things.
+                - link "Open Blog →" [ref=e95]:
+                  - /url: /writing
+          - generic [ref=e96]:
+            - button "Previous album" [ref=e97] [cursor=pointer]: ←
+            - generic [ref=e98]:
+              - button "Go to About / Resume" [ref=e99] [cursor=pointer]
+              - button "Go to Photography" [ref=e100] [cursor=pointer]
+              - button "Go to Selected Work" [ref=e101] [cursor=pointer]
+              - button "Go to Blog" [ref=e102] [cursor=pointer]
+              - button "Go to Contact" [ref=e103] [cursor=pointer]
+            - button "Next album" [ref=e104] [cursor=pointer]: →
+          - generic [ref=e105]:
+            - generic [ref=e106]: 01 / 05
+            - generic [aria-hidden] [ref=e107]: · or drag
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - generic [ref=e110]: Trajectory · 太极
+        - link "More about me ↓" [ref=e111] [cursor=pointer]:
+          - /url: "#about"
+      - generic [ref=e112]:
+        - generic [ref=e114]:
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: Yang · 阳
+            - heading "Industry" [level=3] [ref=e119]
+          - list [ref=e120]:
+            - listitem [ref=e121]:
+              - generic [ref=e124]:
+                - generic [ref=e125]: Now
+                - heading "Tencent" [level=4] [ref=e127]
+                - paragraph [ref=e128]:
+                  - text: AI Solution Architect
+                  - generic [ref=e129]: · Palo Alto, CA
+                - paragraph [ref=e130]: AI-powered media products for North America clients.
+                - button "Show details for Tencent" [ref=e131] [cursor=pointer]:
+                  - generic [ref=e132]: More
+                  - generic [aria-hidden] [ref=e133]: →
+                - list [ref=e135]:
+                  - listitem [ref=e136]:
+                    - generic [ref=e138]:
+                      - text: "2026"
+                      - generic [ref=e139]: · San Francisco, CA
+                    - paragraph [ref=e140]:
+                      - link "Boosting Game Retention with Voice, AI & Acceleration" [ref=e141] [cursor=pointer]:
+                        - /url: https://gdcvault.com/play/1036040/Boosting-Game-Retention-with-Voice
+                    - paragraph [ref=e142]: Game Developers Conference (GDC) 2026
+                    - paragraph [ref=e143]: How conversational voice + AI infrastructure can be deployed to lift retention and engagement in live games.
+                  - listitem [ref=e144]:
+                    - generic [ref=e146]:
+                      - text: "2025"
+                      - generic [ref=e147]: · San Francisco, CA
+                    - paragraph [ref=e148]:
+                      - link "Tencent Games Developer Summit · Conversational AI Gaming Solution" [ref=e149] [cursor=pointer]:
+                        - /url: https://gdcvault.com/play/1035448/Tencent-Games-Developer-Summit-Conversational
+                    - paragraph [ref=e150]: Game Developers Conference (GDC) 2025
+                    - paragraph [ref=e151]: A walk-through of Tencent's conversational AI stack for games — architecture, latency budget, and developer integration.
+            - listitem [ref=e152]:
+              - generic [ref=e155]:
+                - heading "Consulting Practice" [level=4] [ref=e156]
+                - paragraph [ref=e157]:
+                  - text: Co-founder
+                  - generic [ref=e158]: · Remote
+                - paragraph [ref=e159]: Professional consulting — making expert knowledge accessible to the general public.
+                - button "Show details for Consulting Practice" [ref=e160] [cursor=pointer]:
+                  - generic [ref=e161]: More
+                  - generic [aria-hidden] [ref=e162]: →
+            - listitem [ref=e163]:
+              - generic [ref=e166]:
+                - paragraph [ref=e167]: Research in practice
+                - heading "FinTech4Good" [level=4] [ref=e169]
+                - paragraph [ref=e170]:
+                  - text: Market Research Fellow
+                  - generic [ref=e171]: · Chicago, IL
+                - paragraph [ref=e172]: AI adoption across finance & healthcare — research and executive briefings.
+                - button "Show details for FinTech4Good" [ref=e173] [cursor=pointer]:
+                  - generic [ref=e174]: More
+                  - generic [aria-hidden] [ref=e175]: →
+            - listitem [ref=e176]:
+              - generic [ref=e179]:
+                - heading "ByteDance" [level=4] [ref=e180]
+                - paragraph [ref=e181]:
+                  - text: AI Content Strategy & UX Analyst (Data Science)
+                  - generic [ref=e182]: · Beijing, China
+                - paragraph [ref=e183]: Recommendation-system performance, content quality, and large-scale UX analytics.
+                - button "Show details for ByteDance" [ref=e184] [cursor=pointer]:
+                  - generic [ref=e185]: More
+                  - generic [aria-hidden] [ref=e186]: →
+            - listitem [ref=e187]:
+              - generic [ref=e190]:
+                - heading "UrBanests" [level=4] [ref=e191]
+                - paragraph [ref=e192]: Marketing Analyst
+                - paragraph [ref=e193]: Performance marketing & acquisition analytics — Google Ads, ROAS, channel ROI.
+                - button "Show details for UrBanests" [ref=e194] [cursor=pointer]:
+                  - generic [ref=e195]: More
+                  - generic [aria-hidden] [ref=e196]: →
+        - generic [ref=e198]:
+          - generic [ref=e199]:
+            - paragraph [ref=e200]: Yin · 阴
+            - heading "Research & Projects" [level=3] [ref=e203]
+          - list [ref=e204]:
+            - listitem [ref=e205]:
+              - generic [ref=e208]:
+                - heading "HRI Lab, University of Chicago" [level=4] [ref=e209]
+                - paragraph [ref=e210]: Chicago, IL
+                - paragraph [ref=e211]: Rapport, social engagement, and robot-facilitated conversation studies.
+                - button "Show details for HRI Lab, University of Chicago" [ref=e212] [cursor=pointer]:
+                  - generic [ref=e213]: More
+                  - generic [aria-hidden] [ref=e214]: →
+            - listitem [ref=e215]:
+              - generic [ref=e218]:
+                - heading "Cannon Lab, University of Chicago" [level=4] [ref=e219]
+                - paragraph [ref=e220]: Chicago, IL
+                - paragraph [ref=e221]: Evidence-based K–12 CS education with Scratch Encore.
+                - button "Show details for Cannon Lab, University of Chicago" [ref=e222] [cursor=pointer]:
+                  - generic [ref=e223]: More
+                  - generic [aria-hidden] [ref=e224]: →
+            - listitem [ref=e225]:
+              - generic [ref=e228]:
+                - heading "Web Phishing Machine Learning Detection, University of Chicago" [level=4] [ref=e229]
+                - paragraph [ref=e230]: Chicago, IL
+                - paragraph [ref=e231]: End-to-end ML benchmark — MLP / ANN / CNN / LSTM over 10,000+ URLs.
+                - button "Show details for Web Phishing Machine Learning Detection, University of Chicago" [ref=e232] [cursor=pointer]:
+                  - generic [ref=e233]: More
+                  - generic [aria-hidden] [ref=e234]: →
+            - listitem [ref=e235]:
+              - generic [ref=e238]:
+                - heading "Paid Search Marketing Analytics Simulation, Wake Forest University" [level=4] [ref=e239]
+                - paragraph [ref=e240]: Winston-Salem, NC
+                - paragraph [ref=e241]: DSP-based paid search simulation — bidding, ROAS, A/B tests across regions.
+                - button "Show details for Paid Search Marketing Analytics Simulation, Wake Forest University" [ref=e242] [cursor=pointer]:
+                  - generic [ref=e243]: More
+                  - generic [aria-hidden] [ref=e244]: →
+            - listitem [ref=e245]:
+              - generic [ref=e248]:
+                - paragraph [ref=e249]: Practice in research
+                - heading "Find the Gate" [level=4] [ref=e251]
+                - paragraph [ref=e252]: Independent — interactive game
+                - paragraph [ref=e253]: A small atmospheric game exploring place, memory, and the act of finding.
+                - button "Hide details for Find the Gate" [expanded] [ref=e254] [cursor=pointer]:
+                  - generic [ref=e255]: Less
+                  - generic [aria-hidden] [ref=e256]: →
+                - list [ref=e259]:
+                  - listitem [ref=e260]:
+                    - link "Play on Itch.io" [ref=e261] [cursor=pointer]:
+                      - /url: https://joy-oyo.itch.io/find-the-gate
+                      - generic [aria-hidden] [ref=e262]: ↗
+                  - listitem [ref=e264]:
+                    - link "DM me for code" [ref=e265] [cursor=pointer]:
+                      - /url: mailto:joychen0709@gmail.com
+                      - generic [aria-hidden] [ref=e266]: ↗
+      - button "Education More" [ref=e269] [cursor=pointer]:
+        - generic [ref=e270]: Education
+        - generic [ref=e273]:
+          - generic [ref=e274]: More
+          - generic [aria-hidden] [ref=e275]: →
+      - button "About More" [ref=e277] [cursor=pointer]:
+        - generic [ref=e278]: About
+        - generic [ref=e281]:
+          - generic [ref=e282]: More
+          - generic [aria-hidden] [ref=e283]: →
+  - contentinfo [ref=e284]:
+    - generic [ref=e285]:
+      - generic [ref=e286]:
+        - generic [ref=e287]:
+          - generic [ref=e288]: Joy Chen
+          - paragraph [ref=e289]: AI × products × human interaction × real-world systems
+          - paragraph [ref=e290]: Palo Alto
+        - generic [ref=e292]:
+          - heading "Elsewhere" [level=2] [ref=e293]
+          - list [ref=e294]:
+            - listitem [ref=e295]:
+              - link "GitHub" [ref=e296] [cursor=pointer]:
+                - /url: https://github.com/Joy-oyo
+                - text: GitHub
+                - generic [aria-hidden] [ref=e297]: ↗
+        - generic [ref=e298]:
+          - heading "Get in touch" [level=2] [ref=e299]
+          - link "joychen0709@gmail.com" [ref=e300] [cursor=pointer]:
+            - /url: /contact
+          - link "Start a conversation" [ref=e301] [cursor=pointer]:
+            - /url: /contact
+            - text: Start a conversation
+            - generic [aria-hidden] [ref=e302]: →
+      - generic [ref=e303]: © 2026 Joy Chen. All rights reserved.
+  - alert [ref=e304]

@@ -287,7 +287,7 @@ export default function DemosPage() {
           id="bibtex"
           index="07 / Cite"
           title="BibTeX"
-          lede="If any of this is useful in your own work or writing, cite the lab rather than an individual demo — the builds move, the page doesn't."
+          lede="Cite the lab, not an individual demo — the builds move, the page doesn't."
         >
           <CopyBlock code={demoLab.bibtex} />
         </LabSection>

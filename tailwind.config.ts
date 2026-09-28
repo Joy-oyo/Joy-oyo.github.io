@@ -13,6 +13,11 @@ const config: Config = {
         },
         klein: "#002FA7",
         beige: "#e8e1d0",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        on: "rgb(var(--on1) / <alpha-value>)",
+        on2: "rgb(var(--on2) / <alpha-value>)",
+        on3: "rgb(var(--on3) / <alpha-value>)",
+        on4: "rgb(var(--on4) / <alpha-value>)",
       },
       fontFamily: {
         serif: ["var(--font-display)", "ui-serif", "Georgia", "serif"],

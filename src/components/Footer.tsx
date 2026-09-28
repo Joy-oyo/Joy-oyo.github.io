@@ -14,7 +14,7 @@ export default function Footer() {
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-ink-50/60">
               {site.tagline}
             </p>
-            <p className="mt-5 inline-flex items-center gap-2 text-xs text-ink-50/45">
+            <p className="mt-5 inline-flex items-center gap-2 text-xs text-ink-50/65">
               <span
                 aria-hidden
                 className="h-1.5 w-1.5 rounded-full bg-emerald-300/80 shadow-[0_0_10px_rgba(110,231,183,0.8)]"
@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="mb-4 text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+            <h2 className="mb-4 text-[10px] uppercase tracking-[0.3em] text-ink-50/60">
               Elsewhere
             </h2>
             <ul className="space-y-2.5 text-sm">
@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="mb-4 text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+            <h2 className="mb-4 text-[10px] uppercase tracking-[0.3em] text-ink-50/60">
               Get in touch
             </h2>
             <Link
@@ -69,7 +69,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-ink-50/8 px-8 py-6 text-center text-xs text-ink-50/40 md:px-12">
+        <div className="border-t border-ink-50/8 px-8 py-6 text-center text-xs text-ink-50/55 md:px-12">
           © {new Date().getFullYear()} {site.name}. All rights reserved.
         </div>
       </div>

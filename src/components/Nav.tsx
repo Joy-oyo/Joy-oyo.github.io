@@ -8,8 +8,8 @@ import { cn } from "@/lib/cn";
 import { site } from "@/content/site";
 import YinYang from "@/components/YinYang";
 
-// Contact removed — the "Say hi →" CTA on the right of the bar already
-// covers that intent. Work and About merged into the Home page (Trajectory
+// Contact stays out of the pill — the mobile menu and the home hero cover
+// that intent. Work and About merged into the Home page (Trajectory
 // section + About section) — no separate Work or About pages anymore.
 const links = [
   { label: "Home", href: "/" },
@@ -22,16 +22,16 @@ const links = [
 export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
 
   // /reading embeds a paper-white document that owns the whole viewport. The
-  // dark glass bar fights that surface, so there the nav parks off-screen and
+  // floating pill fights that surface, so there it parks off-screen and
   // slides in only when the pointer reaches the top edge — or when focus lands
   // inside it, which keeps it reachable by keyboard.
   const autoHide = pathname?.startsWith("/reading") ?? false;
   const [revealed, setRevealed] = useState(false);
   const hideTimer = useRef<number | null>(null);
+  const pillRef = useRef<HTMLElement | null>(null);
 
   const cancelHide = useCallback(() => {
     if (hideTimer.current !== null) {
@@ -52,7 +52,7 @@ export default function Nav() {
     [cancelHide]
   );
 
-  // Small delay so a pointer clipping the edge of the bar does not flicker it.
+  // Small delay so a pointer clipping the edge of the pill does not flicker it.
   const dismiss = useCallback(
     (delay = 180) => {
       cancelHide();
@@ -68,19 +68,11 @@ export default function Nav() {
     setOpen(false);
   }, [pathname]);
 
-  // Leaving the route drops the bar back to its normal, always-visible state.
+  // Leaving the route drops the pill back to its normal, always-visible state.
   useEffect(() => {
     cancelHide();
     setRevealed(false);
   }, [pathname, cancelHide]);
-
-  // Track scroll to add backdrop after first scroll
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -112,13 +104,9 @@ export default function Nav() {
   const focusRing =
     "outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
 
-  // Open menu wins over auto-hide: a bar that vanishes under its own menu is
+  // Open menu wins over auto-hide: a pill that vanishes under its own menu is
   // worse than one that overstays.
   const barHidden = autoHide && !revealed && !open;
-  // Nothing scrolls behind the embedded document, so on auto-hide routes the
-  // backdrop has to come from the reveal instead — otherwise pale nav text
-  // would sit on a transparent bar over a white page.
-  const solid = scrolled || (autoHide && !barHidden);
 
   return (
     <>
@@ -127,16 +115,27 @@ export default function Nav() {
       </a>
 
       {/* Hover target along the very top edge. Deliberately thin, and empty of
-          links, so an overshooting cursor reveals the bar while a stray click
+          links, so an overshooting cursor reveals the pill while a stray click
           near the top of the document can never navigate anywhere. */}
       {autoHide && (
         <div
           aria-hidden
           onPointerEnter={(e) => reveal(e.pointerType === "mouse" ? undefined : 3500)}
+          onPointerLeave={(e) => {
+            // Sliding from the strip straight into the pill is a handoff —
+            // the pill's own leave handler decides when to dismiss.
+            if (pillRef.current?.contains(e.relatedTarget as Node | null)) return;
+            dismiss();
+          }}
           className="fixed inset-x-0 top-0 z-40 h-6"
         />
       )}
 
+      {/* No bar: the header is only an invisible positioning frame for the
+          floating pill. pointer-events-none lets clicks fall through to the
+          page (home's empty-click swaps the taiji halves); the pill and the
+          hamburger opt back in with pointer-events-auto. Focus/blur still
+          bubble to this frame, so keyboard users can summon it on /reading. */}
       <motion.header
         initial={reduceMotion ? { opacity: 0 } : { y: -20, opacity: 0 }}
         animate={
@@ -150,69 +149,44 @@ export default function Nav() {
           duration: autoHide ? (reduceMotion ? 0.2 : 0.4) : 0.6,
           ease: "easeOut",
         }}
-        onPointerEnter={autoHide ? () => reveal() : undefined}
-        onPointerLeave={autoHide ? () => dismiss() : undefined}
         onFocus={autoHide ? () => reveal() : undefined}
         onBlur={
           autoHide
             ? (e) => {
-                // Ignore focus moving between the bar's own links.
+                // Ignore focus moving between the pill's own links.
                 if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
                   dismiss(0);
                 }
               }
             : undefined
         }
-        className={cn(
-          // transition-colors, not transition-all: the transform and opacity
-          // belong to motion, and a CSS transition on top double-eases them.
-          "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
-          solid
-            ? "border-b border-ink-50/10 bg-ink-950/95 shadow-glass"
-            : "border-b border-transparent bg-transparent",
-          // Off-screen and unclickable, but still tabbable — focus brings it back.
-          barHidden && "pointer-events-none"
-        )}
+        className="pointer-events-none fixed inset-x-0 top-0 z-50"
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 md:py-5">
-          <div className="flex items-center gap-2.5">
-            {/* Quiet yin-yang glyph — the visual seal that this site is
-                organised around the unity of opposites (industry/research,
-                making/knowing, code/photo). Purely decorative here; the
-                clickable version lives at the seam in the Trajectory
-                section below. */}
-            <YinYang
-              size={22}
-              yangColor="#0a0a12"
-              yinColor="#f5f5f0"
-              stroke="rgba(245,245,240,0.35)"
-              duration={40}
-            />
-            <Link
-              href="/"
-              aria-label={`${site.name} — home`}
-              className={cn("flex items-center gap-2 rounded-md", focusRing)}
-            >
-              <span className="display text-2xl text-ink-50">{site.initials}</span>
-              <span className="hidden text-sm text-ink-50/60 md:inline">
-                {site.name}
-              </span>
-            </Link>
-          </div>
-
+        <div className="relative mx-auto flex min-h-[76px] max-w-7xl items-center justify-center gap-4 px-6 py-4 md:min-h-0 md:py-5">
           {/* Desktop nav */}
-          <nav aria-label="Main" className="hidden md:block">
+          <nav
+            ref={pillRef}
+            aria-label="Main"
+            onPointerEnter={autoHide ? () => reveal() : undefined}
+            onPointerLeave={autoHide ? () => dismiss() : undefined}
+            className="pointer-events-auto hidden md:block"
+          >
             <ul className="glass glass-sheen flex items-center gap-1 rounded-full px-2 py-1.5">
               {links.map((l) => {
                 const active = isActive(l.href);
+                // Photography wears the site's yin-yang seal instead of a
+                // word; the glyph flips its colors while the route is active
+                // so it stays legible on the light active pill.
+                const isPhoto = l.href === "/photography";
                 return (
                   <li key={l.href} className="relative">
                     <Link
                       href={l.href}
                       aria-current={active ? "page" : undefined}
+                      aria-label={isPhoto ? "Photography" : undefined}
                       className={cn(
-                        // Tighter at md so five items plus the CTA still fit on
-                        // a tablet; full padding returns at lg.
+                        // Tighter at md so five items still fit on a tablet;
+                        // full padding returns at lg.
                         "relative block rounded-full px-3 py-2 text-xs uppercase tracking-wide transition-colors lg:px-4",
                         focusRing,
                         active ? "text-ink-950" : "text-ink-50/65 hover:text-ink-50"
@@ -230,7 +204,22 @@ export default function Nav() {
                           className="absolute inset-0 rounded-full bg-ink-50 shadow-[0_6px_20px_-8px_rgba(245,245,240,0.7)]"
                         />
                       )}
-                      <span className="relative">{l.label}</span>
+                      <span className="relative">
+                        {isPhoto ? (
+                          <YinYang
+                            size={18}
+                            duration={40}
+                            flipped={active}
+                            yangColor="#0a0a12"
+                            yinColor="#f5f5f0"
+                            stroke="rgba(245,245,240,0.35)"
+                            title="Photography"
+                            className="block"
+                          />
+                        ) : (
+                          l.label
+                        )}
+                      </span>
                     </Link>
                   </li>
                 );
@@ -238,19 +227,8 @@ export default function Nav() {
             </ul>
           </nav>
 
-          {/* Desktop CTA */}
-          <Link
-            href="/contact"
-            className={cn(
-              "glass-chip glass-sheen hidden items-center gap-2 rounded-full px-4 py-2 text-xs uppercase tracking-widest text-ink-50/75 transition-colors hover:text-ink-50 md:inline-flex",
-              focusRing
-            )}
-          >
-            Say hi
-            <span aria-hidden>→</span>
-          </Link>
-
-          {/* Mobile hamburger — 44px target */}
+          {/* Mobile hamburger — floats at the right edge, where it sat when
+              there was a bar. 44px target. */}
           <button
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -258,7 +236,7 @@ export default function Nav() {
             aria-controls="mobile-menu"
             onClick={() => setOpen((o) => !o)}
             className={cn(
-              "glass glass-sheen relative flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full md:hidden",
+              "glass glass-sheen pointer-events-auto absolute right-6 top-1/2 flex h-11 w-11 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full md:hidden",
               focusRing
             )}
           >
@@ -318,7 +296,7 @@ export default function Nav() {
                           )}
                           {l.label}
                         </span>
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/40">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-ink-50/60">
                           {String(i).padStart(2, "0")}
                         </span>
                       </Link>
@@ -327,7 +305,7 @@ export default function Nav() {
                 })}
               </ul>
 
-              <div className="glass glass-sheen mt-6 rounded-2xl p-5 text-sm text-ink-50/50">
+              <div className="glass glass-sheen mt-6 rounded-2xl p-5 text-sm text-ink-50/70">
                 <a
                   href={`mailto:${site.email}`}
                   className={cn(

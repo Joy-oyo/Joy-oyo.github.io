@@ -120,9 +120,9 @@ export const demoProjects: DemoProject[] = [
     status: "In progress",
     format: "Hosted session",
     formatNote:
-      "Runs on a hosted realtime video model rather than in this tab — book a 60-second session and restyle your own camera feed live.",
+      "Runs on a hosted realtime video model, not in this tab — book a 60-second session and restyle your own camera feed.",
     body:
-      "Restyle a live camera feed from a text prompt at 720p, streamed over WebRTC. Built on Decart's Lucy realtime API, with StreamDiffusionV2 self-hosting held in reserve as the margin play.",
+      "Restyle a live camera feed from a text prompt at 720p over WebRTC, via Decart's Lucy realtime API.",
     stack: ["Lucy Restyle 2", "Decart realtime API", "WebRTC", "Next.js", "Ephemeral tokens"],
   },
 ];
@@ -168,24 +168,24 @@ export type LabStat = { value: string; label: string; note?: string };
 
 export const demoLab = {
   eyebrow: "Build · Technical demos",
-  title: "Demo Lab: Interactive Prototypes for Real-Time AI Media Systems",
+  title: "Demo Lab",
   tagline:
-    "A rolling lab of nine prototypes — browser-native where the physics allow, recorded builds where they don't — testing where an AI system stops being a demo and starts being a tool.",
-  badge: "Rolling release · 1 of 9 builds live",
+    "Ten prototypes testing one question: when does an AI system stop being a demo and start being a tool? Browser-native where possible, recorded where not.",
+  badge: "Rolling release · 1 of 10 builds live",
   // Deliberately just the code. This page is about the builds, so it does not
   // route visitors off into the rest of the site.
   resources: [
     { label: "Code", href: "https://github.com/Joy-oyo", kind: "primary", external: true },
   ] as LabResource[],
   positioning:
-    "Every interactive build holds the same contract: first useful output in under a second, no API key in the client, nothing uploaded that doesn't have to be, and a documented path down to CPU so the page still works on an old laptop.",
+    "One contract, every interactive build: first useful output under a second, no API key in the client, nothing uploaded that doesn't have to be, and a path down to CPU so it still works on an old laptop.",
 
   teaser: {
     label: "Video 1",
     caption:
-      "Four ways to transcribe the same thirty seconds. Top left: reference audio and ground truth. Top right: a hosted cloud API. Bottom left: naive in-browser WASM. Bottom right: this lab — streaming WebGPU Whisper, on-device.",
+      "Four ways to transcribe the same thirty seconds. Top left: reference audio and ground truth. Top right: hosted cloud API. Bottom left: naive in-browser WASM. Bottom right: this lab — streaming WebGPU Whisper, on-device.",
     note:
-      "Clip: a two-speaker product review recorded on a laptop mic, room noise left in on purpose. Capture pending — recorded once the streaming decoder lands.",
+      "Two-speaker product review, laptop mic, room noise left in. Captured once the streaming decoder lands.",
     pending: "Comparison capture pending",
     panels: [
       { corner: "Top left", title: "Reference", note: "Raw audio + ground truth" },
@@ -196,8 +196,8 @@ export const demoLab = {
   } as LabFigure,
 
   abstract: [
-    "AI demos are usually optimised for the screenshot. They run on a warm server, on the happy path, with a prompt the author already knows works — and they quietly fall apart the moment someone brings their own file, their own accent, or their own network. The gap is rarely model quality. It is systems work: latency budgets, streaming, failure ladders, and the unglamorous question of who pays for the inference.",
-    "Demo Lab collects nine prototypes that take that systems work as the actual subject. Seven run as interactive builds in the browser; two ship as recorded showcases, because a robot arm and a game engine will not fit in a tab. The first build — an on-device Whisper transcriber — is in progress; the rest land one at a time, each with a build note about what broke. Nothing here needs a key, a quota, or a credit card to try.",
+    "AI demos are usually optimised for the screenshot: a warm server, the happy path, a prompt the author already knows works. They fall apart the moment someone brings their own file, accent, or network. The gap is rarely model quality — it's systems work: latency budgets, streaming, failure ladders, and who pays for the inference.",
+    "Demo Lab is ten prototypes that treat that systems work as the subject. Seven run as interactive browser builds; two ship as video, because a robot arm and a game engine don't fit in a tab; one needs a rented GPU. The Whisper transcriber is first, the rest land one at a time. Nothing here needs a key, a quota, or a credit card.",
   ],
 
   abstractStats: [
@@ -209,7 +209,7 @@ export const demoLab = {
 
   gallery: {
     lede:
-      "Ten builds, three publishing tracks. Interactive builds run live in this tab. Hosted sessions need a GPU big enough that it has to be rented, so they are queued and time-boxed. Recorded builds ship as video because they depend on hardware or an engine that cannot honestly be faked in a browser.",
+      "Ten builds, three tracks. Interactive builds run live in this tab. Hosted sessions need a rented GPU, so they're queued and time-boxed. Recorded builds ship as video — they need hardware or an engine a browser can't honestly fake.",
     groups: [
       {
         id: "interactive-builds",
@@ -222,14 +222,14 @@ export const demoLab = {
         id: "hosted-sessions",
         title: "Hosted sessions",
         counterLabel: "Session",
-        note: "Runs on someone else's GPU through a metered API, not in your browser — so unlike everything else here, it costs real money per minute and your camera frames do leave your device. Both are stated up front rather than buried.",
+        note: "Someone else's GPU, metered per minute — unlike the rest, it costs money and camera frames leave your device. Stated up front, not buried.",
         format: "Hosted session" as const,
       },
       {
         id: "recorded-builds",
         title: "Recorded builds",
         counterLabel: "Video",
-        note: "Ships as video — a full run including the recovery after something goes wrong.",
+        note: "Ships as video: a full run, including the recovery when something breaks.",
         format: "Video showcase" as const,
       },
     ],
@@ -237,11 +237,11 @@ export const demoLab = {
 
   motivation: {
     lede:
-      "Near-real-time demos have wildly different budgets depending on what they process — a thirty-second voice note, a 4K screen recording, a live camera feed. The bottleneck moves as the input changes, and it rarely sits where the model card suggests. Four of them shaped how this lab is built.",
+      "Budgets differ wildly by input — a voice note, a 4K recording, a live camera feed. The bottleneck moves with the input and rarely sits where the model card suggests. Four of them shaped this lab.",
     figure: {
       label: "Fig. 1",
       caption:
-        "Batch demo versus streaming demo. A batch demo collects everything, then thinks; a streaming demo returns something useful before the input has finished arriving. The second shape is harder to build and is the only one that feels like an instrument.",
+        "Batch versus streaming. Batch collects everything, then thinks; streaming returns something useful before the input finishes arriving. Harder to build, and the only shape that feels like an instrument.",
       pending: "Diagram in progress",
       aspect: "21/9",
     } as LabFigure,
@@ -250,38 +250,38 @@ export const demoLab = {
         n: "01",
         title: "Latency budgets nobody agreed to",
         body:
-          "A demo that answers in four seconds is not a slow tool; it is a different category of object. People stop treating it as an instrument and start treating it as a submission form. Hosted APIs make this hard to escape — the round trip alone eats most of the budget before the model has done anything. So time-to-first-result is treated as a constraint that decides whether a build ships, not a number reported afterwards.",
+          "A demo that answers in four seconds isn't a slow tool, it's a different object — people treat it as a submission form, not an instrument. Hosted APIs make that hard to escape: the round trip eats most of the budget before the model starts. So time-to-first-result decides whether a build ships.",
         figure: {
           label: "Fig. 2",
           caption:
             "Time to first result across deployment modes, same thirty-second clip.",
           note:
-            "Hosted figures from vendor documentation; browser figures measured on one M-series laptop in Chrome with a warm model cache.",
-          pending: "Chart pending — plotted from logged runs",
+            "Hosted figures from vendor docs; browser figures from one M-series laptop, Chrome, warm cache.",
+          pending: "Chart pending",
         } as LabFigure,
       },
       {
         n: "02",
         title: "The distance between a demo and a tool",
         body:
-          "Most prototypes demonstrate a capability rather than attempt a tool. They accept one file format, assume one speaker, and have no answer for the second minute of input. That is a legitimate way to show a model off, but it tells you nothing about whether the thing would survive inside somebody's working day — which is the only question this lab finds interesting.",
-        reference: "See Video 1: the same clip, four deployments, one of which you could actually work in.",
+          "Most prototypes demonstrate a capability rather than attempt a tool: one file format, one speaker, no answer for the second minute of input. Fine for showing off a model, but it says nothing about surviving a working day — the only question here.",
+        reference: "Video 1: same clip, four deployments, one you could actually work in.",
       },
       {
         n: "03",
         title: "Privacy is a constraint, not a checkbox",
         body:
-          "Voice notes, interview recordings, client screenshots, camera feeds — the inputs these demos want are precisely the inputs people are least willing to hand to a third party. Asking a visitor to upload a client recording to try a portfolio demo is a reasonable thing to refuse. On-device inference is not a feature bolted on afterwards here; it is the only version of these demos most people can actually try.",
+          "Voice notes, interview recordings, client screenshots, camera feeds — exactly the inputs people won't hand to a third party. Asking a visitor to upload a client recording to try a portfolio demo is reasonable to refuse. On-device inference isn't bolted on afterwards; it's the only version most people can try.",
       },
       {
         n: "04",
         title: "A portfolio cannot run on a GPU bill",
         body:
-          "A demo with a per-session cost has a half-life. It gets rate-limited, then keyed, then quietly taken down when the credits run out. Anything that has to stay online indefinitely needs to cost approximately nothing to serve — which rules out per-request inference and rules in the visitor's own hardware.",
+          "A demo with a per-session cost has a half-life: rate-limited, then keyed, then quietly taken down when the credits run out. Anything meant to stay online has to cost roughly nothing to serve — the visitor's own hardware, not per-request inference.",
         figure: {
           label: "Fig. 3",
           caption:
-            "Cost per session and what it implies about a demo's lifespan. Left: marginal cost by deployment mode. Right: the same builds ranked by how long they can stay online unattended.",
+            "Cost per session and lifespan. Left: marginal cost by deployment mode. Right: the same builds ranked by how long they survive unattended.",
           pending: "Chart pending",
         } as LabFigure,
       },
@@ -290,11 +290,11 @@ export const demoLab = {
 
   method: {
     lede:
-      "The lab is one pipeline with two exits. Everything that can run in a browser tab does; everything that needs a robot, a cluster, or a game engine becomes a recorded showcase with the same write-up attached.",
+      "One pipeline, two exits. Whatever runs in a tab does; whatever needs a robot, a cluster, or a game engine becomes a video with the same write-up.",
     figure: {
       label: "Fig. 4",
       caption:
-        "The Demo Lab pipeline. Input capture, a chunked scheduler, a runtime ladder that picks the fastest backend the device actually supports, and two publishing exits — interactive build or recorded showcase.",
+        "The pipeline: input capture, a chunked scheduler, a runtime ladder that picks the fastest backend the device supports, then two exits — interactive build or video.",
       pending: "Pipeline diagram in progress",
       aspect: "21/9",
     } as LabFigure,
@@ -303,38 +303,38 @@ export const demoLab = {
         n: "01",
         title: "Browser-first inference",
         body:
-          "Models run client-side through WebGPU where it exists, inside a dedicated worker so the main thread stays free for the interface. Nothing about the input leaves the tab: no upload step, no signed URL, no retention policy to read. The cost of serving a session is the cost of serving static files.",
+          "Models run client-side via WebGPU, in a worker, so the main thread stays free. Nothing leaves the tab — no upload, no signed URL, no retention policy. Serving a session costs as much as serving static files.",
       },
       {
         n: "02",
         title: "A chunked streaming scheduler",
         body:
-          "Input is cut into short overlapping windows and processed as it arrives rather than collected and decoded in one pass. The overlap is what stops window boundaries from swallowing words; processing-as-you-go is what makes the first result appear while the user is still talking. The same idea carries over to video — small chunks, cached state between them.",
+          "Input is cut into short overlapping windows and processed as it arrives. Overlap stops window boundaries swallowing words; processing-as-you-go puts the first result on screen while the user is still talking. Video works the same way — small chunks, cached state.",
       },
       {
         n: "03",
         title: "A degradation ladder, not a fallback",
         body:
-          "Three rungs, checked at load: WebGPU, then WASM with SIMD and threads, then a smaller model at reduced fidelity. The interface says which rung it landed on instead of pretending the experience is identical. A demo that silently runs six times slower is worse than one that tells you why.",
+          "Three rungs, checked at load: WebGPU, then WASM with SIMD and threads, then a smaller model. The interface says which rung it landed on — a demo that silently runs six times slower is worse than one that tells you why.",
       },
       {
         n: "04",
         title: "No secrets in the client",
         body:
-          "Nothing needing a credential runs in the browser. The few features that genuinely require a server — mail, verification, anything with a quota — go through a route handler that reads keys from the environment, validates its input, and rate-limits per session. No keys in the bundle, no keys in the repo, no temporary proxy that becomes permanent.",
+          "Nothing needing a credential runs in the browser. The few features that need a server go through a route handler reading keys from the environment, validating input, rate-limiting per session. No keys in the bundle or the repo.",
       },
       {
         n: "05",
         title: "A recorded track for what physics won't allow",
         body:
-          "Robotics planning and a game director cannot be honestly faked in a tab. Those ship as video: a full run, including the recovery after something goes wrong, plus the same write-up an interactive build would get. The rule is that the recording shows a failure and its repair, not only the clean take.",
+          "Robotics and a game director can't be honestly faked in a tab. They ship as video — a full run including the recovery after something breaks, with the same write-up. The rule: show the failure and its repair, not just the clean take.",
       },
     ],
   },
 
   results: {
     lede:
-      "The table below is the contract each interactive build is held to. Where a build has shipped the figure is measured; where it hasn't, it's the target that decides when the build is done.",
+      "The contract each interactive build is held to. Shipped figures are measured; the rest are targets that decide when a build is done.",
     columns: [
       "Deployment mode",
       "Time to first result",
@@ -352,7 +352,7 @@ export const demoLab = {
       ["Recorded showcase", "—", "—", "$0", "No", "By design"],
     ],
     caveat:
-      "No TensorRT, no custom kernels, no quantisation beyond what the browser runtime already ships. Measurements come from a single M-series laptop in Chrome with a warm model cache, which makes them indicative rather than a benchmark — a cold cache adds the model download, and a Windows laptop on an integrated GPU lands closer to the WASM row. The hosted row is the exception on every axis: it is someone else's GPU, its price comes straight from the vendor's rate card, and its latency is deliberately left blank because the vendor does not publish one. Each figure gets replaced with logged numbers as the corresponding build ships.",
+      "No TensorRT, no custom kernels, no quantisation beyond what the browser runtime ships. Figures come from one M-series laptop in Chrome with a warm cache — indicative, not a benchmark: a cold cache adds the model download, an integrated-GPU Windows laptop lands near the WASM row. The hosted row is the exception on every axis: someone else's GPU, vendor pricing, latency blank because the vendor doesn't publish one. Replaced with logged numbers as builds ship.",
     figures: [
       {
         label: "Fig. 5",
@@ -363,7 +363,7 @@ export const demoLab = {
       {
         label: "Fig. 6",
         caption:
-          "Where the time actually goes. Left: model load, cold cache versus warm. Right: per-chunk decode as the window grows.",
+          "Where the time goes. Left: model load, cold versus warm cache. Right: per-chunk decode as the window grows.",
         pending: "Chart pending",
       },
     ] as LabFigure[],
@@ -371,7 +371,7 @@ export const demoLab = {
 
   acknowledgements: {
     body:
-      "This lab is assembled almost entirely out of other people's work. On-device inference runs on Transformers.js; the speech models trace back to Whisper and the optimisation work around whisper.cpp. The builds themselves are Next.js and Tailwind. The layout of this page — hero, teaser, abstract, gallery, motivation, method, results — is modelled on the StreamDiffusionV2 project page, the clearest example I've seen of a demo explaining itself.",
+      "Built almost entirely on other people's work: Transformers.js for on-device inference, Whisper and whisper.cpp for speech, Next.js and Tailwind for the builds. This page's layout is modelled on the StreamDiffusionV2 project page.",
     links: [
       {
         label: "Transformers.js",
@@ -390,7 +390,7 @@ export const demoLab = {
   },
 
   bibtex: `@misc{chen2026demolab,
-  title        = {Demo Lab: Interactive Prototypes for Real-Time AI Media Systems},
+  title        = {Demo Lab},
   author       = {Chen, Joy},
   year         = {2026},
   note         = {Rolling release. Build notes published as each prototype lands},
