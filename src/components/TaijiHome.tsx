@@ -278,7 +278,7 @@ export default function TaijiHome({ children }: { children: React.ReactNode }) {
         onPointerDown={() => { activationWasPeeking.current = peekingRef.current; }}
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
-          if (event.detail === 0 ? peekingRef.current : activationWasPeeking.current) openBookshelf();
+          if (window.innerWidth < 768 || (event.detail === 0 ? peekingRef.current : activationWasPeeking.current)) openBookshelf();
           else updatePeek(true);
         }}
       >

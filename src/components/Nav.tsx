@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { site } from "@/content/site";
 import YinYang from "@/components/YinYang";
+import styles from "./Nav.module.css";
 
 // Contact stays out of the pill — the mobile menu and the home hero cover
 // that intent. Work and About merged into the Home page (Trajectory
@@ -32,6 +34,14 @@ export default function Nav() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // A rotation or resize into the desktop layout must also release scroll.
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onChange = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -60,6 +70,8 @@ export default function Nav() {
   // The bookshelf lives on the home page (TaijiHome). There, ask it to open;
   // anywhere else, go home with the hash TaijiHome opens it from.
   const openBookshelf = () => {
+    // Release the menu's scroll lock before the shelf saves the body's styles.
+    flushSync(() => setOpen(false));
     if (pathname === "/") window.dispatchEvent(new CustomEvent("bookshelf:open"));
     else router.push("/#bookshelf");
   };
@@ -84,9 +96,9 @@ export default function Nav() {
         initial={reduceMotion ? { opacity: 0 } : { y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="pointer-events-none fixed inset-x-0 top-0 z-50"
+        className="pointer-events-none fixed inset-x-0 top-0 z-[80]"
       >
-        <div className="relative mx-auto flex min-h-[76px] max-w-7xl items-center justify-center gap-4 px-6 py-4 md:min-h-0 md:py-5">
+        <div className={cn(styles.frame, "relative mx-auto flex max-w-7xl items-center justify-center md:px-6 md:py-5")}>
           {/* Desktop nav */}
           <nav aria-label="Main" className="pointer-events-auto hidden md:block">
             <ul className="glass glass-sheen flex items-center gap-1 rounded-full px-2 py-1.5">
@@ -150,30 +162,44 @@ export default function Nav() {
             </ul>
           </nav>
 
-          {/* Mobile hamburger — floats at the right edge, where it sat when
-              there was a bar. 44px target. */}
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((o) => !o)}
-            className={cn(
-              "glass glass-sheen pointer-events-auto absolute right-6 top-1/2 flex h-11 w-11 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full md:hidden",
-              focusRing
-            )}
-          >
-            <motion.span
-              animate={open ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="block h-px w-4 bg-ink-50"
-            />
-            <motion.span
-              animate={open ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="block h-px w-4 bg-ink-50"
-            />
-          </button>
+          {/* A single mobile pill keeps both entrances visible and aligned. */}
+          <div className="glass glass-sheen pointer-events-auto flex w-full max-w-sm items-center justify-between rounded-full p-1.5 md:hidden">
+            <button
+              type="button"
+              onClick={openBookshelf}
+              aria-label="Open secret bookshelf"
+              aria-haspopup="dialog"
+              className={cn("flex min-h-11 items-center gap-2.5 rounded-full px-3 text-xs text-ink-50/85", focusRing)}
+            >
+              <YinYang size={24} duration={40} yangColor="#0a0a12" yinColor="#f5f5f0" stroke="rgba(245,245,240,0.35)" className="block shrink-0" />
+              <span>Secret shelf</span>
+            </button>
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((o) => !o)}
+              className={cn(
+                "flex min-h-11 items-center justify-center gap-3 rounded-full px-4 text-xs text-ink-50/85",
+                focusRing
+              )}
+            >
+              <span>{open ? "Close" : "Menu"}</span>
+              <span aria-hidden="true" className="relative block h-4 w-4">
+                <motion.span
+                  animate={open ? { rotate: 45, y: 0 } : { rotate: 0, y: -3 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 top-1/2 block h-px w-4 bg-ink-50"
+                />
+                <motion.span
+                  animate={open ? { rotate: -45, y: 0 } : { rotate: 0, y: 3 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 top-1/2 block h-px w-4 bg-ink-50"
+                />
+              </span>
+            </button>
+          </div>
         </div>
       </motion.header>
 
@@ -186,10 +212,9 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 flex flex-col bg-ink-950/95 md:hidden"
+            className={cn(styles.menu, "fixed inset-0 z-[70] flex flex-col bg-ink-950 md:hidden")}
           >
-            <div className="h-[72px]" />
-            <nav aria-label="Mobile" className="flex flex-1 flex-col px-6 pb-10 pt-4">
+            <nav aria-label="Mobile" className={cn(styles.menuContent, "mx-auto flex w-full max-w-md flex-col")}>
               <ul className="glass-card glass-sheen overflow-hidden rounded-3xl px-5 py-2">
                 {links.map((l, i) => {
                   const active = isActive(l.href);
@@ -203,6 +228,7 @@ export default function Nav() {
                     >
                       <Link
                         href={l.href}
+                        onClick={() => setOpen(false)}
                         aria-current={active ? "page" : undefined}
                         className={cn(
                           "flex items-baseline justify-between rounded-xl py-4",
@@ -238,7 +264,7 @@ export default function Nav() {
                 >
                   {site.email}
                 </a>
-                <div className="mt-4 flex gap-5 text-xs uppercase tracking-[0.25em]">
+                <div className="mt-4 flex flex-wrap gap-5 text-xs uppercase tracking-[0.25em]">
                   {site.socials.map((s) => (
                     <a
                       key={s.href}
@@ -255,6 +281,7 @@ export default function Nav() {
 
               <Link
                 href="/contact"
+                onClick={() => setOpen(false)}
                 className={cn(
                   "mt-6 flex items-center justify-center gap-2 rounded-full bg-ink-50 py-4 text-xs uppercase tracking-[0.3em] font-medium text-ink-950",
                   focusRing
