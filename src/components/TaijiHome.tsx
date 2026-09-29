@@ -76,11 +76,18 @@ export default function TaijiHome({ children }: { children: React.ReactNode }) {
     peekingRef.current = value;
     setNearSeam(value);
   }, []);
-  const openBookshelf = useCallback(() => {
+  /**
+   * `fromSeam` — opened by the seam itself, so focus is parked on the seam's
+   * entrance button and returns there on close. Openings from elsewhere
+   * (the nav seal) leave focus where it is, so it returns to their trigger.
+   */
+  const openBookshelf = useCallback((fromSeam = true) => {
     setOpeningGap(window.innerWidth >= 768 ? peekOffset.get() : 0);
-    skipFocusPeek.current = true;
-    entranceRef.current?.focus({ preventScroll: true });
-    skipFocusPeek.current = true;
+    if (fromSeam) {
+      skipFocusPeek.current = true;
+      entranceRef.current?.focus({ preventScroll: true });
+      skipFocusPeek.current = true;
+    }
     updatePeek(false);
     setBookshelfOpen(true);
   }, [peekOffset, updatePeek]);
@@ -119,6 +126,19 @@ export default function TaijiHome({ children }: { children: React.ReactNode }) {
     window.addEventListener("taiji:toggle", toggle);
     return () => window.removeEventListener("taiji:toggle", toggle);
   }, [toggle]);
+
+  // Second way in: the yin-yang seal in the nav. On this page it asks with a
+  // `bookshelf:open` event; from any other page it lands here on
+  // `/#bookshelf`, and the hash is consumed so a refresh doesn't reopen it.
+  useEffect(() => {
+    const onOpen = () => openBookshelf(false);
+    window.addEventListener("bookshelf:open", onOpen);
+    if (window.location.hash === "#bookshelf") {
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+      openBookshelf(false);
+    }
+    return () => window.removeEventListener("bookshelf:open", onOpen);
+  }, [openBookshelf]);
 
   // Click-to-swap: tapping any empty stretch of the page trades the halves.
   // "Empty" excludes text, media, controls/links, the site chrome, and

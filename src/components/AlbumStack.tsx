@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { albums } from "@/content/albums";
 import { cn } from "@/lib/cn";
@@ -20,6 +21,8 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
   const [index, setIndex] = useState(0);
   const total = albums.length;
   const rootRef = useRef<HTMLDivElement>(null);
+  const dragged = useRef(false);
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
   const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
@@ -126,14 +129,34 @@ export default function AlbumStack({ compact = false }: { compact?: boolean } = 
               drag={isTop ? "x" : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.4}
+              onPointerDown={() => {
+                dragged.current = false;
+              }}
+              onDragStart={() => {
+                dragged.current = true;
+              }}
               onDragEnd={(_, info) => {
                 if (info.offset.x < -100) next();
                 else if (info.offset.x > 100) prev();
               }}
-              onClick={() => !isTop && setIndex(i)}
+              // A drag ends in a click too; swallow it before it reaches the
+              // card's link so flicking through the stack never navigates.
+              onClickCapture={(e) => {
+                if (dragged.current) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
+              // Back cards come forward; the top card is itself the way in.
+              // Clicks on its own link are left to the link.
+              onClick={(e) => {
+                if (!isTop) return setIndex(i);
+                if ((e.target as Element).closest("a")) return;
+                router.push(album.href);
+              }}
               className={cn(
                 "absolute inset-0 preserve-3d cursor-pointer",
-                isTop ? "cursor-grab active:cursor-grabbing" : ""
+                isTop && "active:cursor-grabbing"
               )}
               style={{ transformStyle: "preserve-3d" }}
             >
@@ -327,8 +350,12 @@ function AlbumCard({
             </p>
           )}
 
+          {/* Kept as the keyboard / screen-reader way in; pointer users can
+              click anywhere on the top card. */}
           <Link
             href={album.href}
+            draggable={false}
+            tabIndex={isTop ? undefined : -1}
             onClick={(e) => {
               if (!isTop) e.preventDefault();
             }}

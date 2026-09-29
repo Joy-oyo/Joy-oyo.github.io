@@ -13,7 +13,7 @@ export default function PageHeader({
   title,
   lede,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   lede?: string;
 }) {
@@ -32,17 +32,19 @@ export default function PageHeader({
         className="pointer-events-none absolute -top-24 left-0 h-72 w-[36rem] max-w-full rounded-full bg-klein/20 blur-[110px]"
       />
 
-      <motion.div
-        initial={rise(8)}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="glass-chip glass-sheen relative inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5"
-      >
-        <span aria-hidden className="h-1 w-1 rounded-full bg-ink-50/60" />
-        <span className="text-[10px] uppercase tracking-[0.34em] text-ink-50/65">
-          {eyebrow}
-        </span>
-      </motion.div>
+      {eyebrow && (
+        <motion.div
+          initial={rise(8)}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="glass-chip glass-sheen relative inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5"
+        >
+          <span aria-hidden className="h-1 w-1 rounded-full bg-ink-50/60" />
+          <span className="text-[10px] uppercase tracking-[0.34em] text-ink-50/65">
+            {eyebrow}
+          </span>
+        </motion.div>
+      )}
 
       <motion.h1
         initial={rise(18)}

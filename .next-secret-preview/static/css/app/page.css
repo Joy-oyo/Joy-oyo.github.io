@@ -10,18 +10,70 @@
 
 .SecretBookshelf_peekDoor__Qn9ui { filter: drop-shadow(0 0 9px #0008); }
 
-.SecretBookshelf_emptyShelves__EGQzh {
+/* The sliver seen through the seam: shelves of dark spines. The row is wider
+   than the gap so the curved seam always cuts through books, never air. */
+.SecretBookshelf_crackShelves__CfJHr {
   position: absolute;
-  inset: 12% max(24px, calc((100% - 900px) / 2)) 8%;
+  inset: 13% 0 9%;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
 }
 
-.SecretBookshelf_emptyShelf__m5R8j {
-  align-self: end;
+.SecretBookshelf_crackShelf__50SfO {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  padding-bottom: 14px;
+}
+
+.SecretBookshelf_crackShelf__50SfO::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 300px;
   height: 15px;
+  transform: translateX(-50%);
   background: linear-gradient(#8b6a4390, #4c3325 4px, #2a1d16 12px, #211810);
   box-shadow: 0 12px 18px #0008, inset 0 1px #d5ae7540;
+}
+
+.SecretBookshelf_crackBook__qcFFW {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--book-width);
+  height: var(--book-height);
+  border-radius: 2px 2px 1px 1px;
+  background:
+    linear-gradient(90deg, #000000c4 0, #ffffff10 42%, #000000cc 78%, #000000e6 100%),
+    var(--book-color);
+  box-shadow: inset 0 1px 0 #e2c48e29, inset -1px 0 0 #00000059, 0 7px 13px #00000073;
+  transform: rotate(var(--book-tilt, 0deg));
+  transform-origin: bottom center;
+}
+
+/* Head band, plus a faint tail band near the foot of the spine. */
+.SecretBookshelf_crackBook__qcFFW::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: #d8b57933;
+  box-shadow: 0 calc(var(--book-height) - 11px) 0 #d8b57924;
+}
+
+.SecretBookshelf_crackBook__qcFFW::after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  bottom: 22%;
+  left: 3px;
+  right: 3px;
+  background: repeating-linear-gradient(0deg, #f0dcb524 0 1px, transparent 1px 4px);
 }
 
 .SecretBookshelf_entrance__HeTMd {
@@ -44,6 +96,8 @@
   overflow: hidden;
   clip-path: ellipse(1px 28px at 50% 50%);
   background:
+    repeating-linear-gradient(90deg, transparent 0 7px, #241a14 7px 18px, transparent 18px 22px) 50% calc(100% - 15px) / 100% 30px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 9px, #1d1a16 9px 20px, transparent 20px 25px) 50% calc(100% - 48px) / 100% 24px no-repeat,
     repeating-linear-gradient(0deg, transparent 0 24px, #8b6a4390 24px 26px, #4c3325 26px 30px, #211810 30px 33px),
     #15120f;
   box-shadow: inset 10px 0 15px -10px #000, inset -10px 0 15px -10px #000;

@@ -44,21 +44,20 @@ const nextConfig = {
   },
   transpilePackages: ["three"],
 
+  // Reading moved into the home page's secret bookshelf. The guides it opens
+  // are served by this app (src/app/reading-collection/[file]); the old
+  // page and collection index send visitors home.
+  async redirects() {
+    return [
+      { source: "/reading", destination: "/", permanent: false },
+      { source: "/reading-collection", destination: "/", permanent: false },
+      { source: "/reading-collection/index.html", destination: "/", permanent: false },
+    ];
+  },
+
   async rewrites() {
     const asrOrigin = externalProjectOrigin("ASR_DEMO_ORIGIN");
-    const readingOrigin = externalProjectOrigin("READING_COLLECTION_ORIGIN");
     const routes = [];
-
-    if (readingOrigin) {
-      // The static project lives at its own root. Strip this site's public
-      // prefix upstream so its existing same-directory links remain valid.
-      routes.push(
-        { source: "/reading-collection", destination: `${readingOrigin}/index.html` },
-        { source: "/reading-collection/:path*", destination: `${readingOrigin}/:path*` }
-      );
-    } else if (process.env.VERCEL_ENV === "production") {
-      throw new Error("READING_COLLECTION_ORIGIN must be a valid public HTTPS origin");
-    }
 
     if (asrOrigin) {
       // The ASR demo sets the same basePath, so preserve its prefix upstream.

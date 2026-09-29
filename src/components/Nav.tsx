@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { site } from "@/content/site";
@@ -10,69 +10,28 @@ import YinYang from "@/components/YinYang";
 
 // Contact stays out of the pill — the mobile menu and the home hero cover
 // that intent. Work and About merged into the Home page (Trajectory
-// section + About section) — no separate Work or About pages anymore.
+// section + About section). Reading lives in the home page's secret
+// bookshelf, so it has no page of its own either.
 const links = [
   { label: "Home", href: "/" },
-  { label: "Demos", href: "/demos" },
-  { label: "Photography", href: "/photography" },
+  { label: "Demo", href: "/demos" },
   { label: "Blog", href: "/writing" },
-  { label: "Reading", href: "/reading" },
+  { label: "Arte", href: "/photography" },
 ];
+
+// The desktop pill splits its links around a decorative yin-yang seal.
+const SEAL_AT = Math.ceil(links.length / 2);
 
 export default function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotion();
-
-  // /reading embeds a paper-white document that owns the whole viewport. The
-  // floating pill fights that surface, so there it parks off-screen and
-  // slides in only when the pointer reaches the top edge — or when focus lands
-  // inside it, which keeps it reachable by keyboard.
-  const autoHide = pathname?.startsWith("/reading") ?? false;
-  const [revealed, setRevealed] = useState(false);
-  const hideTimer = useRef<number | null>(null);
-  const pillRef = useRef<HTMLElement | null>(null);
-
-  const cancelHide = useCallback(() => {
-    if (hideTimer.current !== null) {
-      window.clearTimeout(hideTimer.current);
-      hideTimer.current = null;
-    }
-  }, []);
-
-  /** Touch has no "leave" to hide on, so a tapped reveal times itself out. */
-  const reveal = useCallback(
-    (autoHideAfter?: number) => {
-      cancelHide();
-      setRevealed(true);
-      if (autoHideAfter) {
-        hideTimer.current = window.setTimeout(() => setRevealed(false), autoHideAfter);
-      }
-    },
-    [cancelHide]
-  );
-
-  // Small delay so a pointer clipping the edge of the pill does not flicker it.
-  const dismiss = useCallback(
-    (delay = 180) => {
-      cancelHide();
-      hideTimer.current = window.setTimeout(() => setRevealed(false), delay);
-    },
-    [cancelHide]
-  );
-
-  useEffect(() => cancelHide, [cancelHide]);
 
   // Close mobile menu on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
-
-  // Leaving the route drops the pill back to its normal, always-visible state.
-  useEffect(() => {
-    cancelHide();
-    setRevealed(false);
-  }, [pathname, cancelHide]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -98,15 +57,18 @@ export default function Nav() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // The bookshelf lives on the home page (TaijiHome). There, ask it to open;
+  // anywhere else, go home with the hash TaijiHome opens it from.
+  const openBookshelf = () => {
+    if (pathname === "/") window.dispatchEvent(new CustomEvent("bookshelf:open"));
+    else router.push("/#bookshelf");
+  };
+
   // Hide nav inside the immersive cyber world
   if (pathname?.startsWith("/cyber")) return null;
 
   const focusRing =
     "outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
-
-  // Open menu wins over auto-hide: a pill that vanishes under its own menu is
-  // worse than one that overstays.
-  const barHidden = autoHide && !revealed && !open;
 
   return (
     <>
@@ -114,76 +76,52 @@ export default function Nav() {
         Skip to content
       </a>
 
-      {/* Hover target along the very top edge. Deliberately thin, and empty of
-          links, so an overshooting cursor reveals the pill while a stray click
-          near the top of the document can never navigate anywhere. */}
-      {autoHide && (
-        <div
-          aria-hidden
-          onPointerEnter={(e) => reveal(e.pointerType === "mouse" ? undefined : 3500)}
-          onPointerLeave={(e) => {
-            // Sliding from the strip straight into the pill is a handoff —
-            // the pill's own leave handler decides when to dismiss.
-            if (pillRef.current?.contains(e.relatedTarget as Node | null)) return;
-            dismiss();
-          }}
-          className="fixed inset-x-0 top-0 z-40 h-6"
-        />
-      )}
-
       {/* No bar: the header is only an invisible positioning frame for the
           floating pill. pointer-events-none lets clicks fall through to the
           page (home's empty-click swaps the taiji halves); the pill and the
-          hamburger opt back in with pointer-events-auto. Focus/blur still
-          bubble to this frame, so keyboard users can summon it on /reading. */}
+          hamburger opt back in with pointer-events-auto. */}
       <motion.header
         initial={reduceMotion ? { opacity: 0 } : { y: -20, opacity: 0 }}
-        animate={
-          barHidden
-            ? { y: reduceMotion ? 0 : "-100%", opacity: 0 }
-            : { y: 0, opacity: 1 }
-        }
-        transition={{
-          // Reveal/dismiss wants to feel immediate; the one-off intro on normal
-          // routes keeps its original, slower settle.
-          duration: autoHide ? (reduceMotion ? 0.2 : 0.4) : 0.6,
-          ease: "easeOut",
-        }}
-        onFocus={autoHide ? () => reveal() : undefined}
-        onBlur={
-          autoHide
-            ? (e) => {
-                // Ignore focus moving between the pill's own links.
-                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-                  dismiss(0);
-                }
-              }
-            : undefined
-        }
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="pointer-events-none fixed inset-x-0 top-0 z-50"
       >
         <div className="relative mx-auto flex min-h-[76px] max-w-7xl items-center justify-center gap-4 px-6 py-4 md:min-h-0 md:py-5">
           {/* Desktop nav */}
-          <nav
-            ref={pillRef}
-            aria-label="Main"
-            onPointerEnter={autoHide ? () => reveal() : undefined}
-            onPointerLeave={autoHide ? () => dismiss() : undefined}
-            className="pointer-events-auto hidden md:block"
-          >
+          <nav aria-label="Main" className="pointer-events-auto hidden md:block">
             <ul className="glass glass-sheen flex items-center gap-1 rounded-full px-2 py-1.5">
-              {links.map((l) => {
+              {links.map((l, i) => {
                 const active = isActive(l.href);
-                // Photography wears the site's yin-yang seal instead of a
-                // word; the glyph flips its colors while the route is active
-                // so it stays legible on the light active pill.
-                const isPhoto = l.href === "/photography";
                 return (
-                  <li key={l.href} className="relative">
+                  <li key={l.href} className="relative flex items-center">
+                    {/* The site's seal, centred in the pill — and the second
+                        door to the secret bookshelf (the first is the home
+                        page's seam). */}
+                    {i === SEAL_AT && (
+                      <button
+                        type="button"
+                        onClick={openBookshelf}
+                        aria-label="Open secret bookshelf"
+                        aria-haspopup="dialog"
+                        title="Secret bookshelf"
+                        className={cn(
+                          "mx-0.5 rounded-full p-1.5 transition-transform duration-300 hover:scale-110 lg:mx-1",
+                          focusRing
+                        )}
+                      >
+                        <YinYang
+                          size={18}
+                          duration={40}
+                          yangColor="#0a0a12"
+                          yinColor="#f5f5f0"
+                          stroke="rgba(245,245,240,0.35)"
+                          className="block"
+                        />
+                      </button>
+                    )}
                     <Link
                       href={l.href}
                       aria-current={active ? "page" : undefined}
-                      aria-label={isPhoto ? "Photography" : undefined}
                       className={cn(
                         // Tighter at md so five items still fit on a tablet;
                         // full padding returns at lg.
@@ -204,22 +142,7 @@ export default function Nav() {
                           className="absolute inset-0 rounded-full bg-ink-50 shadow-[0_6px_20px_-8px_rgba(245,245,240,0.7)]"
                         />
                       )}
-                      <span className="relative">
-                        {isPhoto ? (
-                          <YinYang
-                            size={18}
-                            duration={40}
-                            flipped={active}
-                            yangColor="#0a0a12"
-                            yinColor="#f5f5f0"
-                            stroke="rgba(245,245,240,0.35)"
-                            title="Photography"
-                            className="block"
-                          />
-                        ) : (
-                          l.label
-                        )}
-                      </span>
+                      <span className="relative">{l.label}</span>
                     </Link>
                   </li>
                 );

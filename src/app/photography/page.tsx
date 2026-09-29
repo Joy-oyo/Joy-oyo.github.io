@@ -10,7 +10,6 @@ export default function PhotographyPage() {
     <>
       <main id="main" className="relative pb-24 pt-32">
         <PageHeader
-          eyebrow="02 · Photography"
           title="Light, texture, quiet"
           lede="A small collection of tree studies — the same subject followed across a single day, from morning through dusk."
         />

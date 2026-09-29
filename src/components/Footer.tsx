@@ -26,8 +26,7 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
     return (
       <footer>
         <div data-polarity={polarity} className="overflow-hidden taiji-seed">
-          <div className="px-7 pb-8 pt-9">
-            <h2 className="mb-4 text-[10px] uppercase tracking-[0.3em] text-on2">Elsewhere</h2>
+          <div className="px-7 pb-6 pt-9">
             <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
               {site.socials.map((s) => (
                 <li key={s.href}>
@@ -48,12 +47,9 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
                 </li>
               ))}
             </ul>
-          </div>
-
-          <div className="border-t border-on/15 px-7 py-6">
             <a
               href="/contact"
-              className={`glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.28em] transition-colors text-on2 hover:text-on ${focusRing}`}
+              className={`glass-chip glass-sheen mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.28em] transition-colors text-on2 hover:text-on ${focusRing}`}
             >
               Get in touch
               <span aria-hidden>→</span>
@@ -77,21 +73,30 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
           <div>
             <div className={`display text-3xl ${c("text-on", "text-ink-50")}`}>{site.name}</div>
             <p className={`mt-3 max-w-xs text-sm leading-relaxed ${c("text-on2", "text-ink-50/60")}`}>
-              {site.tagline}
+              {site.taglineSignOff}
             </p>
-            <p className={`mt-5 inline-flex items-center gap-2 text-xs ${c("text-on2", "text-ink-50/65")}`}>
-              <span
-                aria-hidden
-                className="h-1.5 w-1.5 rounded-full bg-emerald-300/80 shadow-[0_0_10px_rgba(110,231,183,0.8)]"
-              />
-              {site.location}
-            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <p className={`inline-flex items-center gap-2 text-xs ${c("text-on2", "text-ink-50/65")}`}>
+                <span
+                  aria-hidden
+                  className="h-1.5 w-1.5 rounded-full bg-emerald-300/80 shadow-[0_0_10px_rgba(110,231,183,0.8)]"
+                />
+                {site.location}
+              </p>
+              <Link
+                href="/contact"
+                className={`glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] uppercase tracking-[0.28em] transition-colors ${c(
+                  "text-on2 hover:text-on",
+                  "text-ink-50/75 hover:text-ink-50"
+                )} ${focusRing}`}
+              >
+                Get in touch
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
           </div>
 
           <div>
-            <h2 className={`mb-4 text-[10px] uppercase tracking-[0.3em] ${c("text-on2", "text-ink-50/60")}`}>
-              Elsewhere
-            </h2>
             <ul className="grid grid-cols-2 gap-x-8 gap-y-2.5 text-sm sm:gap-x-12">
               {site.socials.map((s) => (
                 <li key={s.href}>
@@ -116,23 +121,6 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
               ))}
             </ul>
           </div>
-        </div>
-
-        <div
-          className={`border-t px-7 py-6 ${
-            polarity ? "border-on/15" : "border-ink-50/10 md:px-12 md:pb-10 md:pt-8"
-          }`}
-        >
-          <Link
-            href="/contact"
-            className={`glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] uppercase tracking-[0.28em] transition-colors ${c(
-              "text-on2 hover:text-on",
-              "text-ink-50/75 hover:text-ink-50"
-            )} ${focusRing}`}
-          >
-            Get in touch
-            <span aria-hidden>→</span>
-          </Link>
         </div>
       </div>
     </footer>

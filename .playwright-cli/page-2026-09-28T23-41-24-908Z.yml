@@ -1,0 +1,82 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner:
+    - navigation "Main" [ref=e3]:
+      - list [ref=e4]:
+        - listitem [ref=e5]:
+          - link "Home" [ref=e6] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e7]:
+          - link "Demos" [ref=e8] [cursor=pointer]:
+            - /url: /demos
+        - listitem [ref=e9]:
+          - link "Blog" [ref=e16] [cursor=pointer]:
+            - /url: /writing
+        - listitem [ref=e17]:
+          - link "Art" [ref=e18] [cursor=pointer]:
+            - /url: /photography
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e22]: 02 · Photography
+      - heading "Light, texture, quiet" [level=1] [ref=e25]
+      - paragraph [ref=e26]: A small collection of tree studies — the same subject followed across a single day, from morning through dusk.
+    - region "Photographs" [ref=e28]:
+      - figure "Morning — 2023 01" [ref=e29]:
+        - img "Tree study 01" [ref=e31]
+        - generic [ref=e34]:
+          - generic [ref=e35]: Morning — 2023
+          - generic [ref=e36]: "01"
+      - figure "Midday — 2023 02" [ref=e37]:
+        - img "Tree study 02" [ref=e39]
+        - generic [ref=e42]:
+          - generic [ref=e43]: Midday — 2023
+          - generic [ref=e44]: "02"
+      - figure "Afternoon — 2023 03" [ref=e45]:
+        - img "Tree study 03" [ref=e47]
+        - generic [ref=e50]:
+          - generic [ref=e51]: Afternoon — 2023
+          - generic [ref=e52]: "03"
+      - figure "Dusk — 2023 04" [ref=e53]:
+        - img "Tree study 04" [ref=e55]
+        - generic [ref=e58]:
+          - generic [ref=e59]: Dusk — 2023
+          - generic [ref=e60]: "04"
+  - contentinfo [ref=e61]:
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]: Joy Chen
+          - paragraph [ref=e66]: AI × products × human interaction × real-world systems
+          - paragraph [ref=e67]: Palo Alto
+        - generic [ref=e69]:
+          - heading "Elsewhere" [level=2] [ref=e70]
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - link "GitHub" [ref=e73] [cursor=pointer]:
+                - /url: https://github.com/Joy-oyo
+                - text: GitHub
+                - generic [aria-hidden] [ref=e74]: ↗
+            - listitem [ref=e75]:
+              - link "LinkedIn" [ref=e76] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/joy-oyo
+                - text: LinkedIn
+                - generic [aria-hidden] [ref=e77]: ↗
+            - listitem [ref=e78]:
+              - link "X" [ref=e79] [cursor=pointer]:
+                - /url: https://x.com/Joy_oyo
+                - text: X
+                - generic [aria-hidden] [ref=e80]: ↗
+            - listitem [ref=e81]:
+              - link "Substack" [ref=e82] [cursor=pointer]:
+                - /url: https://joyoyo.substack.com
+                - text: Substack
+                - generic [aria-hidden] [ref=e83]: ↗
+      - link "Get in touch" [ref=e85] [cursor=pointer]:
+        - /url: /contact
+        - text: Get in touch
+        - generic [aria-hidden] [ref=e86]: →
+  - generic [ref=e87]: © 2026 · Joy Chen · Hedgehog and Fox
+  - alert [ref=e88]
+  - button "Enter the cyber world" [ref=e89] [cursor=pointer]:
+    - generic: Portal
