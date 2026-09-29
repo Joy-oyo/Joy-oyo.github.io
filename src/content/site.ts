@@ -20,7 +20,7 @@ export const site = {
     { label: "GitHub", href: "https://github.com/Joy-oyo" },
     {
       label: "LinkedIn",
-      href: "https://www.linkedin.com/in/jiayi-joy-chen/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BM5eSzQbyRy%2BE9M0fH4Ew5Q%3D%3D",
+      href: "https://www.linkedin.com/in/jiayi-joy-chen/",
     },
     { label: "X", href: "https://x.com/Joy_oyo" },
     { label: "Substack", href: "https://joyoyo.substack.com" },

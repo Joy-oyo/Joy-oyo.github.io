@@ -1,0 +1,480 @@
+/* ── Handscroll reader ──────────────────────────────────────────────
+   A silk-mounted paper scroll: the stave on the left stays put, the
+   rolled bulk rides the unrolling edge to the right. Colours come from
+   the scroll's own brocade (--silk) and roller knobs (--knob). */
+
+.wrap {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 76px clamp(12px, 3vw, 44px) clamp(18px, 3vh, 30px);
+  /* Clicks outside the scroll fall through to the scrim and close it. */
+  pointer-events: none;
+}
+
+.wrap > * { pointer-events: auto; }
+
+.back {
+  position: absolute;
+  top: 20px;
+  left: clamp(12px, 3vw, 44px);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 15px;
+  border: 1px solid rgba(239, 222, 192, 0.26);
+  border-radius: 999px;
+  background: rgba(21, 18, 15, 0.72);
+  color: #efdec0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition: background 0.25s ease;
+}
+
+.back:hover { background: rgba(239, 222, 192, 0.1); }
+.back:focus-visible { outline: 2px solid #dfba78; outline-offset: 3px; }
+
+.scroll {
+  --paper: #f1e7d0;
+  --ink: #22160e;
+  --muted: rgba(42, 28, 18, 0.58);
+  --seal: #a8322a;
+  position: relative;
+  display: flex;
+  flex: 0 1 560px;
+  width: min(1120px, 100%);
+  min-height: 260px;
+  padding: 12px 0;
+}
+
+/* The fixed stave the scroll starts from. */
+.stave {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: 18px;
+  margin-block: -8px;
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.2) 40%, rgba(0, 0, 0, 0.32)),
+    var(--silk);
+  box-shadow: 5px 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.stave::before,
+.stave::after,
+.roll::before,
+.roll::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.5) 45%, rgba(0, 0, 0, 0.3)), var(--knob);
+  transform: translateX(-50%);
+}
+
+.stave::before,
+.roll::before { bottom: 100%; border-radius: 4px 4px 1px 1px; }
+.stave::after,
+.roll::after { top: 100%; border-radius: 1px 1px 4px 4px; }
+
+.track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* Room for the roll to rest just past the paper's right edge. */
+  margin-right: 22px;
+}
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--silk);
+  box-shadow: 0 34px 70px -28px #000, 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Brocade borders above and below the paper, edged with a thin gold strip. */
+.edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.12) 0 2px, transparent 2px 7px),
+    var(--silk);
+}
+
+.edgeTop { top: 0; box-shadow: inset 0 -2px 0 rgba(216, 184, 120, 0.6); }
+.edgeBottom { bottom: 0; box-shadow: inset 0 2px 0 rgba(216, 184, 120, 0.6); }
+
+.paper {
+  position: absolute;
+  inset: 22px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(255, 251, 238, 0.7), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(120, 90, 50, 0.035) 0 1px, transparent 1px 6px),
+    var(--paper);
+  background-attachment: local;
+  color: var(--ink);
+  scrollbar-width: none;
+}
+
+.paper::-webkit-scrollbar { display: none; }
+
+.paper:focus { outline: none; }
+.paper:focus-visible { box-shadow: inset 0 0 0 2px rgba(168, 50, 42, 0.55); }
+
+.strip {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(28px, 4vw, 56px);
+  width: max-content;
+  height: 100%;
+  padding: 0 clamp(28px, 4vw, 56px);
+}
+
+/* ── Frontispiece ───────────────────────────────────────────────── */
+
+.frontis {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: clamp(20px, 3vw, 36px);
+  padding-block: 28px;
+}
+
+.bigGlyph {
+  color: rgba(34, 22, 14, 0.88);
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: clamp(5rem, 16vh, 8.5rem);
+  line-height: 1;
+}
+
+.frontisText {
+  width: min(17rem, 60vw);
+}
+
+.kicker {
+  color: var(--seal);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-top: 8px;
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+  line-height: 1.05;
+}
+
+.line {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.count {
+  margin-top: 18px;
+  color: var(--muted);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.seal {
+  align-self: flex-end;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 3px;
+  background: var(--seal);
+  color: #f6e7d2;
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: 19px;
+  line-height: 1;
+  box-shadow: inset 0 0 0 2px rgba(246, 231, 210, 0.3);
+  opacity: 0.9;
+  transform: rotate(-4deg);
+}
+
+.divider {
+  flex: none;
+  align-self: center;
+  width: 4px;
+  height: 58%;
+  border-inline: 1px solid rgba(60, 40, 20, 0.22);
+}
+
+.blank {
+  flex: none;
+  align-self: center;
+  width: 16rem;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.blank span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+  font-size: 1.3rem;
+  font-style: italic;
+}
+
+/* ── Passages ───────────────────────────────────────────────────── */
+
+.passage {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  width: clamp(250px, 28vw, 380px);
+  padding-block: 34px 26px;
+}
+
+.passageNo {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  color: rgba(42, 28, 18, 0.4);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.passage blockquote {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.passage blockquote:global(.display) {
+  font-size: clamp(1.1rem, 1.65vw, 1.42rem);
+  line-height: 1.45;
+}
+
+.passage figcaption {
+  margin-top: 18px;
+}
+
+.source {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.source::before { content: "— "; }
+
+.note {
+  display: block;
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(168, 50, 42, 0.4);
+  color: rgba(42, 28, 18, 0.72);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Chinese passages: columns top to bottom, reading right to left, with the
+   attribution trailing to the left of the text. */
+.passage[data-vertical] {
+  flex-direction: row-reverse;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 18px;
+  width: auto;
+}
+
+.passage[data-vertical] .passageNo { left: auto; right: 0; }
+
+.cjk {
+  height: 100%;
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: clamp(1.15rem, 2.6vh, 1.55rem);
+  line-height: 2;
+  letter-spacing: 0.16em;
+  writing-mode: vertical-rl;
+}
+
+.passage[data-vertical] figcaption {
+  align-self: flex-end;
+  margin-top: 0;
+  writing-mode: vertical-rl;
+}
+
+.passage[data-vertical] .source::before { content: "——"; }
+
+.passage[data-vertical] .note {
+  margin-top: 0;
+  margin-right: 8px;
+  padding-left: 0;
+  padding-top: 10px;
+  border-left: 0;
+  border-top: 2px solid rgba(168, 50, 42, 0.4);
+  font-style: normal;
+}
+
+/* ── Colophon ───────────────────────────────────────────────────── */
+
+.colophon {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  width: 13rem;
+}
+
+.sealSmall {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  border-radius: 3px;
+  background: var(--seal);
+  color: #f6e7d2;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  box-shadow: inset 0 0 0 2px rgba(246, 231, 210, 0.3);
+  opacity: 0.9;
+  transform: rotate(3deg);
+}
+
+.kept {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
+.rollUp {
+  margin-top: 8px;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid rgba(60, 40, 20, 0.3);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition: background 0.25s ease;
+}
+
+.rollUp:hover { background: rgba(60, 40, 20, 0.08); }
+.rollUp:focus-visible { outline: 2px solid var(--seal); outline-offset: 3px; }
+
+/* ── The rolled bulk and its ribbon ─────────────────────────────── */
+
+.roll {
+  position: absolute;
+  z-index: 2;
+  top: -8px;
+  bottom: -8px;
+  width: 22px;
+  margin-left: -4px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.52), rgba(255, 255, 255, 0.22) 36%, rgba(0, 0, 0, 0.14) 64%, rgba(0, 0, 0, 0.56)),
+    var(--silk);
+  box-shadow: -6px 0 14px rgba(0, 0, 0, 0.3), 8px 0 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.ribbon {
+  position: absolute;
+  top: 50%;
+  left: -3px;
+  right: -3px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #e0c080, #a67c3e);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Progress + hint under the scroll ───────────────────────────── */
+
+.under {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(420px, 80%);
+  margin-top: 18px;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.under[data-hidden] { opacity: 0; visibility: hidden; }
+
+.progress {
+  display: block;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(239, 222, 192, 0.16);
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: #d8b878;
+  transform-origin: left center;
+}
+
+.hint {
+  color: rgba(245, 240, 230, 0.62);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+.hint[data-hidden] { opacity: 0; visibility: hidden; }
+
+@media (max-width: 639px) {
+  .wrap { padding: 68px 8px 16px; }
+  .back { top: 16px; left: 12px; }
+  .scroll { flex-basis: 500px; }
+  .stave { width: 13px; }
+  .roll { width: 17px; }
+  .track { margin-right: 16px; }
+  .edge { height: 14px; }
+  .paper { inset: 14px 0; }
+  .strip { gap: 26px; padding: 0 24px; }
+  .frontis { flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; }
+  .bigGlyph { font-size: 4.2rem; }
+  .seal { position: absolute; top: 24px; right: 0; }
+  .passage { width: 240px; }
+  .passage[data-vertical] { width: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .under,
+  .hint,
+  .back,
+  .rollUp { transition: none; }
+}

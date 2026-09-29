@@ -1,7 +1,7 @@
 /**
- * The secret bookshelf's single source of truth. It is a revolving case
- * with two shelves: business / tool books on one face, humanities and
- * philosophy on the other.
+ * The secret bookshelf is a revolving case with two faces: business /
+ * tool books here, and a rack of idea scrolls on the humanities face
+ * (see `scrolls.ts`).
  */
 export type ShelfId = "business" | "humanities";
 
@@ -21,20 +21,6 @@ export type BusinessBook = {
   color: string;
   /** File name of the interactive reading guide in /reading-collection. */
   notes: string;
-};
-
-export type HumanitiesBook = {
-  id: string;
-  title: string;
-  author: string;
-  /** Optional kicker, e.g. "Philosophy" or "Novel". */
-  subject?: string;
-  /** Spine cloth color; a palette color is used when omitted. */
-  color?: string;
-  /** Your review. Separate paragraphs with a blank line. */
-  review: string;
-  /** Passages worth keeping, quoted as written. */
-  excerpts: { text: string; where?: string }[];
 };
 
 export const businessBooks: BusinessBook[] = [
@@ -108,21 +94,5 @@ export const businessBooks: BusinessBook[] = [
     notes: "influence-book-summary.html",
   },
 ];
-
-/**
- * Humanities, philosophy, and everything else. Add books here; each one
- * appears as a spine on the second face of the shelf and as a star in the
- * humanities half of the knowledge cosmos.
- *
- * {
- *   id: "meditations",
- *   title: "Meditations",
- *   author: "Marcus Aurelius",
- *   subject: "Philosophy",
- *   review: "First paragraph…\n\nSecond paragraph…",
- *   excerpts: [{ text: "…", where: "Book IV" }],
- * },
- */
-export const humanitiesBooks: HumanitiesBook[] = [];
 
 export const notesHref = (book: BusinessBook) => `/reading-collection/${book.notes}`;

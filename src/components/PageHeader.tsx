@@ -8,14 +8,22 @@ import { motion, useReducedMotion } from "framer-motion";
  * and a soft Klein bloom sits behind the title to give the glass something
  * to refract.
  */
+const TITLE_SIZES = {
+  lg: "text-5xl leading-[1.02] md:text-7xl lg:text-[5.5rem]",
+  md: "text-4xl leading-[1.08] md:text-5xl lg:text-6xl",
+} as const;
+
 export default function PageHeader({
   eyebrow,
   title,
   lede,
+  size = "lg",
 }: {
   eyebrow?: string;
   title: string;
   lede?: string;
+  /** Title scale — `lg` is the default subpage headline, `md` for longer titles. */
+  size?: keyof typeof TITLE_SIZES;
 }) {
   const ease = [0.22, 1, 0.36, 1] as const;
   const reduceMotion = useReducedMotion();
@@ -50,7 +58,7 @@ export default function PageHeader({
         initial={rise(18)}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.85, ease }}
-        className="display relative mt-6 text-5xl leading-[1.02] text-gradient md:text-7xl lg:text-[5.5rem]"
+        className={`display relative mt-6 text-gradient ${TITLE_SIZES[size]}`}
       >
         {title}
       </motion.h1>

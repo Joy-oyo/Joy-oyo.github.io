@@ -1,6 +1,23 @@
+/**
+ * Temporarily hides every post: the index shows "Coming soon" and post URLs
+ * redirect back to it. Flip to `false` to publish the blog again.
+ */
+export const BLOG_COMING_SOON = true;
+
+/** Topics the blog is organised under — also drives the section nav. */
+export const blogSections = [
+  { id: "tech", label: "Tech" },
+  { id: "humanities", label: "Humanities" },
+  { id: "intersection", label: "Tech × Humanities" },
+] as const;
+
+export type BlogSectionId = (typeof blogSections)[number]["id"];
+
 export type Writing = {
   slug: string;
   title: string;
+  /** Which topic section the post is listed under. */
+  section: BlogSectionId;
   date: string; // ISO yyyy-mm-dd
   excerpt: string;
   tags?: string[];
@@ -12,6 +29,7 @@ export const writings: Writing[] = [
   {
     slug: "the-person-i-thank-most-this-year-is-myself",
     title: "The person I thank most this year is myself",
+    section: "humanities",
     date: "2023-01-08",
     tags: ["literary"],
     excerpt:
@@ -47,6 +65,7 @@ export const writings: Writing[] = [
   {
     slug: "on-designing-playful-tools",
     title: "On designing playful tools",
+    section: "intersection",
     date: "2024-11-02",
     excerpt:
       "Why the best tools feel like toys — and how that changes how we design them.",
@@ -54,6 +73,7 @@ export const writings: Writing[] = [
   {
     slug: "three-js-and-restraint",
     title: "Three.js and restraint",
+    section: "tech",
     date: "2024-09-18",
     excerpt:
       "You don't need every particle in the world. Some notes on quieter 3D.",
@@ -61,6 +81,7 @@ export const writings: Writing[] = [
   {
     slug: "the-tree-series",
     title: "The tree series",
+    section: "humanities",
     date: "2024-07-01",
     excerpt:
       "A short note behind four photographs of the same tree across a day.",

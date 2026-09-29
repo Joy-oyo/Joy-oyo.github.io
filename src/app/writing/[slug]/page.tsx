@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
-import { writings } from "@/content/writing";
+import { BLOG_COMING_SOON, writings } from "@/content/writing";
 
 // Newest first — shared by metadata and prev/next navigation.
 const sorted = [...writings].sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -16,6 +16,7 @@ export function generateMetadata({
 }: {
   params: { slug: string };
 }): Metadata {
+  if (BLOG_COMING_SOON) return { title: "Blog — Joy Chen" };
   const post = writings.find((w) => w.slug === params.slug);
   return {
     title: post ? `${post.title} — Joy Chen` : "Blog — Joy Chen",
@@ -35,6 +36,8 @@ export default function WritingDetail({
 }: {
   params: { slug: string };
 }) {
+  if (BLOG_COMING_SOON) redirect("/writing");
+
   const index = sorted.findIndex((w) => w.slug === params.slug);
   const post = index === -1 ? undefined : sorted[index];
   if (!post) notFound();

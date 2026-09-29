@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import ComingSoon from "@/components/ComingSoon";
 import Footer from "@/components/Footer";
 import CopyBlock from "@/components/demos/CopyBlock";
 import FigureFrame from "@/components/demos/FigureFrame";
 import LabSection from "@/components/demos/LabSection";
 import SectionNav from "@/components/demos/SectionNav";
-import { demoLab, demoProjects, type DemoProject } from "@/content/demos";
+import { DEMOS_COMING_SOON, demoLab, demoProjects, type DemoProject } from "@/content/demos";
 
 export const metadata = {
   title: "Demo Lab",
@@ -27,6 +28,20 @@ const STATUS_RANK: Record<DemoProject["status"], number> = {
 };
 
 export default function DemosPage() {
+  if (DEMOS_COMING_SOON) {
+    return (
+      <>
+        <main id="main" className="relative pb-28 pt-32">
+          <Hero comingSoon />
+          <div className="mx-auto mt-14 max-w-4xl px-6">
+            <ComingSoon />
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <main id="main" className="relative pb-28 pt-32">
@@ -300,7 +315,8 @@ export default function DemosPage() {
 
 /* ── Hero ──────────────────────────────────────────────────────────────── */
 
-function Hero() {
+/** `comingSoon` keeps only eyebrow, title, and tagline — the rest describes live builds. */
+function Hero({ comingSoon = false }: { comingSoon?: boolean }) {
   return (
     <header className="relative mx-auto max-w-4xl px-6">
       {/* Ambient Klein bloom — decorative, gives the clay something to refract. */}
@@ -330,62 +346,66 @@ function Hero() {
         {demoLab.tagline}
       </p>
 
-      <div
-        className="animate-rise relative mt-8 inline-flex items-center gap-2.5 rounded-full border border-klein/50 bg-klein/20 px-4 py-1.5"
-        style={{ animationDelay: "220ms" }}
-      >
-        <span
-          aria-hidden
-          className="h-1.5 w-1.5 rounded-full bg-amber-300/90 shadow-[0_0_10px_rgba(252,211,77,0.8)]"
-        />
-        <span className="text-[10px] uppercase tracking-[0.24em] text-ink-50/85">
-          {demoLab.badge}
-        </span>
-      </div>
+      {!comingSoon && (
+        <>
+          <div
+            className="animate-rise relative mt-8 inline-flex items-center gap-2.5 rounded-full border border-klein/50 bg-klein/20 px-4 py-1.5"
+            style={{ animationDelay: "220ms" }}
+          >
+            <span
+              aria-hidden
+              className="h-1.5 w-1.5 rounded-full bg-amber-300/90 shadow-[0_0_10px_rgba(252,211,77,0.8)]"
+            />
+            <span className="text-[10px] uppercase tracking-[0.24em] text-ink-50/85">
+              {demoLab.badge}
+            </span>
+          </div>
 
-      <nav
-        aria-label="Project resources"
-        className="animate-rise relative mt-8"
-        style={{ animationDelay: "280ms" }}
-      >
-        <ul className="flex flex-wrap gap-2.5">
-          {demoLab.resources.map((resource) => {
-            const shared = `inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors ${focusRing}`;
-            const styles =
-              resource.kind === "primary"
-                ? "bg-ink-50 font-medium text-ink-950 hover:bg-white"
-                : "glass-chip glass-sheen text-ink-50/70 hover:text-ink-50";
+          <nav
+            aria-label="Project resources"
+            className="animate-rise relative mt-8"
+            style={{ animationDelay: "280ms" }}
+          >
+            <ul className="flex flex-wrap gap-2.5">
+              {demoLab.resources.map((resource) => {
+                const shared = `inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors ${focusRing}`;
+                const styles =
+                  resource.kind === "primary"
+                    ? "bg-ink-50 font-medium text-ink-950 hover:bg-white"
+                    : "glass-chip glass-sheen text-ink-50/70 hover:text-ink-50";
 
-            return (
-              <li key={resource.label}>
-                {resource.external ? (
-                  <a
-                    href={resource.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`${shared} ${styles}`}
-                  >
-                    {resource.label}
-                    <span aria-hidden>↗</span>
-                  </a>
-                ) : (
-                  <Link href={resource.href} className={`${shared} ${styles}`}>
-                    {resource.label}
-                    <span aria-hidden>→</span>
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+                return (
+                  <li key={resource.label}>
+                    {resource.external ? (
+                      <a
+                        href={resource.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`${shared} ${styles}`}
+                      >
+                        {resource.label}
+                        <span aria-hidden>↗</span>
+                      </a>
+                    ) : (
+                      <Link href={resource.href} className={`${shared} ${styles}`}>
+                        {resource.label}
+                        <span aria-hidden>→</span>
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-      <p
-        className="animate-rise relative mt-10 max-w-3xl border-l-2 border-klein/50 pl-5 text-sm leading-[1.75] text-ink-50/60"
-        style={{ animationDelay: "340ms" }}
-      >
-        {demoLab.positioning}
-      </p>
+          <p
+            className="animate-rise relative mt-10 max-w-3xl border-l-2 border-klein/50 pl-5 text-sm leading-[1.75] text-ink-50/60"
+            style={{ animationDelay: "340ms" }}
+          >
+            {demoLab.positioning}
+          </p>
+        </>
+      )}
     </header>
   );
 }

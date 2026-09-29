@@ -12,7 +12,8 @@ import {
   type MotionValue,
 } from "framer-motion";
 import YinYang from "@/components/YinYang";
-import type { BusinessBook, HumanitiesBook, ShelfId } from "@/content/books";
+import type { ShelfId } from "@/content/books";
+import type { OpenBook } from "./BookReader";
 import { BusinessFace, HumanitiesFace } from "./ShelfFaces";
 import styles from "./RevolvingShelf.module.css";
 
@@ -84,10 +85,7 @@ export default function RevolvingShelf({
 }: {
   /** True once the doors have finished opening. */
   ready: boolean;
-  onOpenBook: (
-    book: { shelf: "business"; book: BusinessBook } | { shelf: "humanities"; book: HumanitiesBook },
-    from: HTMLElement
-  ) => void;
+  onOpenBook: (open: OpenBook, from: HTMLElement) => void;
   onOpenCosmos: (from: HTMLElement) => void;
 }) {
   const reduceMotion = useReducedMotion();
@@ -297,7 +295,7 @@ export default function RevolvingShelf({
                     <BusinessFace active={face === "business"} onOpen={(book, el) => onOpenBook({ shelf: "business", book }, el)} />
                   )}
                   {panel.kind === "humanities" && (
-                    <HumanitiesFace active={face === "humanities"} onOpen={(book, el) => onOpenBook({ shelf: "humanities", book }, el)} />
+                    <HumanitiesFace active={face === "humanities"} onOpen={(scroll, el) => onOpenBook({ shelf: "humanities", scroll }, el)} />
                   )}
                 </ShelfPanel>
               ))}

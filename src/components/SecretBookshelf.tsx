@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ReturnGlyph } from "@/components/icons/ReturnGlyph";
 import RevolvingShelf from "@/components/bookshelf/RevolvingShelf";
 import BookReader, { type OpenBook } from "@/components/bookshelf/BookReader";
+import ScrollReader from "@/components/bookshelf/ScrollReader";
 import KnowledgeCosmos from "@/components/bookshelf/KnowledgeCosmos";
 import styles from "./SecretBookshelf.module.css";
 
@@ -76,6 +77,7 @@ export default function SecretBookshelf({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const cosmosLayerRef = useRef<HTMLDivElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const [phase, setPhase] = useState<Phase>("opening");
   const [reading, setReading] = useState<OpenBook | null>(null);
@@ -121,6 +123,12 @@ export default function SecretBookshelf({
     setCosmosDetail(null);
     restoreFocus();
   };
+
+  // A book opened from a star covers the cosmos; keep the cosmos out of reach.
+  // (Set on the element: React 18 drops a boolean `inert` prop.)
+  useEffect(() => {
+    if (cosmosLayerRef.current) cosmosLayerRef.current.inert = !!reading;
+  }, [reading, cosmos]);
 
   /** Escape backs out one layer at a time: book → star → cosmos → room. */
   const backOut = () => {
@@ -183,7 +191,7 @@ export default function SecretBookshelf({
         if (event.key !== "Tab") return;
         const layer = event.currentTarget.querySelector<HTMLElement>("[data-layer='top']") ?? event.currentTarget;
         const targets = Array.from(
-          layer.querySelectorAll<HTMLElement>("a[href], button:not(:disabled), iframe")
+          layer.querySelectorAll<HTMLElement>("a[href], button:not(:disabled), iframe, [tabindex]:not([tabindex='-1'])")
         ).filter((el) => !el.closest("[inert]"));
         const first = targets[0];
         const last = targets[targets.length - 1];
@@ -215,17 +223,8 @@ export default function SecretBookshelf({
         </BookshelfRoom>
 
         <AnimatePresence>
-          {reading && (
-            <div key="reader" data-layer="top" className={styles.layer}>
-              <div className={styles.scrim} onClick={closeBook} aria-hidden="true" />
-              <BookReader open={reading} onClose={closeBook} />
-            </div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
           {cosmos && (
-            <div key="cosmos" data-layer={reading ? undefined : "top"} className={styles.layer} inert={reading ? true : undefined}>
+            <div key="cosmos" ref={cosmosLayerRef} data-layer={reading ? undefined : "top"} className={styles.layer}>
               <KnowledgeCosmos
                 origin={cosmos}
                 detail={cosmosDetail}
@@ -236,6 +235,20 @@ export default function SecretBookshelf({
                   setReading(open);
                 }}
               />
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* After the cosmos, so a book opened from a star sits on top of it. */}
+        <AnimatePresence>
+          {reading && (
+            <div key="reader" data-layer="top" className={styles.layer}>
+              <div className={styles.scrim} onClick={closeBook} aria-hidden="true" />
+              {reading.shelf === "business" ? (
+                <BookReader book={reading.book} onClose={closeBook} />
+              ) : (
+                <ScrollReader scroll={reading.scroll} onClose={closeBook} />
+              )}
             </div>
           )}
         </AnimatePresence>

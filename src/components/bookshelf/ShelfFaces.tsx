@@ -1,11 +1,24 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
-import { businessBooks, humanitiesBooks, type BusinessBook, type HumanitiesBook } from "@/content/books";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { businessBooks, type BusinessBook } from "@/content/books";
+import { ideaScrolls, type IdeaScroll } from "@/content/scrolls";
+import { scrollLook } from "./scrollLook";
 import styles from "./RevolvingShelf.module.css";
 
-const SPINE_CLOTH = ["#5a2a27", "#23413a", "#2b3452", "#6b5327", "#3f2d45", "#4a3a2a"];
-const SPINE_HEIGHT = [0.94, 1, 0.86, 0.97, 0.9, 0.99, 0.88];
+/** Outlines of books still to come on the business shelf's upper row. */
+const GHOST_SPINES: { w: number; h: number; tilt?: number }[] = [
+  { w: 22, h: 0.78 },
+  { w: 17, h: 0.9 },
+  { w: 26, h: 0.72 },
+  { w: 19, h: 0.96 },
+  { w: 24, h: 0.84 },
+  { w: 16, h: 0.7 },
+  { w: 21, h: 0.88 },
+  { w: 27, h: 0.76 },
+  { w: 18, h: 0.92 },
+  { w: 23, h: 0.8, tilt: 8 },
+];
 
 /** The face turned away from the viewer must not take focus or clicks. */
 function useInert(active: boolean) {
@@ -34,6 +47,26 @@ export function BusinessFace({
           </div>
         </header>
 
+        {/* The space above the books is the next shelf — reserved, not empty. */}
+        <div className={styles.upcoming}>
+          <div className={styles.upcomingRow}>
+            <p className={styles.upcomingCard}>
+              <span className={styles.upcomingKicker}>No. {String(businessBooks.length + 1).padStart(2, "0")} onward</span>
+              <span className={`display ${styles.upcomingText}`}>More books on the way.</span>
+            </p>
+            <ol className={styles.ghosts} aria-hidden="true">
+              {GHOST_SPINES.map((g, i) => (
+                <li
+                  key={i}
+                  className={styles.ghost}
+                  style={{ "--w": `${g.w}px`, "--h": g.h, "--tilt": `${g.tilt ?? 0}deg`, "--i": i } as CSSProperties}
+                />
+              ))}
+              <li className={styles.bookend} />
+            </ol>
+          </div>
+        </div>
+
         <ol className={styles.covers} aria-label="Business books">
           {businessBooks.map((book) => (
             <li key={book.id} className={styles.coverSlot}>
@@ -61,16 +94,42 @@ export function BusinessFace({
   );
 }
 
+/**
+ * The rack fills whatever height the face gives it: as many rows of
+ * cubbies as fit — more once the scrolls outgrow them, and then it
+ * scrolls — with empty cubbies waiting for the next idea.
+ */
+function useRackCells(count: number) {
+  const rackRef = useRef<HTMLOListElement>(null);
+  const [cells, setCells] = useState(count);
+  useEffect(() => {
+    const rack = rackRef.current;
+    if (!rack) return;
+    const measure = () => {
+      const cs = getComputedStyle(rack);
+      const cols = Math.max(1, cs.gridTemplateColumns.split(" ").filter(Boolean).length);
+      const row = parseFloat(cs.getPropertyValue("--row")) || 104;
+      const gap = parseFloat(cs.rowGap) || 0;
+      const inner = rack.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const fit = Math.max(1, Math.floor((inner + gap) / (row + gap)));
+      setCells(Math.max(fit, Math.ceil(count / cols)) * cols);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(rack);
+    return () => observer.disconnect();
+  }, [count]);
+  return [rackRef, Math.max(cells, count)] as const;
+}
+
 export function HumanitiesFace({
   active,
   onOpen,
 }: {
   active: boolean;
-  onOpen: (book: HumanitiesBook, from: HTMLElement) => void;
+  onOpen: (scroll: IdeaScroll, from: HTMLElement) => void;
 }) {
   const ref = useInert(active);
-  const half = Math.ceil(humanitiesBooks.length / 2);
-  const rows = humanitiesBooks.length > 8 ? [humanitiesBooks.slice(0, half), humanitiesBooks.slice(half)] : [humanitiesBooks];
+  const [rackRef, cells] = useRackCells(ideaScrolls.length);
 
   return (
     <div ref={ref} className={`${styles.carcass} ${styles.humanities}`}>
@@ -85,46 +144,59 @@ export function HumanitiesFace({
           </div>
         </header>
 
-        {humanitiesBooks.length === 0 ? (
-          <div className={styles.emptyLibrary}>
-            <div className={styles.plank} aria-hidden="true" />
+        <div className={styles.rackArea}>
+          <ol ref={rackRef} className={styles.rack} aria-label="Idea scrolls">
+            {Array.from({ length: cells }, (_, i) => {
+              const scroll = ideaScrolls[i];
+              if (!scroll) return <li key={`empty-${i}`} className={styles.cubby} aria-hidden="true" />;
+              const look = scrollLook(scroll, i);
+              const n = scroll.passages.length;
+              return (
+                <li key={scroll.id} className={styles.cubby}>
+                  {/* The whole cubby is the hit target; the roll inside is decoration. */}
+                  <button
+                    type="button"
+                    className={styles.scrollBtn}
+                    onClick={(e) => onOpen(scroll, e.currentTarget)}
+                    aria-label={`${scroll.title} — unroll the scroll (${n} ${n === 1 ? "passage" : "passages"})`}
+                    title={scroll.title}
+                    style={
+                      {
+                        "--silk": look.silk,
+                        "--knob": look.knob,
+                        "--len": look.length / 100,
+                        "--left": look.left / 100,
+                        "--thick": `${look.thick}px`,
+                      } as CSSProperties
+                    }
+                  >
+                    <span className={styles.cubbyNo} aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {/* Full title + one-liner surface in the dark of the cubby on
+                        hover — the slip on the roll may have to truncate. */}
+                    <span className={styles.cubbyCaption} aria-hidden="true">
+                      <span className={`display ${styles.cubbyTitle}`}>{scroll.title}</span>
+                      {scroll.line && <span className={styles.cubbyLine}>{scroll.line}</span>}
+                    </span>
+                    <span className={styles.rolled} aria-hidden="true">
+                      <span className={`display ${styles.slip}`}>{scroll.title}</span>
+                      <span className={styles.tie}>
+                        <span className={styles.tag}>{scroll.glyph ?? scroll.title.charAt(0)}</span>
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+          {ideaScrolls.length === 0 && (
             <p className={styles.plaque}>
-              <span className="display">Being shelved.</span>
-              Reviews and excerpts arrive with each new book.
+              <span className="display">The rack is ready.</span>
+              Scrolls arrive with each new idea.
             </p>
-            <div className={styles.plank} aria-hidden="true" />
-          </div>
-        ) : (
-          <div className={styles.spineRows}>
-            {rows.map((row, r) => (
-              <ol key={r} className={styles.spines} aria-label={r === 0 ? "Humanities books" : "More humanities books"}>
-                {row.map((book, i) => {
-                  const index = r * half + i;
-                  return (
-                    <li key={book.id}>
-                      <button
-                        type="button"
-                        className={styles.spine}
-                        style={
-                          {
-                            "--cloth": book.color ?? SPINE_CLOTH[index % SPINE_CLOTH.length],
-                            "--h": SPINE_HEIGHT[index % SPINE_HEIGHT.length],
-                            "--w": `${Math.min(58, 34 + book.title.length * 0.7)}px`,
-                          } as CSSProperties
-                        }
-                        onClick={(e) => onOpen(book, e.currentTarget)}
-                        aria-label={`${book.title} by ${book.author} — read review and excerpts`}
-                      >
-                        <span className={`display ${styles.spineTitle}`}>{book.title}</span>
-                        <span className={styles.spineAuthor}>{book.author.split(" ").slice(-1)[0]}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ol>
-            ))}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

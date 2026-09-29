@@ -83,16 +83,6 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
                 />
                 {site.location}
               </p>
-              <Link
-                href="/contact"
-                className={`glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] uppercase tracking-[0.28em] transition-colors ${c(
-                  "text-on2 hover:text-on",
-                  "text-ink-50/75 hover:text-ink-50"
-                )} ${focusRing}`}
-              >
-                Get in touch
-                <span aria-hidden>→</span>
-              </Link>
             </div>
           </div>
 
@@ -120,6 +110,16 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
                 </li>
               ))}
             </ul>
+            <Link
+              href="/contact"
+              className={`glass-chip glass-sheen mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[10px] uppercase tracking-[0.28em] transition-colors ${c(
+                "text-on2 hover:text-on",
+                "text-ink-50/75 hover:text-ink-50"
+              )} ${focusRing}`}
+            >
+              Get in touch
+              <span aria-hidden>→</span>
+            </Link>
           </div>
         </div>
       </div>

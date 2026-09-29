@@ -3,9 +3,10 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, X } from "lucide-react";
-import { businessBooks, humanitiesBooks } from "@/content/books";
+import { businessBooks } from "@/content/books";
 import { businessIdeas, knowledgeSystems } from "@/content/knowledge";
-import type { OpenBook } from "./BookReader";
+import { ideaScrolls } from "@/content/scrolls";
+import { openTitle, type OpenBook } from "./BookReader";
 import styles from "./KnowledgeCosmos.module.css";
 
 // Positions are percentages of the cosmos. Business fills the left lobe,
@@ -51,15 +52,15 @@ const nodes: Node[] = [
     at: BUSINESS_STAR_AT[i % BUSINESS_STAR_AT.length],
     open: { shelf: "business", book },
   })),
-  ...humanitiesBooks.map((book, i): Node => ({
-    id: `humanities-${book.id}`,
+  ...ideaScrolls.map((scroll, i): Node => ({
+    id: `humanities-${scroll.id}`,
     kind: "book",
     at: HUMANITIES_STAR_AT[i % HUMANITIES_STAR_AT.length],
-    open: { shelf: "humanities", book },
+    open: { shelf: "humanities", scroll },
   })),
 ];
 
-const humanitiesIdeas = Array.from(new Set(humanitiesBooks.map((b) => b.subject).filter((s): s is string => !!s))).slice(0, 6);
+const humanitiesIdeas = ideaScrolls.map((s) => s.title).slice(0, 6);
 
 export default function KnowledgeCosmos({
   origin,
@@ -165,7 +166,7 @@ export default function KnowledgeCosmos({
               ) : (
                 <>
                   <span className={styles.starDot} aria-hidden="true" />
-                  <span className={styles.starLabel}>{node.open.book.title}</span>
+                  <span className={styles.starLabel}>{openTitle(node.open)}</span>
                 </>
               )}
             </button>
@@ -173,10 +174,10 @@ export default function KnowledgeCosmos({
         ))}
       </ul>
 
-      {humanitiesBooks.length === 0 && (
+      {ideaScrolls.length === 0 && (
         <p className={styles.waiting}>
           <span className="display">This half is still forming.</span>
-          Stars appear here as the humanities shelf fills.
+          Stars appear here as the scroll rack fills.
         </p>
       )}
 
@@ -185,7 +186,7 @@ export default function KnowledgeCosmos({
           key={active.id}
           className={styles.detail}
           data-side={detailSide}
-          aria-label={active.kind === "system" ? active.system.title : active.open.book.title}
+          aria-label={active.kind === "system" ? active.system.title : openTitle(active.open)}
           initial={{ opacity: 0, y: reduceMotion ? 0 : 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -209,20 +210,26 @@ export default function KnowledgeCosmos({
               </ol>
               <p className={styles.detailNote}>{active.system.note}</p>
             </>
-          ) : (
+          ) : active.open.shelf === "business" ? (
             <>
-              <p className={styles.kicker}>
-                {active.open.shelf === "business" ? `Business shelf · ${active.open.book.no}` : "Humanities shelf"}
-              </p>
+              <p className={styles.kicker}>Business shelf · {active.open.book.no}</p>
               <h4 className={`display ${styles.detailTitle}`}>{active.open.book.title}</h4>
               <p className={styles.detailAuthor}>{active.open.book.author}</p>
-              <p className={styles.detailBody}>
-                {active.open.shelf === "business"
-                  ? active.open.book.description
-                  : active.open.book.excerpts[0]?.text ?? active.open.book.review.split(/\n\s*\n/)[0]}
-              </p>
+              <p className={styles.detailBody}>{active.open.book.description}</p>
               <button type="button" className={styles.openBook} onClick={() => onOpenBook(active.open)}>
                 Open the book
+              </button>
+            </>
+          ) : (
+            <>
+              <p className={styles.kicker}>Humanities · scroll</p>
+              <h4 className={`display ${styles.detailTitle}`}>{active.open.scroll.title}</h4>
+              {active.open.scroll.line && <p className={styles.detailAuthor}>{active.open.scroll.line}</p>}
+              {active.open.scroll.passages[0] && (
+                <p className={styles.detailBody}>{active.open.scroll.passages[0].text}</p>
+              )}
+              <button type="button" className={styles.openBook} onClick={() => onOpenBook(active.open)}>
+                Unroll the scroll
               </button>
             </>
           )}

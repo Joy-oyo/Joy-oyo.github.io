@@ -1,3 +1,9 @@
+/**
+ * Temporarily hides the Demo Lab: /demos shows only the hero and "Coming soon".
+ * All content below stays as-is. Flip to `false` to publish the page again.
+ */
+export const DEMOS_COMING_SOON = true;
+
 export type DemoProject = {
   id: string;
   title: string;

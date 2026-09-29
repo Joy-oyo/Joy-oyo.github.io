@@ -10,8 +10,28 @@ type Section = { id: string; label: string };
  * Two presentations from one source of truth: a fixed rail on very wide
  * screens (where there's dead margin to spend) and a horizontally scrollable
  * sticky strip everywhere else, offset to clear the fixed site header.
+ *
+ * Pages with a different column width pass their own `width` so the strip
+ * lines up with their content. Wider columns leave less margin, so the rail
+ * only appears at a wider breakpoint — once it clears the content (~260px
+ * rail vs. the column's left gutter). The wide layout keeps its strip at
+ * every size, so the rail joins it rather than replacing it.
  */
-export default function SectionNav({ sections }: { sections: Section[] }) {
+const LAYOUTS = {
+  "max-w-4xl": { rail: "2xl:block", strip: "2xl:hidden" },
+  "max-w-6xl": { rail: "min-[1700px]:block", strip: "" },
+} as const;
+
+export type SectionNavWidth = keyof typeof LAYOUTS;
+
+export default function SectionNav({
+  sections,
+  width = "max-w-4xl",
+}: {
+  sections: Section[];
+  width?: SectionNavWidth;
+}) {
+  const layout = LAYOUTS[width];
   const [active, setActive] = useState<string>(sections[0]?.id ?? "");
 
   useEffect(() => {
@@ -47,7 +67,7 @@ export default function SectionNav({ sections }: { sections: Section[] }) {
       {/* Wide screens — fixed rail in the left margin. */}
       <nav
         aria-label="Sections"
-        className="pointer-events-none fixed left-6 top-1/2 z-30 hidden -translate-y-1/2 2xl:block"
+        className={`pointer-events-none fixed left-6 top-1/2 z-30 hidden -translate-y-1/2 ${layout.rail}`}
       >
         <ul className="pointer-events-auto flex flex-col gap-1">
           {sections.map((section, i) => {
@@ -79,8 +99,10 @@ export default function SectionNav({ sections }: { sections: Section[] }) {
       </nav>
 
       {/* Everything else — sticky strip beneath the site header. */}
-      <div className="sticky top-[64px] z-30 mt-14 border-y border-ink-50/10 bg-ink-950/92 backdrop-blur-sm 2xl:hidden">
-        <nav aria-label="Sections" className="mx-auto max-w-4xl px-6">
+      <div
+        className={`sticky top-[64px] z-30 mt-14 border-y border-ink-50/10 bg-ink-950/92 backdrop-blur-sm ${layout.strip}`}
+      >
+        <nav aria-label="Sections" className={`mx-auto ${width} px-6`}>
           <ul className="no-scrollbar flex gap-1 overflow-x-auto py-2">
             {sections.map((section) => {
               const isActive = active === section.id;
