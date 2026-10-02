@@ -15,19 +15,22 @@ const ROLL_UP = { duration: 0.6, ease: [0.65, 0, 0.35, 1] as const };
  * An idea scroll taken off the rack: a handscroll that stands up, unties,
  * and unrolls to the right. It reads sideways, section by section —
  * frontispiece, passages, colophon — with the wheel, trackpad, touch, or
- * arrow keys. Chinese passages are set vertically, right to left.
+ * arrow keys. On phones it becomes a compact vertical reader; desktop
+ * Chinese passages are set vertically, right to left.
  */
 export default function ScrollReader({ scroll, onClose }: { scroll: IdeaScroll; onClose: () => void }) {
   const reduceMotion = useReducedMotion();
   const paperRef = useRef<HTMLDivElement>(null);
+  const [mobile, setMobile] = useState(false);
   const [overflowing, setOverflowing] = useState(false);
   const [started, setStarted] = useState(false);
-  const { scrollXProgress } = useScroll({ container: paperRef });
+  const { scrollXProgress, scrollYProgress } = useScroll({ container: paperRef });
+  const progress = mobile ? scrollYProgress : scrollXProgress;
   const index = ideaScrolls.findIndex((s) => s.id === scroll.id);
   const no = String(index + 1).padStart(2, "0");
   const look = scrollLook(scroll, index);
 
-  useMotionValueEvent(scrollXProgress, "change", (p) => {
+  useMotionValueEvent(progress, "change", (p) => {
     if (p > 0.02) setStarted(true);
   });
 
@@ -35,19 +38,31 @@ export default function ScrollReader({ scroll, onClose }: { scroll: IdeaScroll; 
     paperRef.current?.focus({ preventScroll: true });
   }, []);
 
-  // Only offer the sideways hint and progress when there is more to read.
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => {
+      setMobile(query.matches);
+      setStarted(false);
+    };
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  // Measure overflow along the reading direction used by the current layout.
   useEffect(() => {
     const el = paperRef.current;
     if (!el) return;
-    const measure = () => setOverflowing(el.scrollWidth - el.clientWidth > 4);
+    const measure = () => setOverflowing(mobile ? el.scrollHeight - el.clientHeight > 4 : el.scrollWidth - el.clientWidth > 4);
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     if (el.firstElementChild) observer.observe(el.firstElementChild);
     return () => observer.disconnect();
-  }, []);
+  }, [mobile]);
 
   // A handscroll reads sideways: vertical wheel movement unrolls it.
   useEffect(() => {
+    if (mobile) return;
     const el = paperRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
@@ -61,18 +76,20 @@ export default function ScrollReader({ scroll, onClose }: { scroll: IdeaScroll; 
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [mobile]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
-    const page = el.clientWidth * 0.8;
+    if (e.target !== el) return;
+    const page = (mobile ? el.clientHeight : el.clientWidth) * 0.8;
+    const axis = mobile ? "top" : "left";
     const by: Record<string, number> = { ArrowDown: page, PageDown: page, " ": page, ArrowUp: -page, PageUp: -page };
     if (e.key in by) {
       e.preventDefault();
-      el.scrollBy({ left: e.shiftKey && e.key === " " ? -page : by[e.key], behavior: reduceMotion ? "auto" : "smooth" });
+      el.scrollBy({ [axis]: e.shiftKey && e.key === " " ? -page : by[e.key], behavior: reduceMotion ? "auto" : "smooth" });
     } else if (e.key === "Home" || e.key === "End") {
       e.preventDefault();
-      el.scrollTo({ left: e.key === "Home" ? 0 : el.scrollWidth, behavior: reduceMotion ? "auto" : "smooth" });
+      el.scrollTo({ [axis]: e.key === "Home" ? 0 : mobile ? el.scrollHeight : el.scrollWidth, behavior: reduceMotion ? "auto" : "smooth" });
     }
   };
 
@@ -195,10 +212,10 @@ export default function ScrollReader({ scroll, onClose }: { scroll: IdeaScroll; 
 
       <div className={styles.under} data-hidden={!overflowing || undefined}>
         <span className={styles.progress} aria-hidden="true">
-          <motion.span style={{ scaleX: scrollXProgress }} />
+          <motion.span style={{ scaleX: progress }} />
         </span>
         <p className={styles.hint} data-hidden={started || undefined}>
-          Scroll sideways to keep unrolling →
+          {mobile ? "Scroll down to keep reading ↓" : "Scroll sideways to keep unrolling →"}
         </p>
       </div>
     </div>

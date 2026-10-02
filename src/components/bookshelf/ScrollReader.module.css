@@ -432,21 +432,46 @@
 
 .hint[data-hidden] { opacity: 0; visibility: hidden; }
 
-@media (max-width: 639px) {
-  .wrap { padding: 68px 8px 16px; }
-  .back { top: 16px; left: 12px; }
-  .scroll { flex-basis: 500px; }
+@media (max-width: 767px) {
+  .wrap {
+    justify-content: flex-start;
+    padding: calc(max(16px, env(safe-area-inset-top)) + 56px) max(8px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+  .back { top: max(16px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); min-height: 44px; }
+  .scroll { flex: 1 1 0; min-height: 0; }
   .stave { width: 13px; }
   .roll { width: 17px; }
   .track { margin-right: 16px; }
   .edge { height: 14px; }
-  .paper { inset: 14px 0; }
-  .strip { gap: 26px; padding: 0 24px; }
-  .frontis { flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; }
-  .bigGlyph { font-size: 4.2rem; }
-  .seal { position: absolute; top: 24px; right: 0; }
-  .passage { width: 240px; }
-  .passage[data-vertical] { width: auto; }
+  .paper { inset: 14px 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+  .strip { flex-direction: column; gap: 0; width: 100%; height: auto; padding: 18px clamp(16px, 5vw, 28px); }
+  .frontis { flex-direction: row; align-items: center; gap: 14px; padding: 0 0 18px; }
+  .frontisText { width: auto; min-width: 0; }
+  .bigGlyph { font-size: 2.5rem; }
+  .seal,
+  .divider { display: none; }
+  .passage,
+  .passage[data-vertical] {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    width: 100%;
+    padding: 20px 0;
+    border-top: 1px solid rgba(60, 40, 20, 0.15);
+  }
+  .passageNo { position: static; margin-bottom: 10px; }
+  .cjk { height: auto; writing-mode: horizontal-tb; font-size: 1.15rem; line-height: 1.85; letter-spacing: 0.06em; }
+  .passage blockquote { overflow-wrap: anywhere; }
+  .passage figcaption,
+  .passage[data-vertical] figcaption { align-self: stretch; margin-top: 12px; writing-mode: horizontal-tb; }
+  .passage[data-vertical] .source::before { content: "— "; }
+  .passage[data-vertical] .note { margin: 8px 0 0; padding: 0 0 0 10px; border-top: 0; border-left: 2px solid rgba(168, 50, 42, 0.4); }
+  .blank { width: 100%; padding: 20px 0; }
+  .colophon { width: 100%; gap: 6px; padding-top: 20px; border-top: 1px solid rgba(60, 40, 20, 0.15); }
+  .rollUp { min-height: 44px; }
+  .under { width: min(420px, 90%); margin-top: 10px; gap: 6px; }
+  .hint { font-size: 9px; letter-spacing: 0.12em; }
 }
 
 @media (prefers-reduced-motion: reduce) {

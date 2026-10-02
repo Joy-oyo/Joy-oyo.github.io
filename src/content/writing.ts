@@ -1,9 +1,3 @@
-/**
- * Temporarily hides every post: the index shows "Coming soon" and post URLs
- * redirect back to it. Flip to `false` to publish the blog again.
- */
-export const BLOG_COMING_SOON = true;
-
 /** Topics the blog is organised under — also drives the section nav. */
 export const blogSections = [
   { id: "tech", label: "Tech" },
@@ -14,6 +8,10 @@ export const blogSections = [
 export type BlogSectionId = (typeof blogSections)[number]["id"];
 
 export type Writing = {
+  /** Only explicitly published entries appear on the map or have public pages. */
+  published?: boolean;
+  place?: string;
+  author?: string;
   slug: string;
   title: string;
   /** Which topic section the post is listed under. */
@@ -26,6 +24,27 @@ export type Writing = {
 };
 
 export const writings: Writing[] = [
+  {
+    published: true,
+    slug: "somewhere-in-between",
+    title: "Somewhere in between",
+    section: "intersection",
+    date: "2026-09-30",
+    place: "Bay Area",
+    author: "树明子",
+    tags: ["Free writing", "Becoming"],
+    excerpt: "Two years in the Bay, an idealist learning to be grounded, and a small decision to start writing before I have it all figured out.",
+    body: [
+      "When I first moved here, I remember how much I hated it—especially when people talked about this being the only place to be if you were in tech. I wouldn’t say I had a particularly techie personality. But it’s been two years since I moved to the Bay, and so much about me has become Bay-arealized. Which is good, maybe. I’ve become a more pragmatic person.",
+      "I always used to describe myself on the first page of my diaries:",
+      "[著] 树明子 · 一个信奉现实主义的理想主义者",
+      "Depending on the stage of life, I sometimes flip it to: 一个信奉理想主义的现实主义者.",
+      "Being here did make me more grounded. Otherwise, I might have become someone who suffered from the unbearable lightness of life. I’m glad I’m who I am—still a work in progress. It’s been a process of self-exploration. Maybe, at some point, it was all shaped by whatever the environment brought me. But my little ego says I made those decisions myself.",
+      "There’s been a period when I’ve been afraid to speak up, to talk about things, or to share my ideas. I thought I wasn’t there yet because I hadn’t learned enough to have something to say.",
+      "Recently, I’ve been thinking that writing things down along the way of learning is good, too: a way of documenting evolving ideas and how they shape me. So I’ve decided to start doing more free writing.",
+      "I always say I’m not tech enough, and I’m not humanities enough. But at the same time, that means I’m at the intersection of tech and humanities. I can also say I know a little bit of tech and have a little bit of humanities.",
+    ],
+  },
   {
     slug: "the-person-i-thank-most-this-year-is-myself",
     title: "The person I thank most this year is myself",
@@ -87,3 +106,7 @@ export const writings: Writing[] = [
       "A short note behind four photographs of the same tree across a day.",
   },
 ];
+
+export const publishedWritings = writings
+  .filter((post) => post.published)
+  .sort((a, b) => b.date.localeCompare(a.date));

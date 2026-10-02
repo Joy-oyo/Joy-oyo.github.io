@@ -66,8 +66,8 @@ export default function Portal() {
   const router = useRouter();
   const [hovered, setHovered] = useState(false);
 
-  // Hide the portal on the cyber page itself.
-  if (pathname?.startsWith("/cyber")) return null;
+  // Keep the flight map and reading pages clear of the floating overlay.
+  if (pathname?.startsWith("/cyber") || pathname === "/writing" || pathname?.startsWith("/writing/")) return null;
 
   const enter = () => {
     // Light flash + navigate
