@@ -47,13 +47,15 @@ export default function Footer({ polarity }: { polarity?: "yang" | "yin" } = {})
                 </li>
               ))}
             </ul>
-            <a
-              href="/contact"
-              className={`glass-chip glass-sheen mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.28em] transition-colors text-on2 hover:text-on ${focusRing}`}
-            >
-              Get in touch
-              <span aria-hidden>→</span>
-            </a>
+            <div className="mt-9 flex justify-center">
+              <a
+                href="/contact"
+                className={`glass-chip glass-sheen inline-flex items-center gap-2 rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.28em] transition-colors text-on2 hover:text-on ${focusRing}`}
+              >
+                Get in touch
+                <span aria-hidden>→</span>
+              </a>
+            </div>
           </div>
         </div>
       </footer>

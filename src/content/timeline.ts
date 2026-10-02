@@ -10,7 +10,7 @@ export const workExperience = [
     current: true,
   },
   {
-    org: "Bridger",
+    org: "Phier",
     role: "Founder",
     period: "2022 — 2024",
     location: "Remote · Chicago, IL",
@@ -55,7 +55,7 @@ export const timeline: TimelineItem[] = [
     kind: "work",
     period: "2022 — 2024",
     role: "Founder",
-    org: "Bridger",
+    org: "Phier",
     location: "Remote · Chicago, IL",
     note: "Startup — professional consulting platform connecting mentors and mentees",
     highlights: [
@@ -149,7 +149,7 @@ export const industryTrack: TrackItem[] = [
     ],
   },
   {
-    title: "Bridger",
+    title: "Phier",
     subtitle: "Founder",
     location: "Remote · Chicago, IL",
     note: "Startup — a professional consulting platform where people find mentors and mentees.",

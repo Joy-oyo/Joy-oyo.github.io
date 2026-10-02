@@ -15,10 +15,10 @@ export default function ContactPage() {
         <PageHeader
           eyebrow="05 · Contact"
           title="Say hi"
-          lede="Drop a note, subscribe for the occasional update, or find me elsewhere."
+          lede="Have an idea, a question, or something you’d like to work on together? Tell me about yourself and let’s talk."
         />
 
-        <section aria-label="Subscribe" className="mx-auto mt-20 max-w-xl px-6">
+        <section aria-label="Contact questionnaire" className="mx-auto mt-10 max-w-xl px-4 sm:mt-16 sm:px-6">
           <ContactForm />
         </section>
 

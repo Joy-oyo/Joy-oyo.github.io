@@ -91,6 +91,14 @@ a { color: inherit; text-decoration: none; }
   will-change: transform;
 }
 
+/* The grain sits above the navigation and shifts in discrete steps. Keep it
+   out of the mobile menu, including its entrance and exit transitions, so
+   the fixed overlay does not keep flickering after it has settled. */
+.grain:has(#mobile-menu)::before {
+  display: none;
+  animation: none;
+}
+
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
   10%      { transform: translate(-5%, -5%); }

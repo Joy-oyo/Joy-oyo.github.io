@@ -1,228 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-
-type Stage = "idle" | "sending" | "code" | "verifying" | "done" | "error";
+import { CONTACT_EMAIL, contactMailto, contactLimits, validateContact, type ContactErrors } from "@/lib/contact";
 
 export default function ContactForm() {
-  const [stage, setStage] = useState<Stage>("idle");
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
-  const reduceMotion = useReducedMotion();
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const isError = Object.keys(errors).length > 0;
 
-  // "error" keeps whichever step the user was on, so we track that separately.
-  const [step, setStep] = useState<"email" | "code">("email");
-
-  const busy = stage === "sending" || stage === "verifying";
-  const isError = stage === "error";
-
-  async function sendCode(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email || busy) return;
-    setStage("sending");
-    setMessage("");
-    try {
-      const res = await fetch("/api/send-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send code");
-      setMessage("Verification code sent — check your inbox.");
-      setStep("code");
-      setStage("code");
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Something went wrong");
-      setStage("error");
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const { fields, errors: invalid } = validateContact(Object.fromEntries(new FormData(form)));
+    setErrors(invalid);
+    if (Object.keys(invalid).length) {
+      setMessage("Please check the highlighted fields.");
+      form.querySelector<HTMLElement>(`[name="${Object.keys(invalid)[0]}"]`)?.focus();
+      return;
     }
+    // Open a draft in the visitor's configured mail app; only they can send it.
+    window.location.href = contactMailto(fields);
+    setMessage("Finish sending the draft in your email app. Your answers are still here if you need them.");
   }
 
-  async function verifyCode(e: React.FormEvent) {
-    e.preventDefault();
-    if (code.length !== 6 || busy) return;
-    setStage("verifying");
-    setMessage("");
-    try {
-      const res = await fetch("/api/verify-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Verification failed");
-      setMessage("You're in. Thanks for subscribing!");
-      setStage("done");
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Something went wrong");
-      setStage("error");
-    }
-  }
-
-  function restart() {
-    setStep("email");
-    setStage("idle");
-    setCode("");
-    setMessage("");
-  }
-
-  const fieldClass =
-    "glass-chip w-full rounded-xl px-4 py-3.5 text-ink-50 outline-none transition-colors placeholder:text-ink-50/30 focus-visible:border-klein focus-visible:ring-2 focus-visible:ring-klein/60";
-  const submitClass =
-    "mt-2 w-full rounded-full bg-ink-50 py-3.5 text-xs font-medium uppercase tracking-[0.3em] text-ink-950 transition-all hover:bg-ink-100 disabled:cursor-not-allowed disabled:opacity-45 outline-none focus-visible:ring-2 focus-visible:ring-klein focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
-
-  const transition = reduceMotion ? { duration: 0.15 } : { duration: 0.35 };
-  const enter = reduceMotion
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        initial: { opacity: 0, y: 10 },
-        animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -10 },
-      };
+  const fieldClass = "glass-chip w-full min-w-0 rounded-xl px-4 py-3.5 text-base text-ink-50 outline-none placeholder:text-ink-50/35 focus-visible:border-klein focus-visible:ring-2 focus-visible:ring-klein/60 disabled:opacity-60";
+  const labelClass = "mb-2 block text-sm text-ink-50/85";
+  const fieldProps = (name: keyof typeof contactLimits) => ({
+    id: `contact-${name}`,
+    name,
+    maxLength: contactLimits[name],
+    required: name !== "linkedin",
+    "aria-invalid": errors[name] ? true : undefined,
+    "aria-describedby": errors[name] ? `contact-${name}-error` : undefined,
+    className: fieldClass,
+  });
+  const fieldError = (name: keyof typeof contactLimits) => errors[name] && (
+    <p id={`contact-${name}-error`} className="mt-2 text-sm text-rose-300">{errors[name]}</p>
+  );
 
   return (
-    <div className="glass-strong glass-sheen relative isolate overflow-hidden rounded-[2rem] p-8 md:p-10">
-      {/* Step indicator — tells people how long this will take. */}
-      {stage !== "done" && (
-        <div className="mb-7 flex items-center gap-3" aria-hidden>
-          {(["email", "code"] as const).map((s, i) => {
-            const active = step === s;
-            const complete = step === "code" && s === "email";
-            return (
-              <div key={s} className="flex flex-1 items-center gap-3">
-                <span
-                  className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
-                    active || complete ? "bg-klein" : "bg-ink-50/12"
-                  }`}
-                />
-                <span
-                  className={`font-mono text-[10px] ${
-                    active ? "text-ink-50/70" : "text-ink-50/30"
-                  }`}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+    <div className="glass-strong glass-sheen relative isolate overflow-hidden rounded-[2rem] p-5 sm:p-8 md:p-10">
+      <form onSubmit={submit} action={`mailto:${CONTACT_EMAIL}`} method="post" encType="text/plain" noValidate>
+        <h2 className="display text-2xl">Let’s connect.</h2>
+        <p className="mb-7 mt-3 text-sm leading-relaxed text-ink-50/60">Tell me a little about yourself and what you’d like to discuss. All fields are required except LinkedIn.</p>
+        <fieldset className="min-w-0 space-y-5">
+          <legend className="sr-only">Your contact questionnaire</legend>
+          <div>
+            <label htmlFor="contact-name" className={labelClass}>Your name</label>
+            <input {...fieldProps("name")} type="text" autoComplete="name" placeholder="Your name" />
+            {fieldError("name")}
+          </div>
+          <div>
+            <label htmlFor="contact-about" className={labelClass}>Who are you?</label>
+            <textarea {...fieldProps("about")} rows={3} placeholder="Your role, organization, or a little about yourself." />
+            {fieldError("about")}
+          </div>
+          <div>
+            <label htmlFor="contact-email" className={labelClass}>Your email</label>
+            <input {...fieldProps("email")} type="email" autoComplete="email" autoCapitalize="none" spellCheck={false} placeholder="you@somewhere.com" />
+            {fieldError("email")}
+          </div>
+          <div>
+            <label htmlFor="contact-linkedin" className={labelClass}>LinkedIn <span className="text-ink-50/50">(optional)</span></label>
+            <input {...fieldProps("linkedin")} type="url" autoCapitalize="none" spellCheck={false} placeholder="https://www.linkedin.com/in/your-name" />
+            {fieldError("linkedin")}
+          </div>
+          <div>
+            <label htmlFor="contact-message" className={labelClass}>Why would you like to connect?</label>
+            <textarea {...fieldProps("message")} rows={5} placeholder="What would you like to talk about? Share any context that would help." />
+            {fieldError("message")}
+          </div>
+          <p className="text-xs leading-relaxed text-ink-50/50">Opens an email draft addressed to me. Review and send it in your email app — no website login needed.</p>
+          <button type="submit" className="w-full rounded-full bg-ink-50 px-4 py-3.5 text-xs font-medium uppercase tracking-[0.2em] text-ink-950 transition-colors hover:bg-ink-100 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-klein">
+            Open email app
+          </button>
+        </fieldset>
+      </form>
+      <p role={isError ? "alert" : "status"} className={`mt-5 min-h-5 text-center text-sm ${isError ? "text-rose-300" : "text-ink-50/70"}`}>{message}</p>
+      {message && (
+        <p className="mt-3 text-center text-sm text-ink-50/65">Or <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4">email me directly</a> at {CONTACT_EMAIL}.</p>
       )}
-
-      <AnimatePresence mode="wait">
-        {stage === "done" ? (
-          <motion.div
-            key="done"
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={transition}
-            className="py-8 text-center"
-          >
-            <div
-              aria-hidden
-              className="glass-chip mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full text-2xl text-emerald-300"
-            >
-              ✓
-            </div>
-            <p className="text-ink-50/85">{message}</p>
-          </motion.div>
-        ) : step === "email" ? (
-          <motion.form
-            key="email"
-            {...enter}
-            transition={transition}
-            onSubmit={sendCode}
-            noValidate
-            className="space-y-4"
-          >
-            <label
-              htmlFor="contact-email"
-              className="block text-xs uppercase tracking-[0.3em] text-ink-50/55"
-            >
-              Your email
-            </label>
-            <input
-              id="contact-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              aria-describedby="contact-email-hint"
-              aria-invalid={isError || undefined}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@somewhere.com"
-              className={fieldClass}
-            />
-            <p id="contact-email-hint" className="text-xs text-ink-50/40">
-              We&apos;ll send a 6-digit code to confirm it&apos;s really you.
-            </p>
-            <button type="submit" disabled={busy || !email} className={submitClass}>
-              {stage === "sending" ? "Sending…" : "Get verification code"}
-            </button>
-          </motion.form>
-        ) : (
-          <motion.form
-            key="code"
-            {...enter}
-            transition={transition}
-            onSubmit={verifyCode}
-            noValidate
-            className="space-y-4"
-          >
-            <label
-              htmlFor="contact-code"
-              className="block text-xs uppercase tracking-[0.3em] text-ink-50/55"
-            >
-              6-digit code
-            </label>
-            <input
-              id="contact-code"
-              name="one-time-code"
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              required
-              aria-describedby="contact-code-hint"
-              aria-invalid={isError || undefined}
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              placeholder="••••••"
-              className={`${fieldClass} text-center text-2xl tracking-[0.5em] placeholder:tracking-[0.4em] placeholder:text-ink-50/20`}
-            />
-            <p id="contact-code-hint" className="text-center text-xs text-ink-50/40">
-              Sent to {email} · expires in 10 minutes
-            </p>
-            <button
-              type="submit"
-              disabled={busy || code.length !== 6}
-              className={submitClass}
-            >
-              {stage === "verifying" ? "Verifying…" : "Verify & subscribe"}
-            </button>
-            <button
-              type="button"
-              onClick={restart}
-              className="w-full rounded py-2 text-xs uppercase tracking-[0.3em] text-ink-50/50 outline-none transition-colors hover:text-ink-50 focus-visible:ring-2 focus-visible:ring-klein"
-            >
-              ← Use a different email
-            </button>
-          </motion.form>
-        )}
-      </AnimatePresence>
-
-      {/* Single live region so screen readers hear every status change. */}
-      <p
-        role={isError ? "alert" : "status"}
-        aria-live="polite"
-        className={`mt-5 min-h-5 text-center text-sm ${
-          isError ? "text-rose-300" : "text-ink-50/60"
-        }`}
-      >
-        {stage === "done" ? "" : message}
-      </p>
     </div>
   );
 }

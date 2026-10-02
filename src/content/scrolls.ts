@@ -33,16 +33,13 @@ export const ideaScrolls: IdeaScroll[] = [
     id: "love-as-seeing",
     title: "To Keep Seeing",
     glyph: "见",
-    line: "On intimacy, attention, and letting another remain other.",
     passages: [
       {
         text: "两个人共同经历的往事，\n会逐渐形成一种只有彼此才能完全理解的语言。",
-        note: "Intimacy creates a private world of shared meaning.",
       },
       {
         text: "I feel rich enough never to have tried to pass off as mine the thoughts that belonged to someone else.",
         source: "André Gide",
-        note: "To be changed by another person is not to possess what belongs to them.",
       },
       {
         text: "人往往只接受自己愿意接受的东西，\n而忽略那些不符合既有印象的部分。",
@@ -50,20 +47,17 @@ export const ideaScrolls: IdeaScroll[] = [
       },
       {
         text: "习惯使我们对原本值得注意的事物失去感觉。",
-        note: "The danger of familiarity is not distance, but ceasing to see what remains beside us.",
+        note: "Habit makes us lose our feeling for what once deserved our attention.",
       },
       {
         text: "知得愈多，爱得愈多；\n爱得愈多，知得愈多。",
-        note: "Attention becomes understanding; understanding deepens affection; affection returns us to attention.",
       },
       {
         text: "我愿他人活在我身上，\n我愿自己活在他人身上。",
-        note: "Intimacy as mutual inhabitation rather than possession.",
       },
       {
         text: "绝望之为虚妄，\n正与希望相同。",
         source: "鲁迅 · 野草 · 希望",
-        note: "Hope and despair can both become projections. What remains is attention to the present.",
       },
     ],
   },

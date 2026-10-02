@@ -57,8 +57,6 @@ In **Vercel → Portfolio Project → Settings → Environment Variables**, conf
 | --- | --- | --- |
 | `READING_COLLECTION_ORIGIN` | Production | Stable HTTPS origin from step 1, with no path or trailing data |
 | `ASR_DEMO_ORIGIN` | If the ASR route is enabled | Stable HTTPS origin of the external ASR project |
-| `EMAIL_USER` | For contact verification | Gmail sender address |
-| `EMAIL_PASS` | For contact verification | Gmail App Password, never the account password |
 
 Set values for the environments that need each feature, then redeploy. The
 portfolio production build intentionally fails when
@@ -82,7 +80,7 @@ origin:
 - chapter hash navigation such as `/skin-in-the-game-summary.html#19`
 - mobile layout and the top-edge navigation reveal on `/reading`
 - `/asrtranscriber`, when `ASR_DEMO_ORIGIN` is configured
-- `/contact`, including receiving and verifying a real email code
+- `/contact`, including opening the default email app with a questionnaire draft addressed to `joychen0709@gmail.com`
 
 ## 5. Add the custom domain
 
@@ -118,17 +116,16 @@ Then restart `npm run dev` and open <http://localhost:3001/reading>. Test throug
 the main site rather than only opening the static files directly; that verifies
 the rewrite and iframe integration.
 
-## Verification-code API limitation
+## Contact email drafts
 
-`src/lib/verificationStore.ts` stores codes in an in-memory `Map`. Vercel route
-handlers can execute in different serverless instances, so a code written by
-`send-verification` is not guaranteed to be visible to `verify-code`.
+Email links use `mailto:joychen0709@gmail.com` to open the visitor’s configured
+email app. The questionnaire validates the answers, then opens an email draft
+with the recipient, subject, and answers filled in. Visitors review and send the
+draft themselves. No website login, verification code, SMTP credentials, or
+contact API is required. Answers remain in the form after the email app opens.
 
-Before treating this flow as production-reliable, replace the store with one of:
-
-- Upstash Redis or Vercel-supported Redis;
-- another shared TTL key-value store;
-- a short-lived signed token that requires no server-side persistence.
+A device must have a default mail handler configured; the website cannot choose
+or authenticate a visitor’s email app, or confirm that they sent the draft.
 
 ## Rollback
 

@@ -122,11 +122,6 @@ export default function ScrollReader({ scroll, onClose }: { scroll: IdeaScroll; 
                   )}
                   <div className={styles.frontisText}>
                     <p className={styles.kicker}>Humanities · Scroll {no}</p>
-                    <h3 className={`display ${styles.title}`}>{scroll.title}</h3>
-                    {scroll.line && <p className={styles.line}>{scroll.line}</p>}
-                    <p className={styles.count}>
-                      {String(scroll.passages.length).padStart(2, "0")} {scroll.passages.length === 1 ? "passage" : "passages"}
-                    </p>
                   </div>
                   {scroll.glyph && (
                     <span className={styles.seal} aria-hidden="true">

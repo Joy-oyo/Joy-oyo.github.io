@@ -14,7 +14,7 @@ code and the existing docs disagree, the code wins and the disagreement is flagg
 A single-author portfolio with two deployable projects in one repository: the root Next.js
 application and a dependency-free static Reading Collection. There is no monorepo tooling,
 backend service, or database. Portfolio content is compiled from domain-specific TypeScript
-modules; the only application server logic is a two-route email-verification API plus
+modules; contact opens an email draft in the visitor’s mail app. The server handles
 external rewrites for Reading Collection and ASR Transcriber.
 
 The site has an unusual amount of client-side 3D for a portfolio — three independent WebGL
@@ -29,7 +29,7 @@ Joy-oyo.github.io/           # repository and Next.js application root
 │  ├─ app/                  # App Router routes and API handlers
 │  ├─ components/           # React components (flat + demos/ subfolder)
 │  ├─ content/              # site, timeline, about, demos, writing, and media data
-│  └─ lib/                  # cn(), verificationStore
+│  └─ lib/                  # cn(), contact validation
 ├─ public/                  # portfolio images and cyber signage
 ├─ reading-collection/      # independent static project (HTML + vercel.json)
 ├─ docs/                    # project plans and supporting documentation
@@ -60,7 +60,7 @@ Vercel's Git integration. There is no test suite and no test runner installed.
 | Animation | Framer Motion | `11.11.9` |
 | 3D | three · @react-three/fiber · @react-three/drei · @react-three/postprocessing | `0.169.0` · `8.17.10` · `9.114.3` · `^2.16.3` |
 | Class merging | clsx + tailwind-merge (via `lib/cn.ts`) | `2.1.1` · `2.5.4` |
-| Email | nodemailer (Gmail SMTP) | `6.9.15` |
+| Contact | Default email app via `mailto:` | Browser-native |
 
 **Declared but unused — zero imports anywhere in `src/`:** `gsap`, `lucide-react`,
 `dotenv`.
@@ -121,8 +121,6 @@ Three rules follow from this and should be preserved:
 | `/reading-collection/*` | External rewrite | Proxies to `READING_COLLECTION_ORIGIN`, stripping the local prefix upstream. |
 | `/asrtranscriber/*` | External rewrite | Multi-zone proxy to `ASR_DEMO_ORIGIN`; the upstream keeps its base path. |
 | `/cyber` | **Client** | Full-screen immersive world; `Nav` and `Portal` self-hide here. |
-| `/api/send-verification` | Route handler, `runtime = "nodejs"` | POST. |
-| `/api/verify-code` | Route handler, `runtime = "nodejs"` | POST. |
 
 `app/about/` and `app/work/` exist as **empty directories** — dead routes left over from an
 earlier structure. About and Work were merged into `/` as the `#about` and `#trajectory`
@@ -330,55 +328,21 @@ This is the same "absent asset degrades silently" pattern as `FigureFrame`.
 
 ---
 
-## 9. API layer and the verification flow
+## 9. Contact questionnaire and email drafts
 
-Two Node-runtime route handlers backed by `lib/verificationStore.ts`.
+`ContactForm` collects name, introduction, email, optional LinkedIn URL, and a
+reason for reaching out. Validation and encoded mailto construction live in
+`lib/contact.ts`. The button opens the visitor’s default email app with a draft
+addressed to `joychen0709@gmail.com`, including all the answers. Direct email links
+also use `mailto:`. No contact API, website login, verification code, or SMTP
+credentials are needed.
 
-```
-ContactForm (client)                 /api/send-verification            /api/verify-code
-  stage: idle
-    │ POST { email }
-    ├──────────────────────────────────────►
-    │                                  generate 6-digit code
-    │                                  store { code, timestamp, attempts: 0 }
-    │                                  EMAIL_USER && EMAIL_PASS ?
-    │                                    ├ yes → nodemailer Gmail SMTP
-    │                                    └ no  → console.log, respond { dev: true }
-    │ ◄──────────────────────────────────────
-  stage: code
-    │ POST { email, code }
-    ├───────────────────────────────────────────────────────────────────►
-    │                                                     lookup, then reject if:
-    │                                                       • no entry
-    │                                                       • age > 10 min (delete)
-    │                                                       • attempts >= 5 (delete)
-    │                                                     attempts += 1
-    │                                                     compare, delete on success
-    │ ◄───────────────────────────────────────────────────────────────────
-  stage: done
-```
+The form keeps its answers after opening the draft and instructs visitors to send
+it from their email app. It never claims that the message has already been sent.
+A default mail handler must be configured on the visitor’s device.
 
-`ContactForm` is a 6-state machine (`idle · sending · code · verifying · done · error`) with
-`step` tracked separately so an error preserves which field the user was on. Accessibility
-is handled properly here: `autoComplete="one-time-code"`, `inputMode="numeric"`, a single
-`aria-live` region that switches between `role="status"` and `role="alert"`, and
-`aria-invalid` on the active field.
-
-**Secrets** are environment-only (`EMAIL_USER`, `EMAIL_PASS`) — no keys in the bundle, no
-keys in the repo. The dev fallback logs to the server console rather than weakening the flow.
-
-`READING_COLLECTION_ORIGIN` and `ASR_DEMO_ORIGIN` are non-secret deploy-time origins.
-`next.config.mjs` accepts public HTTPS origins in production and loopback HTTP during local
-development; request data can never select an upstream. Production refuses to build without
-a valid Reading Collection origin.
-
-### The known structural flaw
-
-`verificationStore` is an in-memory `Map` pinned to `globalThis`. On Vercel, the two routes
-may execute in different serverless instances, so a code written by `send-verification` is
-**not guaranteed** to be visible to `verify-code`. It works on warm invocations and fails
-unpredictably otherwise. `DEPLOY.md` documents this and lists the fixes (Vercel KV, Upstash,
-or a signed JWT carrying the code). Still open.
+Run `node --test tests/contact.test.cjs` for validation and mailto-encoding checks.
+No email is sent by the tests.
 
 ---
 
@@ -386,7 +350,7 @@ or a signed JWT carrying the code). Still open.
 
 ```bash
 npm install
-cp .env.example .env.local     # optional; only the contact form needs it
+cp .env.example .env.local     # optional; for external demo configuration
 npm run dev                    # http://localhost:3001
 ```
 
@@ -423,10 +387,6 @@ Ordered by how much it would hurt.
 
 | # | Severity | Issue | Location |
 | --- | --- | --- | --- |
-| 1 | **High** | **The subscribe flow persists nothing.** On success, `verify-code` `console.log`s the address and deletes it from the store. There is no subscriber list, database, or mailing-list integration anywhere in `src/`. The UI tells the user "You're in. Thanks for subscribing!" and then discards them. | `api/verify-code/route.ts` |
-| 2 | **High** | In-memory verification store is unreliable on serverless; codes silently fail to validate across instances. | `lib/verificationStore.ts` |
-| 3 | Medium | No rate limiting on `/api/send-verification`. Any client can trigger unbounded Gmail sends against your quota, to arbitrary addresses. Attempt-limiting exists only on *verify*, not *send* — so the route doubles as an open email relay for a fixed template. | `api/send-verification/route.ts` |
-| 4 | Medium | No email format validation before sending — only a `typeof === "string"` check. | `api/send-verification/route.ts` |
 | 5 | Medium | `metadataBase` is `https://joy-oyo.github.io`, but the site serves `joylism.com`. Every canonical, OG, and Twitter URL resolves to the wrong host. | `app/layout.tsx:29` |
 | 6 | Medium | `AlbumStack` cards are clickable `motion.div`s with no `role="button"`, no `tabIndex`, and no keyboard activation; hidden `Link`s inside non-top cards remain focusable but call `preventDefault()`, creating a confusing focus trap. | `components/AlbumStack.tsx` |
 | 7 | Low–Med | `twitter.card` is `summary_large_image` and `openGraph` is configured, but **no image asset exists** — no `opengraph-image`, no `public/og*`. Social shares render blank. No `sitemap.ts` or `robots.ts` either. | `app/layout.tsx`, `public/` |
@@ -435,7 +395,7 @@ Ordered by how much it would hurt.
 | 10 | Low | Dead code: empty `app/about/` and `app/work/` directories; legacy exports in `timeline.ts` and `projects.ts` are currently unconsumed. | various |
 | 11 | Low | Font CSS variables named `--font-geist-*` actually resolve to Inter and JetBrains Mono. | `globals.css` vs `layout.tsx` |
 | 12 | Low | `AlbumStack` passes a dynamically changing `priority` to `next/image`; the prop is intended as a static LCP hint. | `components/AlbumStack.tsx` |
-| 13 | Low | No tests and no CI. Type safety is the only automated guardrail, and only when run manually. | repo |
+| 13 | Low | Contact validation and mailto tests exist, but there is no CI workflow running them automatically. | tests/contact.test.cjs |
 
 ### Content-vs-code gap
 

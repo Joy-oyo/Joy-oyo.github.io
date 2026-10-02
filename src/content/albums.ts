@@ -65,7 +65,7 @@ export const albums: Album[] = [
     title: "Contact",
     subtitle: "Let's make something together.",
     description:
-      "Drop a line, subscribe for updates, or find me across the usual places.",
+      "Tell me about yourself and what you’d like to discuss, or find me across the usual places.",
     href: "/contact",
     accent: "from-[#1e1e2a] to-[#6a6a8a]",
   },

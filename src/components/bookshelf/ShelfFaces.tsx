@@ -6,20 +6,6 @@ import { ideaScrolls, type IdeaScroll } from "@/content/scrolls";
 import { scrollLook } from "./scrollLook";
 import styles from "./RevolvingShelf.module.css";
 
-/** Outlines of books still to come on the business shelf's upper row. */
-const GHOST_SPINES: { w: number; h: number; tilt?: number }[] = [
-  { w: 22, h: 0.78 },
-  { w: 17, h: 0.9 },
-  { w: 26, h: 0.72 },
-  { w: 19, h: 0.96 },
-  { w: 24, h: 0.84 },
-  { w: 16, h: 0.7 },
-  { w: 21, h: 0.88 },
-  { w: 27, h: 0.76 },
-  { w: 18, h: 0.92 },
-  { w: 23, h: 0.8, tilt: 8 },
-];
-
 /** The face turned away from the viewer must not take focus or clicks. */
 function useInert(active: boolean) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,26 +32,6 @@ export function BusinessFace({
             <h3 className={`display ${styles.faceTitle}`}>Business</h3>
           </div>
         </header>
-
-        {/* The space above the books is the next shelf — reserved, not empty. */}
-        <div className={styles.upcoming}>
-          <div className={styles.upcomingRow}>
-            <p className={styles.upcomingCard}>
-              <span className={styles.upcomingKicker}>No. {String(businessBooks.length + 1).padStart(2, "0")} onward</span>
-              <span className={`display ${styles.upcomingText}`}>More books on the way.</span>
-            </p>
-            <ol className={styles.ghosts} aria-hidden="true">
-              {GHOST_SPINES.map((g, i) => (
-                <li
-                  key={i}
-                  className={styles.ghost}
-                  style={{ "--w": `${g.w}px`, "--h": g.h, "--tilt": `${g.tilt ?? 0}deg`, "--i": i } as CSSProperties}
-                />
-              ))}
-              <li className={styles.bookend} />
-            </ol>
-          </div>
-        </div>
 
         <ol className={styles.covers} aria-label="Business books">
           {businessBooks.map((book) => (

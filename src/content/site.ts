@@ -23,6 +23,6 @@ export const site = {
       href: "https://www.linkedin.com/in/jiayi-joy-chen/",
     },
     { label: "X", href: "https://x.com/Joy_oyo" },
-    { label: "Substack", href: "https://joyoyo.substack.com" },
+    { label: "Substack", href: "https://substack.com/@joyochen" },
   ],
 };
