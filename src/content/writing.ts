@@ -14,10 +14,10 @@ export type Writing = {
   author?: string;
   slug: string;
   title: string;
-  /** Which topic section the post is listed under. */
-  section: BlogSectionId;
+  /** Which topic section the post is listed under. Omit to show no topic label. */
+  section?: BlogSectionId;
   date: string; // ISO yyyy-mm-dd
-  excerpt: string;
+  excerpt?: string;
   tags?: string[];
   /** Paragraphs of the post body. Plain text per paragraph. */
   body?: string[];
@@ -28,17 +28,16 @@ export const writings: Writing[] = [
     published: true,
     slug: "somewhere-in-between",
     title: "Somewhere in between",
-    section: "intersection",
     date: "2026-09-30",
     place: "Bay Area",
     author: "树明子",
     tags: ["Free writing", "Becoming"],
-    excerpt: "Two years in the Bay, an idealist learning to be grounded, and a small decision to start writing before I have it all figured out.",
     body: [
       "When I first moved here, I remember how much I hated it—especially when people talked about this being the only place to be if you were in tech. I wouldn’t say I had a particularly techie personality. But it’s been two years since I moved to the Bay, and so much about me has become Bay-arealized. Which is good, maybe. I’ve become a more pragmatic person.",
       "I always used to describe myself on the first page of my diaries:",
-      "[著] 树明子 · 一个信奉现实主义的理想主义者",
-      "Depending on the stage of life, I sometimes flip it to: 一个信奉理想主义的现实主义者.",
+      "[著] 树明子 一个信奉现实主义的理想主义者 | An idealist who believes in realism",
+      "Depending on the stage of life, I sometimes flip it to:",
+      "一个信奉理想主义的现实主义者 | A realist who believes in idealism",
       "Being here did make me more grounded. Otherwise, I might have become someone who suffered from the unbearable lightness of life. I’m glad I’m who I am—still a work in progress. It’s been a process of self-exploration. Maybe, at some point, it was all shaped by whatever the environment brought me. But my little ego says I made those decisions myself.",
       "There’s been a period when I’ve been afraid to speak up, to talk about things, or to share my ideas. I thought I wasn’t there yet because I hadn’t learned enough to have something to say.",
       "Recently, I’ve been thinking that writing things down along the way of learning is good, too: a way of documenting evolving ideas and how they shape me. So I’ve decided to start doing more free writing.",
@@ -109,4 +108,4 @@ export const writings: Writing[] = [
 
 export const publishedWritings = writings
   .filter((post) => post.published)
-  .sort((a, b) => b.date.localeCompare(a.date));
+  .sort((a, b) => a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug));

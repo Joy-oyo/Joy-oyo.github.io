@@ -106,13 +106,7 @@ export default function TimelineSection() {
 function EducationCard({ polarity }: { polarity: Variant }) {
   return (
     <div data-polarity={polarity} className="taiji-seed">
-      {/* The dot is taken out of flow so the word itself sits on the card's
-          centre line rather than centre-minus-the-dot. */}
-      <div className="relative mb-5 flex items-center justify-center">
-        <span
-          aria-hidden
-          className="absolute left-0 h-1.5 w-1.5 rounded-full bg-amber-300/80 shadow-[0_0_10px_rgba(252,211,77,0.6)]"
-        />
+      <div className="mb-5 flex items-center justify-center">
         <h3 className="display text-center text-xl leading-tight text-on md:text-2xl">Education</h3>
       </div>
 
@@ -130,10 +124,10 @@ function EducationCard({ polarity }: { polarity: Variant }) {
             )}
             <h4 className="display mt-1.5 text-lg leading-tight text-on md:text-xl">
               {e.school}
+              {e.location && <span className="text-sm font-normal text-on4 md:text-[15px]"> · {e.location}</span>}
             </h4>
             <p className="mt-1 text-sm text-on3 md:text-[15px]">
               {e.degree}
-              {e.location && <span className="text-on4"> · {e.location}</span>}
             </p>
             {e.note && (
               <p className="mt-2 text-xs leading-relaxed text-on4 md:text-sm">{e.note}</p>

@@ -23,7 +23,7 @@ export type Choreo = {
 export type Piece = {
   title: string;
   year: string;
-  form: string; // "Poem", "Prose", "Script"…
+  form: string; // "Composition", "Performance", "Poem"…
   excerpt: string;
   href?: string;
 };
@@ -36,7 +36,7 @@ type Base = {
 export type Collection =
   | (Base & { kind: "photo"; items: Photo[] })
   | (Base & { kind: "choreo"; items: Choreo[] })
-  | (Base & { kind: "text"; items: Piece[] });
+  | (Base & { kind: "text" | "music"; items: Piece[] });
 
 export const collections: Collection[] = [
   {
@@ -57,9 +57,9 @@ export const collections: Collection[] = [
     items: [],
   },
   {
-    id: "writing",
-    title: "Writing",
-    kind: "text",
+    id: "music",
+    title: "Music",
+    kind: "music",
     items: [],
   },
 ];

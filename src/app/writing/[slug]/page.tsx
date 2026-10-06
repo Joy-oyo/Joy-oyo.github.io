@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import PaperPlane from "@/components/writing/PaperPlane";
+import FoldingReturn from "@/components/writing/FoldingReturn";
 import { blogSections, publishedWritings } from "@/content/writing";
 import styles from "@/components/writing/FlightLetter.module.css";
 
@@ -25,37 +26,37 @@ export default function WritingDetail({ params }: { params: { slug: string } }) 
   if (!post) notFound();
   const minutes = Math.max(1, Math.round((post.body?.join(" ").split(/\s+/).length ?? 0) / 220));
   const more = [publishedWritings[index - 1], publishedWritings[index + 1]].filter(Boolean);
+  const topic = blogSections.find((section) => section.id === post.section)?.label;
 
   return (
     <>
       <main id="main" className={styles.page}>
         <div className={styles.container}>
-          <Link href="/writing" className={styles.back}>← Back to the flight map</Link>
+          <Link href="/writing" className={styles.back}>← Back to the flight route</Link>
           <article className={styles.letter}>
             <header>
               <div className={styles.postmark}>
                 <span>FIELD NOTE / {String(index + 1).padStart(3, "0")}</span>
                 <PaperPlane />
               </div>
-              <p className={styles.topic}>{blogSections.find((section) => section.id === post.section)?.label}</p>
+              {topic && <p className={styles.topic}>{topic}</p>}
               <h1>{post.title}</h1>
               <div className={styles.meta}>
                 <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time>
                 <span>{post.place ?? "From my notebook"}</span>
                 <span>{minutes} min read</span>
               </div>
-              <p className={styles.excerpt}>{post.excerpt}</p>
+              {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
             </header>
             <div className={styles.body}>
               {post.body?.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
             </div>
             <footer className={styles.signature}>
-              <span>{post.author ?? "Joy Chen"}</span>
               <span>Still a work in progress.</span>
             </footer>
           </article>
           {more.length > 0 && <nav aria-label="More posts" className={styles.more}>{more.map((sibling) => <Link key={sibling.slug} href={`/writing/${sibling.slug}`}>{sibling.title} ↗</Link>)}</nav>}
-          <Link href="/writing" className={styles.return}>Fold it back up <PaperPlane /></Link>
+          <FoldingReturn title={post.title} excerpt={post.excerpt ?? post.body?.[0] ?? ""} className={styles.return} />
         </div>
       </main>
       <Footer />

@@ -19,7 +19,7 @@ const sections = collections.map((c) => ({ id: c.id, label: c.title }));
 const countLabel = (c: Collection) => {
   const n = c.items.length;
   if (n === 0) return "Soon";
-  const noun = c.kind === "photo" ? "frame" : c.kind === "choreo" ? "piece" : "text";
+  const noun = c.kind === "photo" ? "frame" : c.kind === "choreo" ? "piece" : c.kind === "music" ? "track" : "text";
   return `${n} ${noun}${n === 1 ? "" : "s"}`;
 };
 
@@ -74,7 +74,7 @@ function CollectionSection({ collection: c, index }: { collection: Collection; i
         ) : c.kind === "choreo" ? (
           <ChoreoGrid pieces={c.items} />
         ) : (
-          <TextList pieces={c.items} />
+          <PieceList pieces={c.items} />
         )}
       </div>
     </section>
@@ -192,7 +192,7 @@ function ChoreoGrid({ pieces }: { pieces: Choreo[] }) {
   );
 }
 
-function TextList({ pieces }: { pieces: Piece[] }) {
+function PieceList({ pieces }: { pieces: Piece[] }) {
   return (
     <ol className="divide-y divide-ink-50/[0.06]">
       {pieces.map((p) => {

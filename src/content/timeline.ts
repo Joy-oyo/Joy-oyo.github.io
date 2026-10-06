@@ -3,7 +3,7 @@ import { site } from "./site";
 export const workExperience = [
   {
     org: "Tencent",
-    role: "AI Solution Architect",
+    role: "Senior Media Product Solutions Architect",
     period: "2024 — Now",
     location: "Palo Alto",
     note: "",
@@ -40,7 +40,7 @@ export const timeline: TimelineItem[] = [
   {
     kind: "work",
     period: "2024 — Now",
-    role: "AI Solution Architect",
+    role: "Senior Media Product Solutions Architect",
     org: "Tencent",
     location: "Palo Alto, CA",
     note: "AI-powered media products for North America clients",
@@ -61,7 +61,6 @@ export const timeline: TimelineItem[] = [
     highlights: [
       "Founded the platform end to end: market and user research, product definition, launch.",
       "Designed the matching experience — intake, mentor and mentee profiles, and the ranking that pairs them.",
-      "Owned positioning and growth: messaging, landing page, and early acquisition experiments.",
     ],
   },
   {
@@ -128,7 +127,7 @@ export type TrackItem = {
 export const industryTrack: TrackItem[] = [
   {
     title: "Tencent",
-    subtitle: "AI Solution Architect",
+    subtitle: "Senior Media Product Solutions Architect",
     location: "Palo Alto, CA",
     note: "AI-powered media products for North America clients.",
     current: true,
@@ -156,7 +155,6 @@ export const industryTrack: TrackItem[] = [
     highlights: [
       "Founded the platform end to end: market and user research, product definition, launch.",
       "Designed the matching experience — intake, mentor and mentee profiles, and the ranking that pairs them.",
-      "Owned positioning and growth: messaging, landing page, and early acquisition experiments.",
     ],
   },
   {
@@ -167,23 +165,22 @@ export const industryTrack: TrackItem[] = [
     highlights: [
       "Researched AI adoption across financial services and healthcare — LLM-powered decision intelligence, risk automation, regulatory compliance.",
       "Analyzed industry trends, competitive landscapes, and investment opportunities; produced executive reports informing partnership and innovation initiatives.",
-      "Synthesized qualitative + quantitative findings into dashboards and presentations for senior stakeholders.",
     ],
   },
   {
     title: "ByteDance",
     subtitle: "AI Research Analyst (Math & Logics)",
     location: "Beijing, China",
-    note: "Recommendation-system performance, content quality, and large-scale UX analytics.",
+    note: "Recommendation-system performance and content quality.",
     highlights: [
       "Evaluated AI model performance and content recommendation workflows — improved technical efficiency, data quality, and user outcomes.",
       "Built performance metrics and analytical frameworks for data management and content discovery at large scale.",
-      "Created interactive dashboards translating insights into actionable cross-functional recommendations.",
     ],
   },
   {
     title: "Real-estate Startup",
     subtitle: "Marketing Analyst",
+    location: "San Francisco, CA",
     note: "Performance marketing & acquisition analytics — Google Ads, ROAS, channel ROI.",
     highlights: [
       "Designed and executed performance campaigns across acquisition channels — increased property exposure and lead conversion.",
@@ -203,7 +200,6 @@ export const researchTrack: TrackItem[] = [
       "Designed and ran HRI studies on rapport-building, social engagement, and perceptions of robot-facilitated conversations.",
       "Performed experimental design reviews and bias analyses, improving study reliability and data integrity.",
       "Built Python pipelines for data processing + visualization; applied p-value and one-way ANOVA across study conditions.",
-      "Analyzed participant attitudes and behaviors to generate insights for trust, engagement, and human-centered AI design.",
     ],
   },
   {
@@ -224,7 +220,16 @@ export const researchTrack: TrackItem[] = [
     highlights: [
       "Built an end-to-end ML pipeline for phishing detection: data cleaning, EDA, feature engineering, dimensionality reduction across 10,000+ URLs.",
       "Trained and compared MLP, ANN, CNN, and LSTM architectures to identify the most effective classification approach.",
-      "Assessed accuracy, precision, recall, and generalization for real-world cybersecurity deployment.",
+    ],
+  },
+  {
+    title: "Find the Gate, University of Chicago",
+    subtitle: "Interactive game",
+    location: "Chicago, IL",
+    note: "A small atmospheric game exploring place, memory, and the act of finding.",
+    links: [
+      { label: "Play on Itch.io", href: "https://joy-oyo.itch.io/find-the-gate" },
+      { label: "DM me for password", href: `mailto:${site.email}` },
     ],
   },
   {
@@ -235,15 +240,6 @@ export const researchTrack: TrackItem[] = [
       "Managed end-to-end paid search campaigns within a DSP — keyword research, bidding, budget allocation, performance optimization.",
       "Monitored ROAS, CPC, CTR, and conversion rates to improve marketing effectiveness and cost efficiency.",
       "Conducted A/B testing, SWOT analyses, and investment evaluations across regional markets.",
-    ],
-  },
-  {
-    title: "Find the Gate",
-    subtitle: "Independent — interactive game",
-    note: "A small atmospheric game exploring place, memory, and the act of finding.",
-    links: [
-      { label: "Play on Itch.io", href: "https://joy-oyo.itch.io/find-the-gate" },
-      { label: "DM me for password", href: `mailto:${site.email}` },
     ],
   },
 ];
