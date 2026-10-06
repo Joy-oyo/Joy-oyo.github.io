@@ -53,9 +53,8 @@ export default function BlogFlights({ posts }: { posts: Writing[] }) {
             </li>
           ))}
         </ol>
-        <div className={styles.continued}><span className={styles.endDot} /><p>The route is still being written.</p><span>More thoughts, when they’re ready.</span></div>
+        <div className={styles.continued}><span className={styles.endDot} /><p>The route is still being written.</p><span>Somewhere between where I’ve been and where I’m going.</span></div>
       </section>
-      <p className={styles.signoff}>Somewhere between where I’ve been and where I’m going.</p>
       {departure && <FlightTransition departure={departure} onArrive={() => router.push(`/writing/${departure.post.slug}`)} />}
     </div>
   );

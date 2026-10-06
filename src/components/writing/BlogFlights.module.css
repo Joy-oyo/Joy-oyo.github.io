@@ -30,7 +30,6 @@
 .endDot { display: block; width: 7px; height: 7px; margin: 0 auto 23px; border: 1px solid #8ba3b9; border-radius: 50%; }
 .continued p { color: #c1ced8; font: italic 21px var(--font-display); }
 .continued > span:last-child { display: block; margin-top: 10px; color: #8198ae; font-size: 11px; }
-.signoff { padding-top: 34px; color: #8ea1b3; font: italic 15px/1.8 var(--font-display); text-align: center; }
 .flightStage { position: fixed; z-index: 100; inset: 0; background: #0b1423ed; pointer-events: none; }
 .launchTrail { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #b6cbe2; stroke-width: 1; stroke-dasharray: 4 9; }
 .launchedPlane { position: absolute; top: 0; left: 0; width: 64px; color: #f4f0e6; filter: drop-shadow(0 12px 12px #0005); }
@@ -55,7 +54,6 @@
   .endDot { margin-left: calc((100% + 40px) * .18 - 23px); }
   .continued p { font-size: 18px; }
   .continued > span:last-child { font-size: 10px; }
-  .signoff { max-width: 270px; margin: 0 auto; font-size: 14px; }
 
 }
 @media (prefers-reduced-motion: reduce) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, X } from "lucide-react";
+import { X } from "lucide-react";
 import { businessBooks } from "@/content/books";
 import { businessIdeas, knowledgeSystems } from "@/content/knowledge";
 import { ideaScrolls } from "@/content/scrolls";
@@ -66,25 +66,18 @@ export default function KnowledgeCosmos({
   origin,
   detail,
   onDetail,
-  onClose,
   onOpenBook,
 }: {
   /** Where the cosmos opens from, in px within the stage. */
   origin: { x: number; y: number };
   detail: string | null;
   onDetail: (id: string | null) => void;
-  onClose: () => void;
   onOpenBook: (open: OpenBook) => void;
 }) {
   const reduceMotion = useReducedMotion();
-  const closeRef = useRef<HTMLButtonElement>(null);
   const detailCloseRef = useRef<HTMLButtonElement>(null);
   const lastNode = useRef<string | null>(null);
   const active = nodes.find((n) => n.id === detail) ?? null;
-
-  useEffect(() => {
-    closeRef.current?.focus({ preventScroll: true });
-  }, []);
 
   useEffect(() => {
     if (detail) {
@@ -130,10 +123,6 @@ export default function KnowledgeCosmos({
       </div>
 
       <header className={styles.head}>
-        <button ref={closeRef} type="button" className={styles.back} onClick={onClose}>
-          <ArrowLeft size={15} aria-hidden="true" />
-          Back to the shelf
-        </button>
         <p className={styles.kicker}>Business × Humanities</p>
         <h3 className={`display ${styles.title}`}>Knowledge cosmos.</h3>
         <p className={styles.lede}>Two shelves, one universe. Pick a star.</p>

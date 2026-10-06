@@ -229,7 +229,6 @@ export default function SecretBookshelf({
                 origin={cosmos}
                 detail={cosmosDetail}
                 onDetail={setCosmosDetail}
-                onClose={closeCosmos}
                 onOpenBook={(open) => {
                   returnFocus.current = document.getElementById(`cosmos-${cosmosDetail}`);
                   setReading(open);
