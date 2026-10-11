@@ -23,6 +23,7 @@ export const albums: Album[] = [
       "Lives in the Trajectory section below — industry experience, research, and education.",
     href: "/#trajectory",
     accent: "from-[#1a1a2e] to-[#002FA7]",
+    cover: "/images/about-cover.jpg",
   },
   {
     id: "projects",
@@ -34,6 +35,7 @@ export const albums: Album[] = [
       "Opens the Demo Lab subpage — ten prototypes across interactive, hosted, and recorded tracks.",
     href: "/demos",
     accent: "from-[#2a1a3e] to-[#6a3ea3]",
+    cover: "/images/demo-lab-cover.png",
   },
   {
     id: "writing",
@@ -45,6 +47,7 @@ export const albums: Album[] = [
       "Short essays and field notes. Updated whenever something feels worth saying.",
     href: "/writing",
     accent: "from-[#3a2a1a] to-[#a0764a]",
+    cover: "/images/blog-cover.jpg",
   },
   {
     id: "photography",
