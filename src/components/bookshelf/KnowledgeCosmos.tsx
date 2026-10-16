@@ -24,6 +24,7 @@ const BUSINESS_STAR_AT = [
   [44, 84],
   [41, 25],
   [5, 61],
+  [16, 16],
 ] as const;
 const HUMANITIES_STAR_AT = [
   [62, 32],

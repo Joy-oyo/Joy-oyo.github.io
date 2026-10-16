@@ -25,6 +25,18 @@ export type BusinessBook = {
 
 export const businessBooks: BusinessBook[] = [
   {
+    id: "adapt-the-car-to-you",
+    title: "Adapt the Car to You",
+    author: "Jensen Huang",
+    no: "07",
+    subject: "Self-fit",
+    category: "Leadership, risk & management",
+    description:
+      "A paper note, not a book: build the company like a race car you can actually drive — fit the machine to the driver.",
+    color: "#4d5a3a",
+    notes: "jensen-huang-note.html",
+  },
+  {
     id: "skin-in-the-game",
     title: "Skin in the Game",
     author: "Nassim Nicholas Taleb",
